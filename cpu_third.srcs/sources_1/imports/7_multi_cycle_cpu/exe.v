@@ -1,33 +1,33 @@
 `timescale 1ns / 1ps
 //*************************************************************************
-//   > ÎÄ¼şÃû: exe.v
-//   > ÃèÊö  :¶àÖÜÆÚCPUµÄÖ´ĞĞÄ£¿é
-//   > ×÷Õß  : LOONGSON
-//   > ÈÕÆÚ  : 2016-04-14
+//   > æ–‡ä»¶å: exe.v
+//   > æè¿°  :å¤šå‘¨æœŸCPUçš„æ‰§è¡Œæ¨¡å—
+//   > ä½œè€…  : LOONGSON
+//   > æ—¥æœŸ  : 2016-04-14
 //*************************************************************************
-module exe(                         // Ö´ĞĞ¼¶
-    input              EXE_valid,   // Ö´ĞĞ¼¶ÓĞĞ§ĞÅºÅ
-    input      [149:0] ID_EXE_bus_r,// ID->EXE×ÜÏß
-    output             EXE_over,    // EXEÄ£¿éÖ´ĞĞÍê³É
-    output     [105:0] EXE_MEM_bus, // EXE->MEM×ÜÏß
+module exe(                         // æ‰§è¡Œçº§
+    input              EXE_valid,   // æ‰§è¡Œçº§æœ‰æ•ˆä¿¡å·
+    input      [149:0] ID_EXE_bus_r,// ID->EXEæ€»çº¿
+    output             EXE_over,    // EXEæ¨¡å—æ‰§è¡Œå®Œæˆ
+    output     [105:0] EXE_MEM_bus, // EXE->MEMæ€»çº¿
     
-    //Õ¹Ê¾PC
+    //å±•ç¤ºPC
     output     [ 31:0] EXE_pc
 );
-//-----{ID->EXE×ÜÏß}begin
-    //EXEĞèÒªÓÃµ½µÄĞÅÏ¢
-    //ALUÁ½¸öÔ´²Ù×÷ÊıºÍ¿ØÖÆĞÅºÅ
+//-----{ID->EXEæ€»çº¿}begin
+    //EXEéœ€è¦ç”¨åˆ°çš„ä¿¡æ¯
+    //ALUä¸¤ä¸ªæºæ“ä½œæ•°å’Œæ§åˆ¶ä¿¡å·
     wire [11:0] alu_control;
     wire [31:0] alu_operand1;
     wire [31:0] alu_operand2;
 
-    //·Ã´æĞèÒªÓÃµ½µÄload/storeĞÅÏ¢
-    wire [3:0] mem_control;  //MEMĞèÒªÊ¹ÓÃµÄ¿ØÖÆĞÅºÅ
-    wire [31:0] store_data;  //store²Ù×÷µÄ´æµÄÊı¾İ
+    //è®¿å­˜éœ€è¦ç”¨åˆ°çš„load/storeä¿¡æ¯
+    wire [3:0] mem_control;  //MEMéœ€è¦ä½¿ç”¨çš„æ§åˆ¶ä¿¡å·
+    wire [31:0] store_data;  //storeæ“ä½œçš„å­˜çš„æ•°æ®
                           
-    //Ğ´»ØĞèÒªÓÃµ½µÄĞÅÏ¢
-    wire       rf_wen;    //Ğ´»ØµÄ¼Ä´æÆ÷Ğ´Ê¹ÄÜ
-    wire [4:0] rf_wdest;  //Ğ´»ØµÄÄ¿µÄ¼Ä´æÆ÷
+    //å†™å›éœ€è¦ç”¨åˆ°çš„ä¿¡æ¯
+    wire       rf_wen;    //å†™å›çš„å¯„å­˜å™¨å†™ä½¿èƒ½
+    wire [4:0] rf_wdest;  //å†™å›çš„ç›®çš„å¯„å­˜å™¨
     
     //pc
     wire [31:0] pc;
@@ -39,35 +39,35 @@ module exe(                         // Ö´ĞĞ¼¶
             rf_wen,
             rf_wdest,
             pc          } = ID_EXE_bus_r;
-//-----{ID->EXE×ÜÏß}end
+//-----{ID->EXEæ€»çº¿}end
 
 //-----{ALU}begin
     wire [31:0] alu_result;
 
     alu alu_module(
-        .alu_control  (alu_control ),  // I, 12, ALU¿ØÖÆĞÅºÅ
-        .alu_src1     (alu_operand1),  // I, 32, ALU²Ù×÷Êı1
-        .alu_src2     (alu_operand2),  // I, 32, ALU²Ù×÷Êı2
-        .alu_result   (alu_result  )   // O, 32, ALU½á¹û
+        .alu_control  (alu_control ),  // I, 12, ALUæ§åˆ¶ä¿¡å·
+        .alu_src1     (alu_operand1),  // I, 32, ALUæ“ä½œæ•°1
+        .alu_src2     (alu_operand2),  // I, 32, ALUæ“ä½œæ•°2
+        .alu_result   (alu_result  )   // O, 32, ALUç»“æœ
     );
 //-----{ALU}end
 
-//-----{EXEÖ´ĞĞÍê³É}begin
-    //ÓÉÓÚÊÇ¶àÖÜÆÚµÄ£¬²»´æÔÚÊı¾İÏà¹Ø
-    //ÇÒËùÓĞALUÔËËã¶¼¿ÉÔÚÒ»ÅÄÄÚÍê³É
-    //¹ÊEXEÄ£¿éÒ»ÅÄ¾ÍÄÜÍê³ÉËùÓĞ²Ù×÷
-    //¹ÊEXE_valid¼´ÊÇEXE_overĞÅºÅ
+//-----{EXEæ‰§è¡Œå®Œæˆ}begin
+    //ç”±äºæ˜¯å¤šå‘¨æœŸçš„ï¼Œä¸å­˜åœ¨æ•°æ®ç›¸å…³
+    //ä¸”æ‰€æœ‰ALUè¿ç®—éƒ½å¯åœ¨ä¸€æ‹å†…å®Œæˆ
+    //æ•…EXEæ¨¡å—ä¸€æ‹å°±èƒ½å®Œæˆæ‰€æœ‰æ“ä½œ
+    //æ•…EXE_validå³æ˜¯EXE_overä¿¡å·
     assign EXE_over = EXE_valid;
-//-----{EXEÖ´ĞĞÍê³É}end
+//-----{EXEæ‰§è¡Œå®Œæˆ}end
 
-//-----{EXE->MEM×ÜÏß}begin
-    assign EXE_MEM_bus = {mem_control,store_data,   //load/storeĞÅÏ¢ºÍstoreÊı¾İ
-                          alu_result,               //aluÔËËã½á¹û
-                          rf_wen,rf_wdest,          // WBĞèÒªÊ¹ÓÃµÄĞÅºÅ
+//-----{EXE->MEMæ€»çº¿}begin
+    assign EXE_MEM_bus = {mem_control,store_data,   //load/storeä¿¡æ¯å’Œstoreæ•°æ®
+                          alu_result,               //aluè¿ç®—ç»“æœ
+                          rf_wen,rf_wdest,          // WBéœ€è¦ä½¿ç”¨çš„ä¿¡å·
                           pc};                      // PC
-//-----{EXE->MEM×ÜÏß}end
+//-----{EXE->MEMæ€»çº¿}end
 
-//-----{Õ¹Ê¾EXEÄ£¿éµÄPCÖµ}begin
+//-----{å±•ç¤ºEXEæ¨¡å—çš„PCå€¼}begin
     assign EXE_pc = pc;
-//-----{Õ¹Ê¾EXEÄ£¿éµÄPCÖµ}end
+//-----{å±•ç¤ºEXEæ¨¡å—çš„PCå€¼}end
 endmodule

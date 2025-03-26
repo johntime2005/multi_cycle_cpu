@@ -1,49 +1,49 @@
 `timescale 1ns / 1ps
 //*************************************************************************
-//   > ÎÄ¼şÃû: wb.v
-//   > ÃèÊö  :¶àÖÜÆÚCPUµÄĞ´»ØÄ£¿é
-//   > ×÷Õß  : LOONGSON
-//   > ÈÕÆÚ  : 2016-04-14
+//   > æ–‡ä»¶å: wb.v
+//   > æè¿°  :å¤šå‘¨æœŸCPUçš„å†™å›æ¨¡å—
+//   > ä½œè€…  : LOONGSON
+//   > æ—¥æœŸ  : 2016-04-14
 //*************************************************************************
-module wb(                      // Ğ´»Ø¼¶
-    input         WB_valid,     // Ğ´»Ø¼¶ÓĞĞ§
-    input  [69:0] MEM_WB_bus_r, // MEM->WB×ÜÏß
-    output        rf_wen,       // ¼Ä´æÆ÷Ğ´Ê¹ÄÜ
-    output [ 4:0] rf_wdest,     // ¼Ä´æÆ÷Ğ´µØÖ·
-    output [31:0] rf_wdata,     // ¼Ä´æÆ÷Ğ´Êı¾İ
-    output        WB_over,      // WBÄ£¿éÖ´ĞĞÍê³É
+module wb(                      // å†™å›çº§
+    input         WB_valid,     // å†™å›çº§æœ‰æ•ˆ
+    input  [69:0] MEM_WB_bus_r, // MEM->WBæ€»çº¿
+    output        rf_wen,       // å¯„å­˜å™¨å†™ä½¿èƒ½
+    output [ 4:0] rf_wdest,     // å¯„å­˜å™¨å†™åœ°å€
+    output [31:0] rf_wdata,     // å¯„å­˜å™¨å†™æ•°æ®
+    output        WB_over,      // WBæ¨¡å—æ‰§è¡Œå®Œæˆ
 
-    //Õ¹Ê¾PC
+    //å±•ç¤ºPC
     output [ 31:0] WB_pc
 );
-//-----{MEM->WB×ÜÏß}begin    
-    //¼Ä´æÆ÷¶ÑĞ´Ê¹ÄÜºÍĞ´µØÖ·
+//-----{MEM->WBæ€»çº¿}begin    
+    //å¯„å­˜å™¨å †å†™ä½¿èƒ½å’Œå†™åœ°å€
     wire wen;
     wire [4:0] wdest;
     
-    //MEM´«À´µÄresult
+    //MEMä¼ æ¥çš„result
     wire [31:0] mem_result;
     
     //pc
     wire [31:0] pc;    
     assign {wen,wdest,mem_result,pc} = MEM_WB_bus_r;
-//-----{MEM->WB×ÜÏß}end
+//-----{MEM->WBæ€»çº¿}end
 
-//-----{WBÖ´ĞĞÍê³É}begin
-    //WBÄ£¿éÖ»ÊÇ´«µİ¼Ä´æÆ÷¶ÑµÄĞ´Ê¹ÄÜ/Ğ´µØÖ·ºÍĞ´Êı¾İ
-    //¿ÉÔÚÒ»ÅÄÄÚÍê³É
-    //¹ÊWB_valid¼´ÊÇWB_overĞÅºÅ
+//-----{WBæ‰§è¡Œå®Œæˆ}begin
+    //WBæ¨¡å—åªæ˜¯ä¼ é€’å¯„å­˜å™¨å †çš„å†™ä½¿èƒ½/å†™åœ°å€å’Œå†™æ•°æ®
+    //å¯åœ¨ä¸€æ‹å†…å®Œæˆ
+    //æ•…WB_validå³æ˜¯WB_overä¿¡å·
     assign WB_over = WB_valid;
-//-----{WBÖ´ĞĞÍê³É}end
+//-----{WBæ‰§è¡Œå®Œæˆ}end
 
-//-----{WB->regfileĞÅºÅ}begin
+//-----{WB->regfileä¿¡å·}begin
     assign rf_wen   = wen & WB_valid;
     assign rf_wdest = wdest;
     assign rf_wdata = mem_result;
-//-----{WB->regfileĞÅºÅ}end
+//-----{WB->regfileä¿¡å·}end
 
-//-----{Õ¹Ê¾WBÄ£¿éµÄPCÖµ}begin
+//-----{å±•ç¤ºWBæ¨¡å—çš„PCå€¼}begin
     assign WB_pc = pc;
-//-----{Õ¹Ê¾WBÄ£¿éµÄPCÖµ}end
+//-----{å±•ç¤ºWBæ¨¡å—çš„PCå€¼}end
 endmodule
 

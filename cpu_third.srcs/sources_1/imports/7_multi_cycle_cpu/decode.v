@@ -1,32 +1,32 @@
 `timescale 1ns / 1ps
 //*************************************************************************
-//   > ÎÄ¼şÃû: decode.v
-//   > ÃèÊö  :¶àÖÜÆÚCPUµÄÒëÂëÄ£¿é
-//   > ×÷Õß  : LOONGSON
-//   > ÈÕÆÚ  : 2016-04-14
+//   > æ–‡ä»¶å: decode.v
+//   > æè¿°  :å¤šå‘¨æœŸCPUçš„è¯‘ç æ¨¡å—
+//   > ä½œè€…  : LOONGSON
+//   > æ—¥æœŸ  : 2016-04-14
 //*************************************************************************
-module decode(                      // ÒëÂë¼¶
-    input              ID_valid,    // ÒëÂë¼¶ÓĞĞ§ĞÅºÅ
-    input      [ 63:0] IF_ID_bus_r, // IF->ID×ÜÏß
-    input      [ 31:0] rs_value,    // µÚÒ»Ô´²Ù×÷ÊıÖµ
-    input      [ 31:0] rt_value,    // µÚ¶şÔ´²Ù×÷ÊıÖµ
-    output     [  4:0] rs,          // µÚÒ»Ô´²Ù×÷ÊıµØÖ· 
-    output     [  4:0] rt,          // µÚ¶şÔ´²Ù×÷ÊıµØÖ·
-    output     [ 32:0] jbr_bus,     // Ìø×ª×ÜÏß
-    output             jbr_not_link,// Ö¸ÁîÎªÌø×ª·ÖÖ§Ö¸Áî,ÇÒ·ÇlinkÀàÖ¸Áî
-    output             ID_over,     // IDÄ£¿éÖ´ĞĞÍê³É
-    output    [149:0]  ID_EXE_bus,  // ID->EXE×ÜÏß
+module decode(                      // è¯‘ç çº§
+    input              ID_valid,    // è¯‘ç çº§æœ‰æ•ˆä¿¡å·
+    input      [ 63:0] IF_ID_bus_r, // IF->IDæ€»çº¿
+    input      [ 31:0] rs_value,    // ç¬¬ä¸€æºæ“ä½œæ•°å€¼
+    input      [ 31:0] rt_value,    // ç¬¬äºŒæºæ“ä½œæ•°å€¼
+    output     [  4:0] rs,          // ç¬¬ä¸€æºæ“ä½œæ•°åœ°å€ 
+    output     [  4:0] rt,          // ç¬¬äºŒæºæ“ä½œæ•°åœ°å€
+    output     [ 32:0] jbr_bus,     // è·³è½¬æ€»çº¿
+    output             jbr_not_link,// æŒ‡ä»¤ä¸ºè·³è½¬åˆ†æ”¯æŒ‡ä»¤,ä¸”élinkç±»æŒ‡ä»¤
+    output             ID_over,     // IDæ¨¡å—æ‰§è¡Œå®Œæˆ
+    output    [149:0]  ID_EXE_bus,  // ID->EXEæ€»çº¿
     
-    //Õ¹Ê¾PC
+    //å±•ç¤ºPC
     output     [ 31:0] ID_pc
 );
-//-----{IF->ID×ÜÏß}begin
+//-----{IF->IDæ€»çº¿}begin
     wire [31:0] pc;
     wire [31:0] inst;
-    assign {pc, inst} = IF_ID_bus_r;  // IF->ID×ÜÏß´«PCºÍÖ¸Áî
-//-----{IF->ID×ÜÏß}end
+    assign {pc, inst} = IF_ID_bus_r;  // IF->IDæ€»çº¿ä¼ PCå’ŒæŒ‡ä»¤
+//-----{IF->IDæ€»çº¿}end
 
-//-----{Ö¸ÁîÒëÂë}begin
+//-----{æŒ‡ä»¤è¯‘ç }begin
     wire [5:0] op;       
     wire [4:0] rd;       
     wire [4:0] sa;      
@@ -35,17 +35,17 @@ module decode(                      // ÒëÂë¼¶
     wire [15:0] offset;  
     wire [25:0] target;  
 
-    assign op     = inst[31:26];  // ²Ù×÷Âë
-    assign rs     = inst[25:21];  // Ô´²Ù×÷Êı1
-    assign rt     = inst[20:16];  // Ô´²Ù×÷Êı2
-    assign rd     = inst[15:11];  // Ä¿±ê²Ù×÷Êı
-    assign sa     = inst[10:6];   // ÌØÊâÓò£¬¿ÉÄÜ´æ·ÅÆ«ÒÆÁ¿
-    assign funct  = inst[5:0];    // ¹¦ÄÜÂë
-    assign imm    = inst[15:0];   // Á¢¼´Êı
-    assign offset = inst[15:0];   // µØÖ·Æ«ÒÆÁ¿
-    assign target = inst[25:0];   // Ä¿±êµØÖ·
+    assign op     = inst[31:26];  // æ“ä½œç 
+    assign rs     = inst[25:21];  // æºæ“ä½œæ•°1
+    assign rt     = inst[20:16];  // æºæ“ä½œæ•°2
+    assign rd     = inst[15:11];  // ç›®æ ‡æ“ä½œæ•°
+    assign sa     = inst[10:6];   // ç‰¹æ®ŠåŸŸï¼Œå¯èƒ½å­˜æ”¾åç§»é‡
+    assign funct  = inst[5:0];    // åŠŸèƒ½ç 
+    assign imm    = inst[15:0];   // ç«‹å³æ•°
+    assign offset = inst[15:0];   // åœ°å€åç§»é‡
+    assign target = inst[25:0];   // ç›®æ ‡åœ°å€
 
-    // ÊµÏÖÖ¸ÁîÁĞ±í
+    // å®ç°æŒ‡ä»¤åˆ—è¡¨
     wire inst_ADDU, inst_SUBU , inst_SLT , inst_AND;
     wire inst_NOR , inst_OR   , inst_XOR , inst_SLL;
     wire inst_SRL , inst_ADDIU, inst_BEQ , inst_BNE;
@@ -55,97 +55,97 @@ module decode(                      // ÒëÂë¼¶
     wire inst_SLTI, inst_BGEZ , inst_BGTZ, inst_BLEZ;
     wire inst_BLTZ, inst_LB   , inst_LBU , inst_SB;
     wire inst_ANDI, inst_ORI  , inst_XORI, inst_JAL;
-    wire op_zero;  // ²Ù×÷ÂëÈ«0
-    wire sa_zero;  // saÓòÈ«0
+    wire op_zero;  // æ“ä½œç å…¨0
+    wire sa_zero;  // saåŸŸå…¨0
     assign op_zero = ~(|op);
     assign sa_zero = ~(|sa);
-    assign inst_ADDU  = op_zero & sa_zero    & (funct == 6'b100001);//ÎŞ·ûºÅ¼Ó·¨
-    assign inst_SUBU  = op_zero & sa_zero    & (funct == 6'b100011);//ÎŞ·ûºÅ¼õ·¨
-    assign inst_SLT   = op_zero & sa_zero    & (funct == 6'b101010);//Ğ¡ÓÚÔòÖÃÎ»
-    assign inst_SLTU  = op_zero & sa_zero    & (funct == 6'b101011);//ÎŞ·ûºÅĞ¡ÔòÖÃ
+    assign inst_ADDU  = op_zero & sa_zero    & (funct == 6'b100001);//æ— ç¬¦å·åŠ æ³•
+    assign inst_SUBU  = op_zero & sa_zero    & (funct == 6'b100011);//æ— ç¬¦å·å‡æ³•
+    assign inst_SLT   = op_zero & sa_zero    & (funct == 6'b101010);//å°äºåˆ™ç½®ä½
+    assign inst_SLTU  = op_zero & sa_zero    & (funct == 6'b101011);//æ— ç¬¦å·å°åˆ™ç½®
     assign inst_JALR  = op_zero & (rt==5'd0) & (rd==5'd31) 
-                      & sa_zero & (funct == 6'b001001);          //Ìø×ª¼Ä´æÆ÷²¢Á´½Ó 
+                      & sa_zero & (funct == 6'b001001);          //è·³è½¬å¯„å­˜å™¨å¹¶é“¾æ¥ 
     assign inst_JR    = op_zero & (rt==5'd0) & (rd==5'd0 )
-                      & sa_zero & (funct == 6'b001000);             //Ìø×ª¼Ä´æÆ÷
-    assign inst_AND   = op_zero & sa_zero    & (funct == 6'b100100);//ÓëÔËËã
-    assign inst_NOR   = op_zero & sa_zero    & (funct == 6'b100111);//»ò·ÇÔËËã
-    assign inst_OR    = op_zero & sa_zero    & (funct == 6'b100101);//»òÔËËã
-    assign inst_XOR   = op_zero & sa_zero    & (funct == 6'b100110);//Òì»òÔËËã
-    assign inst_SLL   = op_zero & (rs==5'd0) & (funct == 6'b000000);//Âß¼­×óÒÆ
-    assign inst_SLLV  = op_zero & sa_zero    & (funct == 6'b000100);//±äÁ¿Âß¼­×óÒÆ
-    assign inst_SRA   = op_zero & (rs==5'd0) & (funct == 6'b000011);//ËãÊõÓÒÒÆ
-    assign inst_SRAV  = op_zero & sa_zero    & (funct == 6'b000111);//±äÁ¿ËãÊõÓÒÒÆ
-    assign inst_SRL   = op_zero & (rs==5'd0) & (funct == 6'b000010);//Âß¼­ÓÒÒÆ
-    assign inst_SRLV  = op_zero & sa_zero    & (funct == 6'b000110);//±äÁ¿Âß¼­ÓÒÒÆ
-    assign inst_ADDIU = (op == 6'b001001);              //Á¢¼´ÊıÎŞ·ûºÅ¼Ó·¨
-    assign inst_SLTI  = (op == 6'b001010);              //Ğ¡ÓÚÁ¢¼´ÊıÔòÖÃÎ»
-    assign inst_SLTIU = (op == 6'b001011);              //ÎŞ·ûºÅĞ¡ÓÚÁ¢¼´ÊıÔòÖÃÎ»
-    assign inst_BEQ   = (op == 6'b000100);              //ÅĞ¶ÏÏàµÈÌø×ª
-    assign inst_BGEZ  = (op == 6'b000001) & (rt==5'd1); //´óÓÚµÈÓÚ0Ìø×ª
-    assign inst_BGTZ  = (op == 6'b000111) & (rt==5'd0); //´óÓÚ0Ìø×ª
-    assign inst_BLEZ  = (op == 6'b000110) & (rt==5'd0); //Ğ¡ÓÚµÈÓÚ0Ìø×ª
-    assign inst_BLTZ  = (op == 6'b000001) & (rt==5'd0); //Ğ¡ÓÚ0Ìø×ª
-    assign inst_BNE   = (op == 6'b000101);              //ÅĞ¶Ï²»µÈÌø×ª
-    assign inst_LW    = (op == 6'b100011);              //´ÓÄÚ´æ×°ÔØ×Ö
-    assign inst_SW    = (op == 6'b101011);              //ÏòÄÚ´æ´æ´¢×Ö
-    assign inst_LB    = (op == 6'b100000);              //load×Ö½Ú£¨·ûºÅÀ©Õ¹£©
-    assign inst_LBU   = (op == 6'b100100);              //load×Ö½Ú£¨ÎŞ·ûºÅÀ©Õ¹£©
-    assign inst_SB    = (op == 6'b101000);              //ÏòÄÚ´æ´æ´¢×Ö½Ú
-    assign inst_ANDI  = (op == 6'b001100);              //Á¢¼´ÊıÓë
-    assign inst_LUI   = (op == 6'b001111) & (rs==5'd0); //Á¢¼´Êı×°ÔØ¸ß°ë×Ö½Ú
-    assign inst_ORI   = (op == 6'b001101);              //Á¢¼´Êı»ò
-    assign inst_XORI  = (op == 6'b001110);              //Á¢¼´ÊıÒì»ò
-    assign inst_J     = (op == 6'b000010);              //Ìø×ª
-    assign inst_JAL   = (op == 6'b000011);              //Ìø×ªºÍÁ´½Ó
+                      & sa_zero & (funct == 6'b001000);             //è·³è½¬å¯„å­˜å™¨
+    assign inst_AND   = op_zero & sa_zero    & (funct == 6'b100100);//ä¸è¿ç®—
+    assign inst_NOR   = op_zero & sa_zero    & (funct == 6'b100111);//æˆ–éè¿ç®—
+    assign inst_OR    = op_zero & sa_zero    & (funct == 6'b100101);//æˆ–è¿ç®—
+    assign inst_XOR   = op_zero & sa_zero    & (funct == 6'b100110);//å¼‚æˆ–è¿ç®—
+    assign inst_SLL   = op_zero & (rs==5'd0) & (funct == 6'b000000);//é€»è¾‘å·¦ç§»
+    assign inst_SLLV  = op_zero & sa_zero    & (funct == 6'b000100);//å˜é‡é€»è¾‘å·¦ç§»
+    assign inst_SRA   = op_zero & (rs==5'd0) & (funct == 6'b000011);//ç®—æœ¯å³ç§»
+    assign inst_SRAV  = op_zero & sa_zero    & (funct == 6'b000111);//å˜é‡ç®—æœ¯å³ç§»
+    assign inst_SRL   = op_zero & (rs==5'd0) & (funct == 6'b000010);//é€»è¾‘å³ç§»
+    assign inst_SRLV  = op_zero & sa_zero    & (funct == 6'b000110);//å˜é‡é€»è¾‘å³ç§»
+    assign inst_ADDIU = (op == 6'b001001);              //ç«‹å³æ•°æ— ç¬¦å·åŠ æ³•
+    assign inst_SLTI  = (op == 6'b001010);              //å°äºç«‹å³æ•°åˆ™ç½®ä½
+    assign inst_SLTIU = (op == 6'b001011);              //æ— ç¬¦å·å°äºç«‹å³æ•°åˆ™ç½®ä½
+    assign inst_BEQ   = (op == 6'b000100);              //åˆ¤æ–­ç›¸ç­‰è·³è½¬
+    assign inst_BGEZ  = (op == 6'b000001) & (rt==5'd1); //å¤§äºç­‰äº0è·³è½¬
+    assign inst_BGTZ  = (op == 6'b000111) & (rt==5'd0); //å¤§äº0è·³è½¬
+    assign inst_BLEZ  = (op == 6'b000110) & (rt==5'd0); //å°äºç­‰äº0è·³è½¬
+    assign inst_BLTZ  = (op == 6'b000001) & (rt==5'd0); //å°äº0è·³è½¬
+    assign inst_BNE   = (op == 6'b000101);              //åˆ¤æ–­ä¸ç­‰è·³è½¬
+    assign inst_LW    = (op == 6'b100011);              //ä»å†…å­˜è£…è½½å­—
+    assign inst_SW    = (op == 6'b101011);              //å‘å†…å­˜å­˜å‚¨å­—
+    assign inst_LB    = (op == 6'b100000);              //loadå­—èŠ‚ï¼ˆç¬¦å·æ‰©å±•ï¼‰
+    assign inst_LBU   = (op == 6'b100100);              //loadå­—èŠ‚ï¼ˆæ— ç¬¦å·æ‰©å±•ï¼‰
+    assign inst_SB    = (op == 6'b101000);              //å‘å†…å­˜å­˜å‚¨å­—èŠ‚
+    assign inst_ANDI  = (op == 6'b001100);              //ç«‹å³æ•°ä¸
+    assign inst_LUI   = (op == 6'b001111) & (rs==5'd0); //ç«‹å³æ•°è£…è½½é«˜åŠå­—èŠ‚
+    assign inst_ORI   = (op == 6'b001101);              //ç«‹å³æ•°æˆ–
+    assign inst_XORI  = (op == 6'b001110);              //ç«‹å³æ•°å¼‚æˆ–
+    assign inst_J     = (op == 6'b000010);              //è·³è½¬
+    assign inst_JAL   = (op == 6'b000011);              //è·³è½¬å’Œé“¾æ¥
     
-    //Ìø×ª·ÖÖ§Ö¸Áî
-    wire inst_jr;    //¼Ä´æÆ÷Ìø×ªÖ¸Áî
-    wire inst_j_link;//Á´½ÓÌø×ªÖ¸Áî
+    //è·³è½¬åˆ†æ”¯æŒ‡ä»¤
+    wire inst_jr;    //å¯„å­˜å™¨è·³è½¬æŒ‡ä»¤
+    wire inst_j_link;//é“¾æ¥è·³è½¬æŒ‡ä»¤
     assign inst_jr     = inst_JALR | inst_JR;
     assign inst_j_link = inst_JAL  | inst_JALR;
-    assign jbr_not_link= inst_J    | inst_JR      //È«²¿·ÇlinkÀàÌø×ªÖ¸Áî
+    assign jbr_not_link= inst_J    | inst_JR      //å…¨éƒ¨élinkç±»è·³è½¬æŒ‡ä»¤
                        | inst_BEQ  | inst_BNE  | inst_BGEZ
                        | inst_BGTZ | inst_BLEZ | inst_BLTZ;
         
     //load store
     wire inst_load;
     wire inst_store;
-    assign inst_load  = inst_LW | inst_LB | inst_LBU;  // loadÖ¸Áî
-    assign inst_store = inst_SW | inst_SB;             // storeÖ¸Áî
+    assign inst_load  = inst_LW | inst_LB | inst_LBU;  // loadæŒ‡ä»¤
+    assign inst_store = inst_SW | inst_SB;             // storeæŒ‡ä»¤
     
-    //alu²Ù×÷·ÖÀà
+    //aluæ“ä½œåˆ†ç±»
     wire inst_add, inst_sub, inst_slt,inst_sltu;
     wire inst_and, inst_nor, inst_or, inst_xor;
     wire inst_sll, inst_srl, inst_sra,inst_lui;
     assign inst_add = inst_ADDU  | inst_ADDIU | inst_load
-                     | inst_store | inst_j_link;            // ×ö¼Ó·¨
-    assign inst_sub = inst_SUBU;                            // ¼õ·¨
-    assign inst_slt = inst_SLT | inst_SLTI;                 // ÓĞ·ûºÅĞ¡ÓÚÖÃÎ»
-    assign inst_sltu= inst_SLTIU | inst_SLTU;               // ÎŞ·ûºÅĞ¡ÓÚÖÃÎ»
-    assign inst_and = inst_AND | inst_ANDI;                 // Âß¼­Óë
-    assign inst_nor = inst_NOR;                             // Âß¼­»ò·Ç
-    assign inst_or  = inst_OR  | inst_ORI;                  // Âß¼­»ò
-    assign inst_xor = inst_XOR | inst_XORI;                 // Âß¼­Òì»ò
-    assign inst_sll = inst_SLL | inst_SLLV;                 // Âß¼­×óÒÆ
-    assign inst_srl = inst_SRL | inst_SRLV;                 // Âß¼­ÓÒÒÆ
-    assign inst_sra = inst_SRA | inst_SRAV;                 // ËãÊõÓÒÒÆ
-    assign inst_lui = inst_LUI;                             // Á¢¼´Êı×°ÔØ¸ßÎ»
+                     | inst_store | inst_j_link;            // åšåŠ æ³•
+    assign inst_sub = inst_SUBU;                            // å‡æ³•
+    assign inst_slt = inst_SLT | inst_SLTI;                 // æœ‰ç¬¦å·å°äºç½®ä½
+    assign inst_sltu= inst_SLTIU | inst_SLTU;               // æ— ç¬¦å·å°äºç½®ä½
+    assign inst_and = inst_AND | inst_ANDI;                 // é€»è¾‘ä¸
+    assign inst_nor = inst_NOR;                             // é€»è¾‘æˆ–é
+    assign inst_or  = inst_OR  | inst_ORI;                  // é€»è¾‘æˆ–
+    assign inst_xor = inst_XOR | inst_XORI;                 // é€»è¾‘å¼‚æˆ–
+    assign inst_sll = inst_SLL | inst_SLLV;                 // é€»è¾‘å·¦ç§»
+    assign inst_srl = inst_SRL | inst_SRLV;                 // é€»è¾‘å³ç§»
+    assign inst_sra = inst_SRA | inst_SRAV;                 // ç®—æœ¯å³ç§»
+    assign inst_lui = inst_LUI;                             // ç«‹å³æ•°è£…è½½é«˜ä½
     
-    //Ê¹ÓÃsaÓò×÷ÎªÆ«ÒÆÁ¿µÄÒÆÎ»Ö¸Áî
+    //ä½¿ç”¨saåŸŸä½œä¸ºåç§»é‡çš„ç§»ä½æŒ‡ä»¤
     wire inst_shf_sa;
     assign inst_shf_sa =  inst_SLL | inst_SRL | inst_SRA;
     
-    //ÒÀ¾İÁ¢¼´ÊıÀ©Õ¹·½Ê½·ÖÀà
-    wire inst_imm_zero; //Á¢¼´Êı0À©Õ¹
-    wire inst_imm_sign; //Á¢¼´Êı·ûºÅÀ©Õ¹
+    //ä¾æ®ç«‹å³æ•°æ‰©å±•æ–¹å¼åˆ†ç±»
+    wire inst_imm_zero; //ç«‹å³æ•°0æ‰©å±•
+    wire inst_imm_sign; //ç«‹å³æ•°ç¬¦å·æ‰©å±•
     assign inst_imm_zero = inst_ANDI  | inst_LUI  | inst_ORI | inst_XORI;
     assign inst_imm_sign = inst_ADDIU | inst_SLTI | inst_SLTIU
                          | inst_load  | inst_store;
     
-    //ÒÀ¾İÄ¿µÄ¼Ä´æÆ÷ºÅ·ÖÀà
-    wire inst_wdest_rt;  // ¼Ä´æÆ÷¶ÑĞ´ÈëµØÖ·ÎªrtµÄÖ¸Áî
-    wire inst_wdest_31;  // ¼Ä´æÆ÷¶ÑĞ´ÈëµØÖ·Îª31µÄÖ¸Áî
-    wire inst_wdest_rd;  // ¼Ä´æÆ÷¶ÑĞ´ÈëµØÖ·ÎªrdµÄÖ¸Áî
+    //ä¾æ®ç›®çš„å¯„å­˜å™¨å·åˆ†ç±»
+    wire inst_wdest_rt;  // å¯„å­˜å™¨å †å†™å…¥åœ°å€ä¸ºrtçš„æŒ‡ä»¤
+    wire inst_wdest_31;  // å¯„å­˜å™¨å †å†™å…¥åœ°å€ä¸º31çš„æŒ‡ä»¤
+    wire inst_wdest_rd;  // å¯„å­˜å™¨å †å†™å…¥åœ°å€ä¸ºrdçš„æŒ‡ä»¤
     assign inst_wdest_rt = inst_imm_zero | inst_ADDIU | inst_SLTI
                          | inst_SLTIU    | inst_load;
     assign inst_wdest_31 = inst_JAL;
@@ -153,67 +153,67 @@ module decode(                      // ÒëÂë¼¶
                          | inst_JALR | inst_AND  | inst_NOR  | inst_OR
                          | inst_XOR  | inst_SLL  | inst_SLLV | inst_SRA 
                          | inst_SRAV | inst_SRL  | inst_SRLV;
-//-----{Ö¸ÁîÒëÂë}end
+//-----{æŒ‡ä»¤è¯‘ç }end
 
-//-----{·ÖÖ§Ö¸ÁîÖ´ĞĞ}begin
-    //ÎŞÌõ¼şÌø×ª
+//-----{åˆ†æ”¯æŒ‡ä»¤æ‰§è¡Œ}begin
+    //æ— æ¡ä»¶è·³è½¬
     wire        j_taken;
     wire [31:0] j_target;
     assign j_taken = inst_J | inst_JAL | inst_jr;
-    //¼Ä´æÆ÷Ìø×ªµØÖ·Îªrs_value,ÆäËûÌø×ªÎª{pc[31:28],target,2'b00}
+    //å¯„å­˜å™¨è·³è½¬åœ°å€ä¸ºrs_value,å…¶ä»–è·³è½¬ä¸º{pc[31:28],target,2'b00}
     assign j_target = inst_jr ? rs_value : {pc[31:28],target,2'b00};
 
-    //branchÖ¸Áî
+    //branchæŒ‡ä»¤
     wire rs_equql_rt;
     wire rs_ez;
     wire rs_ltz;
     assign rs_equql_rt = (rs_value == rt_value);   // GPR[rs]==GPR[rt]
-    assign rs_ez       = ~(|rs_value);             // rs¼Ä´æÆ÷ÖµÎª0
-    assign rs_ltz      = rs_value[31];             // rs¼Ä´æÆ÷ÖµĞ¡ÓÚ0
+    assign rs_ez       = ~(|rs_value);             // rså¯„å­˜å™¨å€¼ä¸º0
+    assign rs_ltz      = rs_value[31];             // rså¯„å­˜å™¨å€¼å°äº0
     wire br_taken;
     wire [31:0] br_target;
-    assign br_taken = inst_BEQ  & rs_equql_rt      // ÏàµÈÌø×ª
-                    | inst_BNE  & ~rs_equql_rt     // ²»µÈÌø×ª
-                    | inst_BGEZ & ~rs_ltz          // ´óÓÚµÈÓÚ0Ìø×ª
-                    | inst_BGTZ & ~rs_ltz & ~rs_ez // ´óÓÚ0Ìø×ª
-                    | inst_BLEZ & (rs_ltz | rs_ez) // Ğ¡ÓÚµÈÓÚ0Ìø×ª
-                    | inst_BLTZ & rs_ltz;          // Ğ¡ÓÚ0Ìø×ª
-    // ·ÖÖ§Ìø×ªÄ¿±êµØÖ·£ºPC=PC+offset<<2
+    assign br_taken = inst_BEQ  & rs_equql_rt      // ç›¸ç­‰è·³è½¬
+                    | inst_BNE  & ~rs_equql_rt     // ä¸ç­‰è·³è½¬
+                    | inst_BGEZ & ~rs_ltz          // å¤§äºç­‰äº0è·³è½¬
+                    | inst_BGTZ & ~rs_ltz & ~rs_ez // å¤§äº0è·³è½¬
+                    | inst_BLEZ & (rs_ltz | rs_ez) // å°äºç­‰äº0è·³è½¬
+                    | inst_BLTZ & rs_ltz;          // å°äº0è·³è½¬
+    // åˆ†æ”¯è·³è½¬ç›®æ ‡åœ°å€ï¼šPC=PC+offset<<2
     assign br_target[31:2] = pc[31:2] + {{14{offset[15]}}, offset};  
     assign br_target[1:0]  = pc[1:0];
     
-    //jump and branchÖ¸Áî
+    //jump and branchæŒ‡ä»¤
     wire jbr_taken;
     wire [31:0] jbr_target;
     assign jbr_taken  = j_taken | br_taken; 
     assign jbr_target = j_taken ? j_target : br_target;
     
-    //IDµ½IFµÄÌø×ª×ÜÏß
+    //IDåˆ°IFçš„è·³è½¬æ€»çº¿
     assign jbr_bus = {jbr_taken, jbr_target};
-//-----{·ÖÖ§Ö¸ÁîÖ´ĞĞ}end
+//-----{åˆ†æ”¯æŒ‡ä»¤æ‰§è¡Œ}end
 
-//-----{IDÖ´ĞĞÍê³É}begin
-    //ÓÉÓÚÊÇ¶àÖÜÆÚµÄ£¬²»´æÔÚÊı¾İÏà¹Ø
-    //¹ÊIDÄ£¿éÒ»ÅÄ¾ÍÄÜÍê³ÉËùÓĞ²Ù×÷
-    //¹ÊID_valid¼´ÊÇID_overĞÅºÅ
+//-----{IDæ‰§è¡Œå®Œæˆ}begin
+    //ç”±äºæ˜¯å¤šå‘¨æœŸçš„ï¼Œä¸å­˜åœ¨æ•°æ®ç›¸å…³
+    //æ•…IDæ¨¡å—ä¸€æ‹å°±èƒ½å®Œæˆæ‰€æœ‰æ“ä½œ
+    //æ•…ID_validå³æ˜¯ID_overä¿¡å·
     assign ID_over = ID_valid;
-//-----{IDÖ´ĞĞÍê³É}end
+//-----{IDæ‰§è¡Œå®Œæˆ}end
 
-//-----{ID->EXE×ÜÏß}begin
-    //EXEĞèÒªÓÃµ½µÄĞÅÏ¢
-    //ALUÁ½¸öÔ´²Ù×÷ÊıºÍ¿ØÖÆĞÅºÅ
+//-----{ID->EXEæ€»çº¿}begin
+    //EXEéœ€è¦ç”¨åˆ°çš„ä¿¡æ¯
+    //ALUä¸¤ä¸ªæºæ“ä½œæ•°å’Œæ§åˆ¶ä¿¡å·
     wire [11:0] alu_control;
     wire [31:0] alu_operand1;
     wire [31:0] alu_operand2;
     
-    //ËùÎ½Á´½ÓÌø×ªÊÇ½«Ìø×ª·µ»ØµÄPCÖµ´æ·Åµ½31ºÅ¼Ä´æÆ÷Àï
-    //ÔÚ¶àÖÜÆÚCPUÀï£¬²»¿¼ÂÇÑÓ³Ù²Û£¬¹ÊÁ´½ÓÌø×ªĞèÒª¼ÆËãPC+4£¬´æ·Åµ½31ºÅ¼Ä´æÆ÷Àï
+    //æ‰€è°“é“¾æ¥è·³è½¬æ˜¯å°†è·³è½¬è¿”å›çš„PCå€¼å­˜æ”¾åˆ°31å·å¯„å­˜å™¨é‡Œ
+    //åœ¨å¤šå‘¨æœŸCPUé‡Œï¼Œä¸è€ƒè™‘å»¶è¿Ÿæ§½ï¼Œæ•…é“¾æ¥è·³è½¬éœ€è¦è®¡ç®—PC+4ï¼Œå­˜æ”¾åˆ°31å·å¯„å­˜å™¨é‡Œ
     assign alu_operand1 = inst_j_link ? pc :  
                           inst_shf_sa ? {27'd0,sa} : rs_value;
     assign alu_operand2 = inst_j_link ? 32'd4 :
                           inst_imm_zero ? {16'd0, imm} :
                           inst_imm_sign ?  {{16{imm[15]}}, imm} : rt_value;
-    assign alu_control = {inst_add,        // ALU²Ù×÷Âë£¬¶ÀÈÈ±àÂë
+    assign alu_control = {inst_add,        // ALUæ“ä½œç ï¼Œç‹¬çƒ­ç¼–ç 
                           inst_sub,
                           inst_slt,
                           inst_sltu,
@@ -225,11 +225,11 @@ module decode(                      // ÒëÂë¼¶
                           inst_srl,
                           inst_sra,
                           inst_lui};
-    //·Ã´æĞèÒªÓÃµ½µÄload/storeĞÅÏ¢
-    wire lb_sign;  //loadÒ»×Ö½ÚÎªÓĞ·ûºÅload
-    wire ls_word;  //load/storeÎª×Ö½Ú»¹ÊÇ×Ö,0:byte;1:word
-    wire [3:0] mem_control;  //MEMĞèÒªÊ¹ÓÃµÄ¿ØÖÆĞÅºÅ
-    wire [31:0] store_data;  //store²Ù×÷µÄ´æµÄÊı¾İ
+    //è®¿å­˜éœ€è¦ç”¨åˆ°çš„load/storeä¿¡æ¯
+    wire lb_sign;  //loadä¸€å­—èŠ‚ä¸ºæœ‰ç¬¦å·load
+    wire ls_word;  //load/storeä¸ºå­—èŠ‚è¿˜æ˜¯å­—,0:byte;1:word
+    wire [3:0] mem_control;  //MEMéœ€è¦ä½¿ç”¨çš„æ§åˆ¶ä¿¡å·
+    wire [31:0] store_data;  //storeæ“ä½œçš„å­˜çš„æ•°æ®
     assign lb_sign = inst_LB;
     assign ls_word = inst_LW | inst_SW;
     assign mem_control = {inst_load,
@@ -237,21 +237,21 @@ module decode(                      // ÒëÂë¼¶
                           ls_word,
                           lb_sign };
                           
-    //Ğ´»ØĞèÒªÓÃµ½µÄĞÅÏ¢
-    wire       rf_wen;    //Ğ´»ØµÄ¼Ä´æÆ÷Ğ´Ê¹ÄÜ
-    wire [4:0] rf_wdest;  //Ğ´»ØµÄÄ¿µÄ¼Ä´æÆ÷
+    //å†™å›éœ€è¦ç”¨åˆ°çš„ä¿¡æ¯
+    wire       rf_wen;    //å†™å›çš„å¯„å­˜å™¨å†™ä½¿èƒ½
+    wire [4:0] rf_wdest;  //å†™å›çš„ç›®çš„å¯„å­˜å™¨
     assign rf_wen   = inst_wdest_rt | inst_wdest_31 | inst_wdest_rd;
-    assign rf_wdest = inst_wdest_rt ? rt :      //ÔÚ²»Ğ´¼Ä´æÆ÷¶ÑÊ±£¬ÉèÖÃÎª0
+    assign rf_wdest = inst_wdest_rt ? rt :      //åœ¨ä¸å†™å¯„å­˜å™¨å †æ—¶ï¼Œè®¾ç½®ä¸º0
                       inst_wdest_31 ? 5'd31 :
                       inst_wdest_rd ? rd : 5'd0;
     assign store_data = rt_value;
-   assign ID_EXE_bus = {alu_control,alu_operand1, alu_operand2, //EXEĞèÒªÊ¹ÓÃµÄĞÅÏ¢
-                        mem_control,store_data,                 //MEMĞèÒªÊ¹ÓÃµÄĞÅºÅ
-                        rf_wen, rf_wdest,                       //WBĞèÒªÊ¹ÓÃµÄĞÅºÅ
-                        pc};                                    //PCÖµ
-//-----{ID->EXE×ÜÏß}end
+   assign ID_EXE_bus = {alu_control,alu_operand1, alu_operand2, //EXEéœ€è¦ä½¿ç”¨çš„ä¿¡æ¯
+                        mem_control,store_data,                 //MEMéœ€è¦ä½¿ç”¨çš„ä¿¡å·
+                        rf_wen, rf_wdest,                       //WBéœ€è¦ä½¿ç”¨çš„ä¿¡å·
+                        pc};                                    //PCå€¼
+//-----{ID->EXEæ€»çº¿}end
 
-//-----{Õ¹Ê¾IDÄ£¿éµÄPCÖµ}begin
+//-----{å±•ç¤ºIDæ¨¡å—çš„PCå€¼}begin
     assign ID_pc = pc;
-//-----{Õ¹Ê¾IDÄ£¿éµÄPCÖµ}end
+//-----{å±•ç¤ºIDæ¨¡å—çš„PCå€¼}end
 endmodule

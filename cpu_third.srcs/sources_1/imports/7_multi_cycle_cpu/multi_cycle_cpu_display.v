@@ -1,19 +1,19 @@
 `timescale 1ns / 1ps
 //*************************************************************************
-//   > ÎÄ¼şÃû: multi_cycle_cpu_display.v
-//   > ÃèÊö  :¶àÖÜÆÚCPUÏÔÊ¾Ä£¿é£¬µ÷ÓÃFPGA°åÉÏµÄIO½Ó¿ÚºÍ´¥ÃşÆÁ
-//   > ×÷Õß  : LOONGSON
-//   > ÈÕÆÚ  : 2016-04-14
+//   > æ–‡ä»¶å: multi_cycle_cpu_display.v
+//   > æè¿°  :å¤šå‘¨æœŸCPUæ˜¾ç¤ºæ¨¡å—ï¼Œè°ƒç”¨FPGAæ¿ä¸Šçš„IOæ¥å£å’Œè§¦æ‘¸å±
+//   > ä½œè€…  : LOONGSON
+//   > æ—¥æœŸ  : 2016-04-14
 //*************************************************************************
-module multi_cycle_cpu_display(  // ¶àÖÜÆÚcpu
-    //Ê±ÖÓÓë¸´Î»ĞÅºÅ
+module multi_cycle_cpu_display(  // å¤šå‘¨æœŸcpu
+    //æ—¶é’Ÿä¸å¤ä½ä¿¡å·
     input clk,
-    input resetn,    //ºó×º"n"´ú±íµÍµçÆ½ÓĞĞ§
+    input resetn,    //åç¼€"n"ä»£è¡¨ä½ç”µå¹³æœ‰æ•ˆ
 
-    //Âö³å¿ª¹Ø£¬ÓÃÓÚ²úÉúÂö³åclk£¬ÊµÏÖµ¥²½Ö´ĞĞ
+    //è„‰å†²å¼€å…³ï¼Œç”¨äºäº§ç”Ÿè„‰å†²clkï¼Œå®ç°å•æ­¥æ‰§è¡Œ
     input btn_clk,
 
-    //´¥ÃşÆÁÏà¹Ø½Ó¿Ú£¬²»ĞèÒª¸ü¸Ä
+    //è§¦æ‘¸å±ç›¸å…³æ¥å£ï¼Œä¸éœ€è¦æ›´æ”¹
     output lcd_rst,
     output lcd_cs,
     output lcd_rs,
@@ -26,9 +26,9 @@ module multi_cycle_cpu_display(  // ¶àÖÜÆÚcpu
     output ct_scl,
     output ct_rstn
     );
-//-----{Ê±ÖÓºÍ¸´Î»ĞÅºÅ}begin
-//²»ĞèÒª¸ü¸Ä£¬ÓÃÓÚµ¥²½µ÷ÊÔ
-    wire cpu_clk;    //µ¥ÖÜÆÚCPUÀïÊ¹ÓÃÂö³å¿ª¹Ø×÷ÎªÊ±ÖÓ£¬ÒÔÊµÏÖµ¥²½Ö´ĞĞ
+//-----{æ—¶é’Ÿå’Œå¤ä½ä¿¡å·}begin
+//ä¸éœ€è¦æ›´æ”¹ï¼Œç”¨äºå•æ­¥è°ƒè¯•
+    wire cpu_clk;    //å•å‘¨æœŸCPUé‡Œä½¿ç”¨è„‰å†²å¼€å…³ä½œä¸ºæ—¶é’Ÿï¼Œä»¥å®ç°å•æ­¥æ‰§è¡Œ
 	 reg btn_clk_r1;
 	 reg btn_clk_r2;
     always @(posedge clk)
@@ -48,20 +48,20 @@ module multi_cycle_cpu_display(  // ¶àÖÜÆÚcpu
 	 wire clk_en;
     assign clk_en = !resetn || (!btn_clk_r1 && btn_clk_r2);
     BUFGCE cpu_clk_cg(.I(clk),.CE(clk_en),.O(cpu_clk));
-//-----{Ê±ÖÓºÍ¸´Î»ĞÅºÅ}end
-//-----{µ÷ÓÃ¶àÖÜÆÚCPUÄ£¿é}begin
-    //ÓÃÓÚÔÚFPGA°åÉÏÏÔÊ¾½á¹û
-    wire [ 4:0] rf_addr;   //É¨Ãè¼Ä´æÆ÷¶ÑµÄµØÖ·
-    wire [31:0] rf_data;   //¼Ä´æÆ÷¶Ñ´Óµ÷ÊÔ¶Ë¿Ú¶Á³öµÄÊı¾İ
-    reg  [31:0] mem_addr;  //Òª¹Û²ìµÄÄÚ´æµØÖ·
-    wire [31:0] mem_data;  //ÄÚ´æµØÖ·¶ÔÓ¦µÄÊı¾İ
-    wire [31:0] IF_pc;     //IFÄ£¿éµÄPC
-    wire [31:0] IF_inst;   //IFÄ£¿éÈ¡³öµÄÖ¸Áî
-    wire [31:0] ID_pc;     //IDÄ£¿éµÄPC
-    wire [31:0] EXE_pc;    //EXEÄ£¿éµÄPC
-    wire [31:0] MEM_pc;    //MEMÄ£¿éµÄPC
-    wire [31:0] WB_pc;     //WBÄ£¿éµÄPC
-    wire [31:0] display_state; //Õ¹Ê¾CPUµ±Ç°×´Ì¬
+//-----{æ—¶é’Ÿå’Œå¤ä½ä¿¡å·}end
+//-----{è°ƒç”¨å¤šå‘¨æœŸCPUæ¨¡å—}begin
+    //ç”¨äºåœ¨FPGAæ¿ä¸Šæ˜¾ç¤ºç»“æœ
+    wire [ 4:0] rf_addr;   //æ‰«æå¯„å­˜å™¨å †çš„åœ°å€
+    wire [31:0] rf_data;   //å¯„å­˜å™¨å †ä»è°ƒè¯•ç«¯å£è¯»å‡ºçš„æ•°æ®
+    reg  [31:0] mem_addr;  //è¦è§‚å¯Ÿçš„å†…å­˜åœ°å€
+    wire [31:0] mem_data;  //å†…å­˜åœ°å€å¯¹åº”çš„æ•°æ®
+    wire [31:0] IF_pc;     //IFæ¨¡å—çš„PC
+    wire [31:0] IF_inst;   //IFæ¨¡å—å–å‡ºçš„æŒ‡ä»¤
+    wire [31:0] ID_pc;     //IDæ¨¡å—çš„PC
+    wire [31:0] EXE_pc;    //EXEæ¨¡å—çš„PC
+    wire [31:0] MEM_pc;    //MEMæ¨¡å—çš„PC
+    wire [31:0] WB_pc;     //WBæ¨¡å—çš„PC
+    wire [31:0] display_state; //å±•ç¤ºCPUå½“å‰çŠ¶æ€
     multi_cycle_cpu cpu(
         .clk     (cpu_clk ),
         .resetn  (resetn  ),
@@ -78,11 +78,11 @@ module multi_cycle_cpu_display(  // ¶àÖÜÆÚcpu
         .WB_pc   (WB_pc   ),
         .display_state (display_state)
     );
-//-----{µ÷ÓÃµ¥ÖÜÆÚCPUÄ£¿é}end
+//-----{è°ƒç”¨å•å‘¨æœŸCPUæ¨¡å—}end
 
-//---------------------{µ÷ÓÃ´¥ÃşÆÁÄ£¿é}begin--------------------//
-//-----{ÊµÀı»¯´¥ÃşÆÁ}begin
-//´ËĞ¡½Ú²»ĞèÒª¸ü¸Ä
+//---------------------{è°ƒç”¨è§¦æ‘¸å±æ¨¡å—}begin--------------------//
+//-----{å®ä¾‹åŒ–è§¦æ‘¸å±}begin
+//æ­¤å°èŠ‚ä¸éœ€è¦æ›´æ”¹
     reg         display_valid;
     reg  [39:0] display_name;
     reg  [31:0] display_value;
@@ -94,7 +94,7 @@ module multi_cycle_cpu_display(  // ¶àÖÜÆÚcpu
         .clk            (clk           ),   //10Mhz
         .resetn         (resetn        ),
 
-        //µ÷ÓÃ´¥ÃşÆÁµÄ½Ó¿Ú
+        //è°ƒç”¨è§¦æ‘¸å±çš„æ¥å£
         .display_valid  (display_valid ),
         .display_name   (display_name  ),
         .display_value  (display_value ),
@@ -102,7 +102,7 @@ module multi_cycle_cpu_display(  // ¶àÖÜÆÚcpu
         .input_valid    (input_valid   ),
         .input_value    (input_value   ),
 
-        //lcd´¥ÃşÆÁÏà¹Ø½Ó¿Ú£¬²»ĞèÒª¸ü¸Ä
+        //lcdè§¦æ‘¸å±ç›¸å…³æ¥å£ï¼Œä¸éœ€è¦æ›´æ”¹
         .lcd_rst        (lcd_rst       ),
         .lcd_cs         (lcd_cs        ),
         .lcd_rs         (lcd_rs        ),
@@ -115,11 +115,11 @@ module multi_cycle_cpu_display(  // ¶àÖÜÆÚcpu
         .ct_scl         (ct_scl        ),
         .ct_rstn        (ct_rstn       )
     ); 
-//-----{ÊµÀı»¯´¥ÃşÆÁ}end
+//-----{å®ä¾‹åŒ–è§¦æ‘¸å±}end
 
-//-----{´Ó´¥ÃşÆÁ»ñÈ¡ÊäÈë}begin
-//¸ù¾İÊµ¼ÊĞèÒªÊäÈëµÄÊıĞŞ¸Ä´ËĞ¡½Ú£¬
-//½¨Òé¶ÔÃ¿Ò»¸öÊıµÄÊäÈë£¬±àĞ´µ¥¶ÀÒ»¸öalways¿é
+//-----{ä»è§¦æ‘¸å±è·å–è¾“å…¥}begin
+//æ ¹æ®å®é™…éœ€è¦è¾“å…¥çš„æ•°ä¿®æ”¹æ­¤å°èŠ‚ï¼Œ
+//å»ºè®®å¯¹æ¯ä¸€ä¸ªæ•°çš„è¾“å…¥ï¼Œç¼–å†™å•ç‹¬ä¸€ä¸ªalwayså—
     always @(posedge clk)
     begin
         if (!resetn)
@@ -132,16 +132,16 @@ module multi_cycle_cpu_display(  // ¶àÖÜÆÚcpu
         end
     end
     assign rf_addr = display_number-6'd11;
-//-----{´Ó´¥ÃşÆÁ»ñÈ¡ÊäÈë}end
+//-----{ä»è§¦æ‘¸å±è·å–è¾“å…¥}end
 
-//-----{Êä³öµ½´¥ÃşÆÁÏÔÊ¾}begin
-//¸ù¾İĞèÒªÏÔÊ¾µÄÊıĞŞ¸Ä´ËĞ¡½Ú£¬
-//´¥ÃşÆÁÉÏ¹²ÓĞ44¿éÏÔÊ¾ÇøÓò£¬¿ÉÏÔÊ¾44×é32Î»Êı¾İ
-//44¿éÏÔÊ¾ÇøÓò´Ó1¿ªÊ¼±àºÅ£¬±àºÅÎª1~44£¬
+//-----{è¾“å‡ºåˆ°è§¦æ‘¸å±æ˜¾ç¤º}begin
+//æ ¹æ®éœ€è¦æ˜¾ç¤ºçš„æ•°ä¿®æ”¹æ­¤å°èŠ‚ï¼Œ
+//è§¦æ‘¸å±ä¸Šå…±æœ‰44å—æ˜¾ç¤ºåŒºåŸŸï¼Œå¯æ˜¾ç¤º44ç»„32ä½æ•°æ®
+//44å—æ˜¾ç¤ºåŒºåŸŸä»1å¼€å§‹ç¼–å·ï¼Œç¼–å·ä¸º1~44ï¼Œ
     always @(posedge clk)
     begin
         if (display_number >6'd10 && display_number <6'd43 )
-        begin  //¿éºÅ5~36ÏÔÊ¾32¸öÍ¨ÓÃ¼Ä´æÆ÷µÄÖµ
+        begin  //å—å·5~36æ˜¾ç¤º32ä¸ªé€šç”¨å¯„å­˜å™¨çš„å€¼
             display_valid <= 1'b1;
             display_name[39:16] <= "REG";
             display_name[15: 8] <= {4'b0011,3'b000,rf_addr[4]};
@@ -151,55 +151,55 @@ module multi_cycle_cpu_display(  // ¶àÖÜÆÚcpu
         else
         begin
             case(display_number)
-                6'd1 : //ÏÔÊ¾IFÄ£¿éµÄPC
+                6'd1 : //æ˜¾ç¤ºIFæ¨¡å—çš„PC
                 begin
                     display_valid <= 1'b1;
                     display_name  <= "IF_PC";
                     display_value <= IF_pc;
                 end
-                6'd2 : //ÏÔÊ¾IFÄ£¿éµÄÖ¸Áî
+                6'd2 : //æ˜¾ç¤ºIFæ¨¡å—çš„æŒ‡ä»¤
                 begin
                     display_valid <= 1'b1;
                     display_name  <= "IF_IN";
                     display_value <= IF_inst;
                 end
-                6'd3 : //ÏÔÊ¾IDÄ£¿éµÄPC
+                6'd3 : //æ˜¾ç¤ºIDæ¨¡å—çš„PC
                 begin
                     display_valid <= 1'b1;
                     display_name  <= "ID_PC";
                     display_value <= ID_pc;
                 end
-                6'd4 : //ÏÔÊ¾EXEÄ£¿éµÄPC
+                6'd4 : //æ˜¾ç¤ºEXEæ¨¡å—çš„PC
                 begin
                     display_valid <= 1'b1;
                     display_name  <= "EXEPC";
                     display_value <= EXE_pc;
                 end
-                6'd5 : //ÏÔÊ¾MEMÄ£¿éµÄPC
+                6'd5 : //æ˜¾ç¤ºMEMæ¨¡å—çš„PC
                 begin
                     display_valid <= 1'b1;
                     display_name  <= "MEMPC";
                     display_value <= MEM_pc;
                 end
-                6'd6 : //ÏÔÊ¾WBÄ£¿éµÄPC
+                6'd6 : //æ˜¾ç¤ºWBæ¨¡å—çš„PC
                 begin
                     display_valid <= 1'b1;
                     display_name  <= "WB_PC";
                     display_value <= WB_pc;
                 end
-                6'd7 : //ÏÔÊ¾Òª¹Û²ìµÄÄÚ´æµØÖ·
+                6'd7 : //æ˜¾ç¤ºè¦è§‚å¯Ÿçš„å†…å­˜åœ°å€
                 begin
                     display_valid <= 1'b1;
                     display_name  <= "MADDR";
                     display_value <= mem_addr;
                 end
-                6'd8 : //ÏÔÊ¾¸ÃÄÚ´æµØÖ·¶ÔÓ¦µÄÊı¾İ
+                6'd8 : //æ˜¾ç¤ºè¯¥å†…å­˜åœ°å€å¯¹åº”çš„æ•°æ®
                 begin
                     display_valid <= 1'b1;
                     display_name  <= "MDATA";
                     display_value <= mem_data;
                 end
-                6'd9 : //ÏÔÊ¾CPUµ±Ç°×´Ì¬
+                6'd9 : //æ˜¾ç¤ºCPUå½“å‰çŠ¶æ€
                 begin
                     display_valid <= 1'b1;
                     display_name  <= "STATE";
@@ -214,6 +214,6 @@ module multi_cycle_cpu_display(  // ¶àÖÜÆÚcpu
             endcase
         end
     end
-//-----{Êä³öµ½´¥ÃşÆÁÏÔÊ¾}end
-//----------------------{µ÷ÓÃ´¥ÃşÆÁÄ£¿é}end---------------------//
+//-----{è¾“å‡ºåˆ°è§¦æ‘¸å±æ˜¾ç¤º}end
+//----------------------{è°ƒç”¨è§¦æ‘¸å±æ¨¡å—}end---------------------//
 endmodule
