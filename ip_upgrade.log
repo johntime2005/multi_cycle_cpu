@@ -1,0 +1,37 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
+| Date         : Sat Mar 22 15:06:35 2025
+| Host         : wangzhangzhuo running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7k70tfbv676-2
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'data_ram'
+
+1. Summary
+----------
+
+SUCCESS in the update of data_ram (xilinx.com:ip:blk_mem_gen:8.4 (Rev. 9)) to current project options.
+
+
+
+
+
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
+| Date         : Sat Mar 22 15:05:47 2025
+| Host         : wangzhangzhuo running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7k70tfbv676-2
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'inst_rom'
+
+1. Summary
+----------
+
+SUCCESS in the update of inst_rom (xilinx.com:ip:blk_mem_gen:8.4 (Rev. 9)) to current project options.
+

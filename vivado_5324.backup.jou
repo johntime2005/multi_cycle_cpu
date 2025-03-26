@@ -1,0 +1,51 @@
+#-----------------------------------------------------------
+# Vivado v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Mon Mar 24 18:49:00 2025
+# Process ID         : 5324
+# Current directory  : C:/Users/91629/Desktop/cpu_third
+# Command line       : vivado.exe -gui_launcher_event rodinguilauncherevent19580 C:\Users\91629\Desktop\cpu_third\cpu_third.xpr
+# Log file           : C:/Users/91629/Desktop/cpu_third/vivado.log
+# Journal file       : C:/Users/91629/Desktop/cpu_third\vivado.jou
+# Running On         : wangzhangzhuo
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 22631
+# Processor Detail   : AMD Ryzen 7 7840H w/Radeon 780M Graphics
+# CPU Frequency      : 3793 MHz
+# CPU Physical cores : 8
+# CPU Logical cores  : 16
+# Host memory        : 16334 MB
+# Swap memory        : 9596 MB
+# Total Virtual      : 25930 MB
+# Available Virtual  : 16049 MB
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/91629/Desktop/cpu_third/cpu_third.xpr
+update_compile_order -fileset sources_1
+add_files -fileset constrs_1 -norecurse C:/Users/91629/Desktop/cpu/multi_cpu/7_multi_cycle_cpu/inst/inst_rom_ooc.xdc
+import_files -fileset constrs_1 C:/Users/91629/Desktop/cpu/multi_cpu/7_multi_cycle_cpu/inst/inst_rom_ooc.xdc
+launch_simulation
+source tb.tcl
+reset_run synth_1
+launch_runs synth_1 -jobs 8
+wait_on_run synth_1
+launch_runs impl_1 -jobs 8
+wait_on_run impl_1
+close_sim
+copy_run -name synth_1_copy_1 [get_runs synth_1] 
+set_property part xc7a200tfbg676-2 [current_project]
+launch_simulation
+source tb.tcl
+reset_run inst_rom_synth_1
+reset_run data_ram_synth_1
+reset_run synth_1
+launch_runs impl_1 -jobs 8
+wait_on_run impl_1
+open_run impl_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+open_hw_manager
+connect_hw_server -allow_non_jtag
+close_sim

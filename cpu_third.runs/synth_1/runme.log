@@ -1,0 +1,359 @@
+
+*** Running vivado
+    with args -log multi_cycle_cpu_display.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source multi_cycle_cpu_display.tcl
+
+
+
+****** Vivado v2024.2 (64-bit)
+  **** SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+  **** IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+  **** SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+  **** Start of session at: Mon Mar 24 18:57:16 2025
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source multi_cycle_cpu_display.tcl -notrace
+Command: read_checkpoint -auto_incremental -incremental C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/utils_1/imports/synth_1/multi_cycle_cpu_display.dcp
+INFO: [Vivado 12-5825] Read reference checkpoint from C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/utils_1/imports/synth_1/multi_cycle_cpu_display.dcp for incremental synthesis
+INFO: [Vivado 12-7989] Please ensure there are no constraint changes
+Command: synth_design -top multi_cycle_cpu_display -part xc7a200tfbg676-2
+Starting synth_design
+WARNING: [Vivado_Tcl 4-393] The 'Synthesis' target of the following IPs are stale, please generate the output products using the generate_target or synth_ip command before running synth_design.
+C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/ip/inst_rom/inst_rom.xci
+C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/ip/data_ram/data_ram.xci
+
+INFO: [IP_Flow 19-2162] IP 'inst_rom' is locked:
+* Current project part 'xc7a200tfbg676-2' and the part 'xc7k70tfbv676-2' used to customize the IP 'inst_rom' do not match.
+INFO: [IP_Flow 19-2162] IP 'data_ram' is locked:
+* Current project part 'xc7a200tfbg676-2' and the part 'xc7k70tfbv676-2' used to customize the IP 'data_ram' do not match.
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a200t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a200t'
+INFO: [Device 21-403] Loading part xc7a200tfbg676-2
+INFO: [Designutils 20-5440] No compile time benefit to using incremental synthesis; A full resynthesis will be run
+INFO: [Designutils 20-4379] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 21364
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 1086.758 ; gain = 470.082
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'multi_cycle_cpu_display' [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu_display.v:8]
+INFO: [Synth 8-6157] synthesizing module 'BUFGCE' [D:/Xilinx/Vivado/2024.2/scripts/rt/data/unisim_comp.v:2686]
+INFO: [Synth 8-6155] done synthesizing module 'BUFGCE' (0#1) [D:/Xilinx/Vivado/2024.2/scripts/rt/data/unisim_comp.v:2686]
+INFO: [Synth 8-6157] synthesizing module 'multi_cycle_cpu' [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v:9]
+INFO: [Synth 8-6157] synthesizing module 'fetch' [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/fetch.v:9]
+INFO: [Synth 8-6155] done synthesizing module 'fetch' (0#1) [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/fetch.v:9]
+INFO: [Synth 8-6157] synthesizing module 'decode' [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v:8]
+INFO: [Synth 8-6155] done synthesizing module 'decode' (0#1) [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v:8]
+INFO: [Synth 8-6157] synthesizing module 'exe' [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exe.v:8]
+INFO: [Synth 8-6157] synthesizing module 'alu' [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/alu.v:8]
+INFO: [Synth 8-6157] synthesizing module 'adder' [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/adder.v:8]
+INFO: [Synth 8-6155] done synthesizing module 'adder' (0#1) [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/adder.v:8]
+INFO: [Synth 8-6155] done synthesizing module 'alu' (0#1) [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/alu.v:8]
+INFO: [Synth 8-6155] done synthesizing module 'exe' (0#1) [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exe.v:8]
+INFO: [Synth 8-6157] synthesizing module 'mem' [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/mem.v:8]
+INFO: [Synth 8-226] default block is never used [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/mem.v:65]
+INFO: [Synth 8-226] default block is never used [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/mem.v:83]
+INFO: [Synth 8-6155] done synthesizing module 'mem' (0#1) [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/mem.v:8]
+INFO: [Synth 8-6157] synthesizing module 'wb' [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/wb.v:8]
+INFO: [Synth 8-6155] done synthesizing module 'wb' (0#1) [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/wb.v:8]
+INFO: [Synth 8-6157] synthesizing module 'inst_rom' [C:/Users/91629/Desktop/cpu_third/cpu_third.runs/synth_1/.Xil/Vivado-2648-wangzhangzhuo/realtime/inst_rom_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'inst_rom' (0#1) [C:/Users/91629/Desktop/cpu_third/cpu_third.runs/synth_1/.Xil/Vivado-2648-wangzhangzhuo/realtime/inst_rom_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'regfile' [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v:8]
+INFO: [Synth 8-6155] done synthesizing module 'regfile' (0#1) [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v:8]
+INFO: [Synth 8-6157] synthesizing module 'data_ram' [C:/Users/91629/Desktop/cpu_third/cpu_third.runs/synth_1/.Xil/Vivado-2648-wangzhangzhuo/realtime/data_ram_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'data_ram' (0#1) [C:/Users/91629/Desktop/cpu_third/cpu_third.runs/synth_1/.Xil/Vivado-2648-wangzhangzhuo/realtime/data_ram_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'multi_cycle_cpu' (0#1) [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v:9]
+INFO: [Synth 8-6157] synthesizing module 'lcd_module' [C:/Users/91629/Desktop/cpu_third/cpu_third.runs/synth_1/.Xil/Vivado-2648-wangzhangzhuo/realtime/lcd_module_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'lcd_module' (0#1) [C:/Users/91629/Desktop/cpu_third/cpu_third.runs/synth_1/.Xil/Vivado-2648-wangzhangzhuo/realtime/lcd_module_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'multi_cycle_cpu_display' (0#1) [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu_display.v:8]
+WARNING: [Synth 8-6014] Unused sequential element rf_reg[0] was removed.  [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v:31]
+WARNING: [Synth 8-7129] Port mem_addr[31] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[30] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[29] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[28] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[27] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[26] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[25] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[24] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[23] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[22] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[21] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[20] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[19] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[18] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[17] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[16] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[15] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[14] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[13] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[12] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[11] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[10] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[1] in module multi_cycle_cpu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port mem_addr[0] in module multi_cycle_cpu is either unconnected or has no load
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1204.102 ; gain = 587.426
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1204.102 ; gain = 587.426
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1204.102 ; gain = 587.426
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.031 . Memory (MB): peak = 1204.102 ; gain = 0.000
+WARNING: [Netlist 29-345] The value of SIM_DEVICE on instance 'cpu_clk_cg' of type 'BUFGCE' is 'ULTRASCALE'; it is being changed to match the current FPGA architecture, '7SERIES'. For functional simulation to match hardware behavior, the value of SIM_DEVICE should be changed in the source netlist. 
+INFO: [Netlist 29-17] Analyzing 1 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [c:/Users/91629/Desktop/cpu_third/cpu_third.gen/sources_1/ip/inst_rom/inst_rom/inst_rom_in_context.xdc] for cell 'cpu/inst_rom_module'
+Finished Parsing XDC File [c:/Users/91629/Desktop/cpu_third/cpu_third.gen/sources_1/ip/inst_rom/inst_rom/inst_rom_in_context.xdc] for cell 'cpu/inst_rom_module'
+Parsing XDC File [c:/Users/91629/Desktop/cpu_third/cpu_third.gen/sources_1/ip/data_ram/data_ram/data_ram_in_context.xdc] for cell 'cpu/data_ram_module'
+Finished Parsing XDC File [c:/Users/91629/Desktop/cpu_third/cpu_third.gen/sources_1/ip/data_ram/data_ram/data_ram_in_context.xdc] for cell 'cpu/data_ram_module'
+Parsing XDC File [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/constrs_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.xdc]
+CRITICAL WARNING: [Common 17-1548] Command failed: invalid command name "SET_PROPERTY"
+ [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/constrs_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.xdc:12]
+Finished Parsing XDC File [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/constrs_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/constrs_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/multi_cycle_cpu_display_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/multi_cycle_cpu_display_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Parsing XDC File [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/constrs_1/imports/inst/inst_rom_ooc.xdc]
+WARNING: [Vivado 12-584] No ports matched 'clka'. [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/constrs_1/imports/inst/inst_rom_ooc.xdc:53]
+WARNING: [Vivado 12-584] No ports matched 'clka'. [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/constrs_1/imports/inst/inst_rom_ooc.xdc:54]
+Finished Parsing XDC File [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/constrs_1/imports/inst/inst_rom_ooc.xdc]
+WARNING: [Project 1-498] One or more constraints failed evaluation while reading constraint file [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/constrs_1/imports/inst/inst_rom_ooc.xdc] and the design contains unresolved black boxes. These constraints will be read post-synthesis (as long as their source constraint file is marked as used_in_implementation) and should be applied correctly then. You should review the constraints listed in the file [.Xil/multi_cycle_cpu_display_propImpl.xdc] and check the run log file to verify that these constraints were correctly applied.
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1295.270 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 1 instances were transformed.
+  BUFGCE => BUFGCTRL: 1 instance 
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 1295.270 ; gain = 0.000
+INFO: [Designutils 20-5440] No compile time benefit to using incremental synthesis; A full resynthesis will be run
+INFO: [Designutils 20-4379] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:11 ; elapsed = 00:00:11 . Memory (MB): peak = 1295.270 ; gain = 678.594
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a200tfbg676-2
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:11 ; elapsed = 00:00:11 . Memory (MB): peak = 1295.270 ; gain = 678.594
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+Applied set_property KEEP_HIERARCHY = SOFT for cpu/inst_rom_module. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for cpu/data_ram_module. (constraint file  auto generated constraint).
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:11 ; elapsed = 00:00:11 . Memory (MB): peak = 1295.270 ; gain = 678.594
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'multi_cycle_cpu'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    IDLE |                           000001 |                              000
+                   FETCH |                           000100 |                              001
+                  DECODE |                           100000 |                              010
+                     EXE |                           010000 |                              011
+                     MEM |                           001000 |                              100
+                      WB |                           000010 |                              101
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'multi_cycle_cpu'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1295.270 ; gain = 678.594
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   3 Input   33 Bit       Adders := 1     
+	   2 Input   30 Bit       Adders := 2     
+	   2 Input    5 Bit       Adders := 1     
++---XORs : 
+	   2 Input     32 Bit         XORs := 1     
+	   2 Input      1 Bit         XORs := 1     
++---Registers : 
+	              150 Bit    Registers := 1     
+	              106 Bit    Registers := 1     
+	               70 Bit    Registers := 1     
+	               64 Bit    Registers := 1     
+	               40 Bit    Registers := 1     
+	               32 Bit    Registers := 34    
+	                3 Bit    Registers := 1     
+	                1 Bit    Registers := 5     
++---Muxes : 
+	   2 Input   40 Bit        Muxes := 1     
+	   2 Input   39 Bit        Muxes := 1     
+	   3 Input   32 Bit        Muxes := 1     
+	   2 Input   32 Bit        Muxes := 17    
+	   4 Input   32 Bit        Muxes := 1     
+	   2 Input   24 Bit        Muxes := 1     
+	   4 Input    8 Bit        Muxes := 1     
+	   6 Input    6 Bit        Muxes := 1     
+	   2 Input    6 Bit        Muxes := 6     
+	   2 Input    5 Bit        Muxes := 3     
+	   6 Input    4 Bit        Muxes := 1     
+	   2 Input    3 Bit        Muxes := 2     
+	   2 Input    2 Bit        Muxes := 1     
+	   3 Input    2 Bit        Muxes := 1     
+	   2 Input    1 Bit        Muxes := 33    
+	   4 Input    1 Bit        Muxes := 1     
+	  10 Input    1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 740 (col length:100)
+BRAMs: 730 (col length: RAMB18 100 RAMB36 50)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:18 ; elapsed = 00:00:19 . Memory (MB): peak = 1331.398 ; gain = 714.723
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:21 ; elapsed = 00:00:23 . Memory (MB): peak = 1396.836 ; gain = 780.160
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:21 ; elapsed = 00:00:23 . Memory (MB): peak = 1399.715 ; gain = 783.039
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:22 ; elapsed = 00:00:23 . Memory (MB): peak = 1449.836 ; gain = 833.160
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-5410] Found another clock driver cpu_clk_cg:O [C:/Users/91629/Desktop/cpu_third/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu_display.v:50]
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:25 ; elapsed = 00:00:26 . Memory (MB): peak = 1622.496 ; gain = 1005.820
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:25 ; elapsed = 00:00:26 . Memory (MB): peak = 1622.496 ; gain = 1005.820
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:25 ; elapsed = 00:00:26 . Memory (MB): peak = 1622.496 ; gain = 1005.820
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:25 ; elapsed = 00:00:26 . Memory (MB): peak = 1622.496 ; gain = 1005.820
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:25 ; elapsed = 00:00:26 . Memory (MB): peak = 1622.496 ; gain = 1005.820
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:25 ; elapsed = 00:00:26 . Memory (MB): peak = 1622.496 ; gain = 1005.820
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++------+--------------+----------+
+|      |BlackBox name |Instances |
++------+--------------+----------+
+|1     |lcd_module    |         1|
+|2     |inst_rom      |         1|
+|3     |data_ram      |         1|
++------+--------------+----------+
+
+Report Cell Usage: 
++------+-----------+------+
+|      |Cell       |Count |
++------+-----------+------+
+|1     |data_ram   |     1|
+|2     |inst_rom   |     1|
+|3     |lcd_module |     1|
+|4     |BUFG       |     1|
+|5     |BUFGCE     |     1|
+|6     |CARRY4     |    28|
+|7     |LUT1       |     2|
+|8     |LUT2       |    49|
+|9     |LUT3       |    66|
+|10    |LUT4       |    76|
+|11    |LUT5       |   254|
+|12    |LUT6       |  1349|
+|13    |MUXF7      |   256|
+|14    |FDRE       |  1505|
+|15    |FDSE       |    11|
+|16    |IBUF       |     3|
+|17    |OBUF       |     8|
++------+-----------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:25 ; elapsed = 00:00:26 . Memory (MB): peak = 1622.496 ; gain = 1005.820
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 2 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:18 ; elapsed = 00:00:24 . Memory (MB): peak = 1622.496 ; gain = 914.652
+Synthesis Optimization Complete : Time (s): cpu = 00:00:25 ; elapsed = 00:00:26 . Memory (MB): peak = 1622.496 ; gain = 1005.820
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.026 . Memory (MB): peak = 1622.496 ; gain = 0.000
+WARNING: [Netlist 29-345] The value of SIM_DEVICE on instance 'cpu_clk_cg' of type 'BUFGCE' is 'ULTRASCALE'; it is being changed to match the current FPGA architecture, '7SERIES'. For functional simulation to match hardware behavior, the value of SIM_DEVICE should be changed in the source netlist. 
+INFO: [Netlist 29-17] Analyzing 285 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1637.934 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 1 instances were transformed.
+  BUFGCE => BUFGCTRL: 1 instance 
+
+Synth Design complete | Checksum: 833ea8a7
+INFO: [Common 17-83] Releasing license: Synthesis
+57 Infos, 33 Warnings, 1 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:28 ; elapsed = 00:00:31 . Memory (MB): peak = 1637.934 ; gain = 1260.727
+INFO: [runtcl-6] Synthesis results are not added to the cache due to CRITICAL_WARNING
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.004 . Memory (MB): peak = 1637.934 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/Users/91629/Desktop/cpu_third/cpu_third.runs/synth_1/multi_cycle_cpu_display.dcp' has been generated.
+INFO: [Vivado 12-24828] Executing command : report_utilization -file multi_cycle_cpu_display_utilization_synth.rpt -pb multi_cycle_cpu_display_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Mon Mar 24 18:57:52 2025...
