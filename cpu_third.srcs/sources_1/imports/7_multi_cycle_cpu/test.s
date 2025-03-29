@@ -16,38 +16,6 @@ global_var:
 	.space	4
 	.text
 	.align	2
-	.globl	abs
-	.set	nomips16
-	.set	nomicromips
-	.ent	abs
-	.type	abs, @function
-abs:
-	.frame	$fp,8,$31		# vars= 0, regs= 1/0, args= 0, gp= 0
-	.mask	0x40000000,-4
-	.fmask	0x00000000,0
-	.set	noreorder
-	.set	nomacro
-	addiu	$sp,$sp,-8
-	sw	$fp,4($sp)
-	move	$fp,$sp
-	sw	$4,8($fp)
-	lw	$2,8($fp)
-	bgez	$2,$L2
-	nop
-
-	subu	$2,$0,$2
-$L2:
-	move	$sp,$fp
-	lw	$fp,4($sp)
-	addiu	$sp,$sp,8
-	jr	$31
-	nop
-
-	.set	macro
-	.set	reorder
-	.end	abs
-	.size	abs, .-abs
-	.align	2
 	.globl	main
 	.set	nomips16
 	.set	nomicromips
@@ -84,30 +52,30 @@ main:
 	lw	$2,%lo(global_var)($2)
 	sw	$2,24($fp)
 	lw	$2,24($fp)
-	blez	$2,$L5
+	blez	$2,$L2
 	nop
 
 	lw	$2,24($fp)
 	addiu	$2,$2,-1
 	sw	$2,4($fp)
 	.option	pic0
-	b	$L6
+	b	$L3
 	nop
 
 	.option	pic2
-$L5:
+$L2:
 	lw	$2,24($fp)
 	addiu	$2,$2,1
 	sw	$2,4($fp)
-$L6:
+$L3:
 	lw	$2,4($fp)
-	bgez	$2,$L7
+	bgez	$2,$L4
 	nop
 
 	subu	$2,$0,$2
-$L7:
+$L4:
 	sw	$2,28($fp)
-	lw	$2,28($fp)
+	move	$2,$0
 	move	$sp,$fp
 	lw	$fp,36($sp)
 	addiu	$sp,$sp,40
