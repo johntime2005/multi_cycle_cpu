@@ -8,7 +8,7 @@
 //*************************************************************************
 module wb(
     input         WB_valid,     // 写回阶段有效信号
-    input  [69:0] MEM_WB_bus_r, // MEM->WB总线
+    input  [72:0] MEM_WB_bus_r, // MEM->WB总线
     output        rf_wen,       // 寄存器写使能
     output [ 4:0] rf_wdest,     // 寄存器写地址
     output [31:0] rf_wdata,     // 寄存器写数据
@@ -22,18 +22,19 @@ module wb(
     // 从 MEM->WB 总线中提取信号
     wire exception_flag;        // 异常标志
     wire [1:0] exception_type;  // 异常类型
-    wire wen;                   // 寄存器写使能
-    wire [4:0] wdest;           // 寄存器写地址
+    wire wen;                   // 原始写使能信号
+    wire [4:0] wdest;           // 原始写地址
     wire [31:0] mem_result;     // 写回数据
     wire [31:0] pc;             // 当前PC值
 
+    // 解析更新后的 73 位总线
     assign {
-        exception_flag,         // [69]
-        exception_type,         // [68:67]
-        wen,                    // [66]
-        wdest,                  // [65:61]
-        mem_result,             // [60:29]
-        pc                      // [28:0]
+        exception_flag,         // [72]
+        exception_type,         // [71:70]
+        wen,                    // [69]
+        wdest,                  // [68:64]
+        mem_result,             // [63:32]
+        pc                      // [31:0]
     } = MEM_WB_bus_r;
 //-----{MEM->WB总线解析}end-----------------------------------------
 

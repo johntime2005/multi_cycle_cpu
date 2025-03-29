@@ -28,7 +28,7 @@ module multi_cycle_cpu_display(  // 多周期cpu
     );
 //-----{时钟和复位信号}begin
 //不需要更改，用于单步调试
-    wire cpu_clk;    //单周期CPU里使用脉冲开关作为时钟，以实现单步执行
+    wire cpu_clk;    //多周期CPU里使用脉冲开关作为时钟，以实现单步执行
 	 reg btn_clk_r1;
 	 reg btn_clk_r2;
     always @(posedge clk)
@@ -44,7 +44,7 @@ module multi_cycle_cpu_display(  // 多周期cpu
 
         btn_clk_r2 <= btn_clk_r1;
     end
-	 
+
 	 wire clk_en;
     assign clk_en = !resetn || (!btn_clk_r1 && btn_clk_r2);
     BUFGCE cpu_clk_cg(.I(clk),.CE(clk_en),.O(cpu_clk));
@@ -65,6 +65,8 @@ module multi_cycle_cpu_display(  // 多周期cpu
     multi_cycle_cpu cpu(
         .clk     (cpu_clk ),
         .resetn  (resetn  ),
+        // 中断输入 (如果需要)
+        // .irq     (6'b0), // 示例：连接中断输入
 
         .rf_addr (rf_addr ),
         .mem_addr(mem_addr),
@@ -78,7 +80,7 @@ module multi_cycle_cpu_display(  // 多周期cpu
         .WB_pc   (WB_pc   ),
         .display_state (display_state)
     );
-//-----{调用单周期CPU模块}end
+//-----{调用多周期CPU模块}end
 
 //---------------------{调用触摸屏模块}begin--------------------//
 //-----{实例化触摸屏}begin
@@ -114,106 +116,106 @@ module multi_cycle_cpu_display(  // 多周期cpu
         .ct_sda         (ct_sda        ),
         .ct_scl         (ct_scl        ),
         .ct_rstn        (ct_rstn       )
-    ); 
-//-----{实例化触摸屏}end
+    );
+    //-----{实例化触摸屏}end
 
-//-----{从触摸屏获取输入}begin
-//根据实际需要输入的数修改此小节，
-//建议对每一个数的输入，编写单独一个always块
-    always @(posedge clk)
-    begin
-        if (!resetn)
+    //-----{从触摸屏获取输入}begin
+    //根据实际需要输入的数修改此小节，
+    //建议对每一个数的输入，编写单独一个always块
+        always @(posedge clk)
         begin
-            mem_addr <= 32'd0;
+            if (!resetn)
+            begin
+                mem_addr <= 32'd0;
+            end
+            else if (input_valid)
+            begin
+                mem_addr <= input_value;
+            end
         end
-        else if (input_valid)
-        begin
-            mem_addr <= input_value;
-        end
-    end
-    assign rf_addr = display_number-6'd11;
-//-----{从触摸屏获取输入}end
+        assign rf_addr = display_number-6'd11;
+    //-----{从触摸屏获取输入}end
 
-//-----{输出到触摸屏显示}begin
-//根据需要显示的数修改此小节，
-//触摸屏上共有44块显示区域，可显示44组32位数据
-//44块显示区域从1开始编号，编号为1~44，
-    always @(posedge clk)
-    begin
-        if (display_number >6'd10 && display_number <6'd43 )
-        begin  //块号5~36显示32个通用寄存器的值
-            display_valid <= 1'b1;
-            display_name[39:16] <= "REG";
-            display_name[15: 8] <= {4'b0011,3'b000,rf_addr[4]};
-            display_name[7 : 0] <= {4'b0011,rf_addr[3:0]}; 
-            display_value       <= rf_data;
-          end
-        else
+    //-----{输出到触摸屏显示}begin
+    //根据需要显示的数修改此小节，
+    //触摸屏上共有44块显示区域，可显示44组32位数据
+    //44块显示区域从1开始编号，编号为1~44，
+        always @(posedge clk)
         begin
-            case(display_number)
-                6'd1 : //显示IF模块的PC
-                begin
-                    display_valid <= 1'b1;
-                    display_name  <= "IF_PC";
-                    display_value <= IF_pc;
-                end
-                6'd2 : //显示IF模块的指令
-                begin
-                    display_valid <= 1'b1;
-                    display_name  <= "IF_IN";
-                    display_value <= IF_inst;
-                end
-                6'd3 : //显示ID模块的PC
-                begin
-                    display_valid <= 1'b1;
-                    display_name  <= "ID_PC";
-                    display_value <= ID_pc;
-                end
-                6'd4 : //显示EXE模块的PC
-                begin
-                    display_valid <= 1'b1;
-                    display_name  <= "EXEPC";
-                    display_value <= EXE_pc;
-                end
-                6'd5 : //显示MEM模块的PC
-                begin
-                    display_valid <= 1'b1;
-                    display_name  <= "MEMPC";
-                    display_value <= MEM_pc;
-                end
-                6'd6 : //显示WB模块的PC
-                begin
-                    display_valid <= 1'b1;
-                    display_name  <= "WB_PC";
-                    display_value <= WB_pc;
-                end
-                6'd7 : //显示要观察的内存地址
-                begin
-                    display_valid <= 1'b1;
-                    display_name  <= "MADDR";
-                    display_value <= mem_addr;
-                end
-                6'd8 : //显示该内存地址对应的数据
-                begin
-                    display_valid <= 1'b1;
-                    display_name  <= "MDATA";
-                    display_value <= mem_data;
-                end
-                6'd9 : //显示CPU当前状态
-                begin
-                    display_valid <= 1'b1;
-                    display_name  <= "STATE";
-                    display_value <= display_state;
-                end
-                default :
-                begin
-                    display_valid <= 1'b0;
-                    display_name  <= 40'd0;
-                    display_value <= 32'd0;
-                end
-            endcase
+            if (display_number >6'd10 && display_number <6'd43 )
+            begin  //块号11~42显示32个通用寄存器的值
+                display_valid <= 1'b1;
+                display_name[39:16] <= "REG";
+                display_name[15: 8] <= {4'b0011,3'b000,rf_addr[4]}; // 显示寄存器号高位
+                display_name[7 : 0] <= {4'b0011,rf_addr[3:0]}; // 显示寄存器号低位
+                display_value       <= rf_data;
+              end
+            else
+            begin
+                case(display_number)
+                    6'd1 : //显示IF模块的PC
+                    begin
+                        display_valid <= 1'b1;
+                        display_name  <= "IF_PC";
+                        display_value <= IF_pc;
+                    end
+                    6'd2 : //显示IF模块的指令
+                    begin
+                        display_valid <= 1'b1;
+                        display_name  <= "IF_IN";
+                        display_value <= IF_inst;
+                    end
+                    6'd3 : //显示ID模块的PC
+                    begin
+                        display_valid <= 1'b1;
+                        display_name  <= "ID_PC";
+                        display_value <= ID_pc;
+                    end
+                    6'd4 : //显示EXE模块的PC
+                    begin
+                        display_valid <= 1'b1;
+                        display_name  <= "EXEPC";
+                        display_value <= EXE_pc;
+                    end
+                    6'd5 : //显示MEM模块的PC
+                    begin
+                        display_valid <= 1'b1;
+                        display_name  <= "MEMPC";
+                        display_value <= MEM_pc;
+                    end
+                    6'd6 : //显示WB模块的PC
+                    begin
+                        display_valid <= 1'b1;
+                        display_name  <= "WB_PC";
+                        display_value <= WB_pc;
+                    end
+                    6'd7 : //显示要观察的内存地址
+                    begin
+                        display_valid <= 1'b1;
+                        display_name  <= "MADDR";
+                        display_value <= mem_addr;
+                    end
+                    6'd8 : //显示该内存地址对应的数据
+                    begin
+                        display_valid <= 1'b1;
+                        display_name  <= "MDATA";
+                        display_value <= mem_data;
+                    end
+                    6'd9 : //显示CPU当前状态
+                    begin
+                        display_valid <= 1'b1;
+                        display_name  <= "STATE";
+                        display_value <= display_state;
+                    end
+                    default :
+                    begin
+                        display_valid <= 1'b0;
+                        display_name  <= 40'd0;
+                        display_value <= 32'd0;
+                    end
+                endcase
+            end
         end
-    end
-//-----{输出到触摸屏显示}end
-//----------------------{调用触摸屏模块}end---------------------//
+    //-----{输出到触摸屏显示}end
+    //----------------------{调用触摸屏模块}end---------------------//
 endmodule

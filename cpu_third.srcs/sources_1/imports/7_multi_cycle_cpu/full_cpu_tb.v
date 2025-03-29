@@ -2,119 +2,150 @@
 
 module full_cpu_tb();
 
-// È«¾ÖĞÅºÅ¶¨Òå
+// å…¨å±€ä¿¡å·å®šä¹‰
 reg          clk;
-reg          reset_n;
-reg          flush_pipeline;
+reg          reset_n; // åº”ä¸º resetn
+// reg          flush_pipeline; // ç§»é™¤ï¼Œç”± exception_triggered æ§åˆ¶
 integer      testcase;
 integer      success_count;
 integer      fail_count;
+reg  [5:0]   irq; // æ–°å¢ä¸­æ–­è¾“å…¥
 
-// Ê±ÖÓÉú³É£¨100MHz£©
+// æ—¶é’Ÿç”Ÿæˆï¼š100MHz
 always #5 clk = ~clk;
 
-//------------------------ DecodeÄ£¿é²âÊÔĞÅºÅ ------------------------
+//------------------------ Decodeæ¨¡å—ç›¸å…³ä¿¡å· ------------------------
 reg  [63:0] IF_ID_bus_r;
 wire [4:0]  decode_rs, decode_rt;
-wire        decode_exception_flag;
-wire [1:0]  decode_exception_type;
-wire        decode_eret_executed;
+wire [32:0] decode_jbr_bus;
+wire        decode_jbr_not_link;
+wire        decode_ID_over;
+wire [156:0] decode_ID_EXE_bus; // æ›´æ–°ä½å®½
+wire [31:0]  decode_ID_pc;
+wire [1:0]  decode_id_exception_type; // æ›´æ–°åç§°
+wire        decode_id_exception_flag; // æ›´æ–°åç§°
+wire [1:0]  decode_id_interrupt_type; // æ–°å¢
+wire        decode_id_interrupt_flag; // æ–°å¢
+wire        decode_eret_executed;     // æ–°å¢
 
 decode decode_dut (
-    .ID_valid(1'b1),
+    .ID_valid(1'b1), // ç®€åŒ–æµ‹è¯•ï¼Œå‡è®¾ä¸€ç›´æœ‰æ•ˆ
     .IF_ID_bus_r(IF_ID_bus_r),
-    .rs_value(32'h0),
-    .rt_value(32'h0),
-    .flush_pipeline(flush_pipeline),
+    .rs_value(32'h0), // ç®€åŒ–æµ‹è¯•
+    .rt_value(32'h0), // ç®€åŒ–æµ‹è¯•
+    .irq(irq),        // è¿æ¥ä¸­æ–­
+    // .flush_pipeline(flush_pipeline), // ç§»é™¤
     .rs(decode_rs),
     .rt(decode_rt),
-    .exception_flag(decode_exception_flag),
-    .exception_type(decode_exception_type),
-    .eret_executed(decode_eret_executed)
+    .jbr_bus(decode_jbr_bus),
+    .jbr_not_link(decode_jbr_not_link),
+    .ID_over(decode_ID_over),
+    .ID_EXE_bus(decode_ID_EXE_bus),
+    .ID_pc(decode_ID_pc),
+    .eret_executed(decode_eret_executed),
+    .id_exception_type(decode_id_exception_type),
+    .id_exception_flag(decode_id_exception_flag),
+    .id_interrupt_type(decode_id_interrupt_type),
+    .id_interrupt_flag(decode_id_interrupt_flag)
 );
 
-//------------------------ EXEÄ£¿é²âÊÔĞÅºÅ --------------------------
-reg  [151:0] ID_EXE_bus_r;
+//------------------------ EXEæ¨¡å—ç›¸å…³ä¿¡å· --------------------------
+reg  [156:0] ID_EXE_bus_r; // æ›´æ–°ä½å®½
+wire         exe_EXE_over;
+wire [108:0] exe_EXE_MEM_bus; // æ›´æ–°ä½å®½
 wire [1:0]   exe_exception_type;
 wire         exe_exception_flag;
+wire [31:0]  exe_EXE_pc;
 
 exe exe_dut (
-    .EXE_valid(1'b1),
+    .EXE_valid(1'b1), // ç®€åŒ–æµ‹è¯•
     .ID_EXE_bus_r(ID_EXE_bus_r),
-    .flush_pipeline(flush_pipeline),
+    // .flush_pipeline(flush_pipeline), // ç§»é™¤
     .exe_exception_type(exe_exception_type),
-    .exe_exception_flag(exe_exception_flag)
+    .exe_exception_flag(exe_exception_flag),
+    .EXE_MEM_bus(exe_EXE_MEM_bus),
+    .EXE_pc(exe_EXE_pc)
+    // .EXE_over(exe_EXE_over) // å¯é€‰è¿æ¥
 );
 
-//------------------------ MEMÄ£¿é²âÊÔĞÅºÅ --------------------------
-reg  [107:0] EXE_MEM_bus_r;
+//------------------------ MEMæ¨¡å—ç›¸å…³ä¿¡å· --------------------------
+reg  [108:0] EXE_MEM_bus_r; // æ›´æ–°ä½å®½
+wire         mem_MEM_over;
+wire [72:0]  mem_MEM_WB_bus; // æ›´æ–°ä½å®½
 wire [1:0]   mem_exception_type;
 wire         mem_exception_flag;
 wire [31:0]  dm_addr;
 wire [3:0]   dm_wen;
+wire [31:0]  mem_MEM_pc;
 
 mem mem_dut (
     .clk(clk),
-    .MEM_valid(1'b1),
+    .MEM_valid(1'b1), // ç®€åŒ–æµ‹è¯•
     .EXE_MEM_bus_r(EXE_MEM_bus_r),
+    .dm_rdata(32'h0), // ç®€åŒ–æµ‹è¯•
     .dm_addr(dm_addr),
     .dm_wen(dm_wen),
-    .flush_pipeline(flush_pipeline),
+    .dm_wdata(), // å¯é€‰è¿æ¥
+    .MEM_over(mem_MEM_over),
+    .MEM_WB_bus(mem_MEM_WB_bus),
+    .MEM_pc(mem_MEM_pc),
+    // .flush_pipeline(flush_pipeline), // ç§»é™¤
     .mem_exception_type(mem_exception_type),
     .mem_exception_flag(mem_exception_flag)
 );
 
-//------------------------ Ö÷²âÊÔÁ÷³Ì -------------------------------
+//------------------------ æµ‹è¯•åˆå§‹åŒ– -------------------------------
 initial begin
-    // ³õÊ¼»¯ĞÅºÅ
+    // åˆå§‹åŒ–ä¿¡å·
     clk = 0;
-    reset_n = 0;
-    flush_pipeline = 0;
+    reset_n = 0; // åº”ä¸º resetn
+    // flush_pipeline = 0; // ç§»é™¤
+    irq = 6'b0;
     testcase = 0;
     success_count = 0;
     fail_count = 0;
-    
-    // ¸´Î»¹ı³Ì
-    #20 reset_n = 1;
+
+    // å¤ä½è¿‡ç¨‹
+    #20 reset_n = 1; // åº”ä¸º resetn
     #10;
-    
-    $display("[ĞÅÏ¢] ¿ªÊ¼ÍêÕûÒì³£²âÊÔÌ×¼ş");
-    
-    // Ö´ĞĞDecodeÄ£¿é²âÊÔ
-    test_decode_illegal_instruction(32'hFC000000);    // ·Ç·¨Ö¸Áî
-    test_decode_eret_instruction(32'h42000018);       // ERETÖ¸Áî
-    
-    // Ö´ĞĞEXEÄ£¿é²âÊÔ
-    test_exe_div_by_zero();                          // ³ıÁãÒì³£
-    test_exe_overflow();                             // Òç³öÒì³£
-    
-    // Ö´ĞĞMEMÄ£¿é²âÊÔ
-    test_mem_misaligned_word(32'h00000001);           // ×ÖµØÖ·Î´¶ÔÆë
-    test_mem_misaligned_halfword(32'h00000003);       // °ë×ÖµØÖ·Î´¶ÔÆë
-    
-    // ÏÔÊ¾×îÖÕ½á¹û
-    $display("\n[×îÖÕ½á¹û] ×Ü²âÊÔÓÃÀı: %0d", testcase);
-    $display("[×îÖÕ½á¹û] ³É¹¦: %0d, Ê§°Ü: %0d", success_count, fail_count);
+
+    $display("[ä¿¡æ¯] å¼€å§‹æ‰§è¡Œå¼‚å¸¸æµ‹è¯•åŸºå‡†");
+
+    // æ‰§è¡ŒDecodeæ¨¡å—æµ‹è¯•
+    test_decode_illegal_instruction(32'hFC000000);    // éæ³•æŒ‡ä»¤
+    test_decode_eret_instruction(32'h42000018);       // ERETæŒ‡ä»¤
+    test_decode_adel_fetch(32'h00400001);             // å–æŒ‡åœ°å€é”™
+
+    // æ‰§è¡ŒEXEæ¨¡å—æµ‹è¯•
+    test_exe_overflow();                             // æº¢å‡ºå¼‚å¸¸
+
+    // æ‰§è¡ŒMEMæ¨¡å—æµ‹è¯•
+    test_mem_misaligned_load(32'h00000001);           // Loadåœ°å€æœªå¯¹é½ (AdEL)
+    test_mem_misaligned_store(32'h00000003);          // Storeåœ°å€æœªå¯¹é½ (AdES)
+
+    // æ˜¾ç¤ºæµ‹è¯•ç»“æœ
+    $display("\n[æµ‹è¯•ç»“æœ] æ€»æµ‹è¯•ç”¨ä¾‹: %0d", testcase);
+    $display("[æµ‹è¯•ç»“æœ] æˆåŠŸ: %0d, å¤±è´¥: %0d", success_count, fail_count);
     #100 $finish;
 end
 
-//------------------------ Decode²âÊÔÈÎÎñ --------------------------
+//------------------------ Decodeæµ‹è¯•ä»»åŠ¡ --------------------------
 task test_decode_illegal_instruction;
 input [31:0] inst;
 begin
     testcase = testcase + 1;
-    $display("\n²âÊÔÓÃÀı %0d: ·Ç·¨Ö¸Áî¼ì²â", testcase);
-    
-    IF_ID_bus_r = {32'h00400000, inst};
+    $display("\næµ‹è¯•ç”¨ä¾‹ %0d: éæ³•æŒ‡ä»¤æµ‹è¯•", testcase);
+
+    IF_ID_bus_r = {inst, 32'h00400000}; // PC = 0x400000
     #10;
-    
-    if (decode_exception_flag && decode_exception_type == 2'b01) begin
+
+    if (decode_id_exception_flag && decode_id_exception_type == 2'b10) begin // RI = 2'b10
         success_count = success_count + 1;
-        $display("[Í¨¹ı] ·Ç·¨Ö¸Áî¼ì²â³É¹¦");
+        $display("[é€šè¿‡] éæ³•æŒ‡ä»¤æµ‹è¯•æˆåŠŸ");
     end else begin
         fail_count = fail_count + 1;
-        $display("[Ê§°Ü] Òì³£ÀàĞÍ:%b ±êÖ¾:%b", 
-                decode_exception_type, decode_exception_flag);
+        $display("[å¤±è´¥] å¼‚å¸¸ç±»å‹:%b æ ‡å¿—:%b",
+                decode_id_exception_type, decode_id_exception_flag);
     end
 end
 endtask
@@ -123,162 +154,132 @@ task test_decode_eret_instruction;
 input [31:0] inst;
 begin
     testcase = testcase + 1;
-    $display("\n²âÊÔÓÃÀı %0d: ERETÖ¸Áî¼ì²â", testcase);
-    
-    IF_ID_bus_r = {32'h00400004, inst};
+    $display("\næµ‹è¯•ç”¨ä¾‹ %0d: ERETæŒ‡ä»¤æµ‹è¯•", testcase);
+
+    IF_ID_bus_r = {inst, 32'h00400004}; // PC = 0x400004
     #10;
-    
-    if (decode_eret_executed && !decode_exception_flag) begin
+
+    if (decode_eret_executed && !decode_id_exception_flag) begin
         success_count = success_count + 1;
-        $display("[Í¨¹ı] ERETÖ¸ÁîÊ¶±ğ³É¹¦");
+        $display("[é€šè¿‡] ERETæŒ‡ä»¤è¯†åˆ«æˆåŠŸ");
     end else begin
         fail_count = fail_count + 1;
-        $display("[Ê§°Ü] ERETĞÅºÅ:%b", decode_eret_executed);
+        $display("[å¤±è´¥] ERETä¿¡å·:%b, å¼‚å¸¸æ ‡å¿—:%b", decode_eret_executed, decode_id_exception_flag);
     end
 end
 endtask
 
-//------------------------ EXE²âÊÔÈÎÎñ ----------------------------
-task test_exe_div_by_zero;
+task test_decode_adel_fetch;
+input [31:0] pc_addr;
 begin
     testcase = testcase + 1;
-    $display("\n²âÊÔÓÃÀı %0d: ³ıÁãÒì³£¼ì²â", testcase);
-    
-    ID_EXE_bus_r = build_exe_bus(
-        2'b00,        // ÎŞIDÒì³£
-        1'b0,
-        13'h1000,     // ³ı·¨²Ù×÷
-        32'h0000FFFF,
-        32'h00000000  // ³ıÊıÎª0
-    );
+    $display("\næµ‹è¯•ç”¨ä¾‹ %0d: å–æŒ‡åœ°å€é”™æµ‹è¯•", testcase);
+
+    IF_ID_bus_r = {32'h00000000, pc_addr}; // åœ¨æœªå¯¹é½åœ°å€å¤„çš„ NOP
     #10;
-    
-    if (exe_exception_flag && exe_exception_type == 2'b10) begin
+
+    if (decode_id_exception_flag && decode_id_exception_type == 2'b00) begin // AdEL = 2'b00
         success_count = success_count + 1;
-        $display("[Í¨¹ı] ³ıÁãÒì³£¼ì²â³É¹¦");
+        $display("[é€šè¿‡] å–æŒ‡åœ°å€é”™æµ‹è¯•æˆåŠŸ");
     end else begin
         fail_count = fail_count + 1;
-        $display("[Ê§°Ü] ÀàĞÍ:%b ±êÖ¾:%b", exe_exception_type, exe_exception_flag);
+        $display("[å¤±è´¥] å¼‚å¸¸ç±»å‹:%b æ ‡å¿—:%b",
+                decode_id_exception_type, decode_id_exception_flag);
     end
 end
 endtask
 
+
+//------------------------ EXEæµ‹è¯•ä»»åŠ¡ ----------------------------
 task test_exe_overflow;
 begin
     testcase = testcase + 1;
-    $display("\n²âÊÔÓÃÀı %0d: ËãÊõÒç³ö¼ì²â", testcase);
-    
-    ID_EXE_bus_r = build_exe_bus(
-        2'b00,
-        1'b0,
-        13'h0800,      // ADD²Ù×÷
-        32'h7FFFFFFF,  // ×î´óÕıÊı
-        32'h00000001   // ¼Ó1
-    );
+    $display("\næµ‹è¯•ç”¨ä¾‹ %0d: ç®—æœ¯æº¢å‡ºæµ‹è¯•", testcase);
+
+    // æ„å»º ID_EXE_bus_r: {int_type, int_flag, exc_type, exc_flag, alu_ctrl(ADD), op1, op2, ...}
+    ID_EXE_bus_r = {
+        2'b00, 1'b0, // æ— ä¸­æ–­
+        2'b00, 1'b0, // æ—  ID å¼‚å¸¸
+        13'b0_1_0_00_000_0000, // ADD çš„ ALU æ§åˆ¶ä¿¡å·
+        32'h7FFFFFFF,  // æ“ä½œæ•° 1 (æœ€å¤§æ­£æ•°)
+        32'h00000001,  // æ“ä½œæ•° 2
+        4'b0000,       // mem_control
+        32'h0,         // store_data
+        1'b1,          // rf_wen (ç¤ºä¾‹)
+        5'd1,          // rf_wdest (ç¤ºä¾‹)
+        32'h00400008   // pc
+    };
     #10;
-    
-    if (exe_exception_flag && exe_exception_type == 2'b11) begin
+
+    if (exe_exception_flag && exe_exception_type == 2'b11) begin // Ovf = 2'b11
         success_count = success_count + 1;
-        $display("[Í¨¹ı] Òç³öÒì³£¼ì²â³É¹¦");
+        $display("[é€šè¿‡] æº¢å‡ºå¼‚å¸¸æµ‹è¯•æˆåŠŸ");
     end else begin
         fail_count = fail_count + 1;
-        $display("[Ê§°Ü] ÀàĞÍ:%b ±êÖ¾:%b", exe_exception_type, exe_exception_flag);
+        $display("[å¤±è´¥] ç±»å‹:%b æ ‡å¿—:%b", exe_exception_type, exe_exception_flag);
     end
 end
 endtask
 
-//------------------------ MEM²âÊÔÈÎÎñ ----------------------------
-task test_mem_misaligned_word;
+//------------------------ MEMæµ‹è¯•ä»»åŠ¡ ----------------------------
+task test_mem_misaligned_load;
 input [31:0] addr;
 begin
     testcase = testcase + 1;
-    $display("\n²âÊÔÓÃÀı %0d: ×ÖµØÖ·Î´¶ÔÆë¼ì²â", testcase);
-    
-    EXE_MEM_bus_r = build_mem_bus(
-        2'b00,
-        1'b0,
-        4'b1100,       // ×Ö´æ´¢
-        addr
-    );
+    $display("\næµ‹è¯•ç”¨ä¾‹ %0d: Loadåœ°å€æœªå¯¹é½æµ‹è¯•", testcase);
+
+    // æ„å»º EXE_MEM_bus_r: {exc_type, exc_flag, mem_ctrl(LW), alu_res(addr), ...}
+    EXE_MEM_bus_r = {
+        2'b00, 1'b0, // æ—  EXE å¼‚å¸¸
+        4'b1010,     // LW çš„ mem_control
+        addr,        // alu_result (åœ°å€)
+        32'h0,       // store_data
+        1'b1,        // rf_wen (ç¤ºä¾‹)
+        5'd2,        // rf_wdest (ç¤ºä¾‹)
+        32'h0040000C // pc
+    };
     #10;
-    
-    if (mem_exception_flag && mem_exception_type == 2'b01) begin
+
+    if (mem_exception_flag && mem_exception_type == 2'b00) begin // AdEL = 2'b00
         success_count = success_count + 1;
-        $display("[Í¨¹ı] µØÖ·Î´¶ÔÆë¼ì²â³É¹¦");
+        $display("[é€šè¿‡] Loadåœ°å€æœªå¯¹é½æµ‹è¯•æˆåŠŸ");
     end else begin
         fail_count = fail_count + 1;
-        $display("[Ê§°Ü] ÀàĞÍ:%b ±êÖ¾:%b", mem_exception_type, mem_exception_flag);
+        $display("[å¤±è´¥] ç±»å‹:%b æ ‡å¿—:%b", mem_exception_type, mem_exception_flag);
     end
 end
 endtask
 
-task test_mem_misaligned_halfword;
+task test_mem_misaligned_store;
 input [31:0] addr;
 begin
     testcase = testcase + 1;
-    $display("\n²âÊÔÓÃÀı %0d: °ë×ÖµØÖ·Î´¶ÔÆë¼ì²â", testcase);
-    
-    EXE_MEM_bus_r = build_mem_bus(
-        2'b00,
-        1'b0,
-        4'b1010,       // °ë×Ö´æ´¢
-        addr
-    );
+    $display("\næµ‹è¯•ç”¨ä¾‹ %0d: Storeåœ°å€æœªå¯¹é½æµ‹è¯•", testcase);
+
+    // æ„å»º EXE_MEM_bus_r: {exc_type, exc_flag, mem_ctrl(SW), alu_res(addr), store_data, ...}
+     EXE_MEM_bus_r = {
+        2'b00, 1'b0, // æ—  EXE å¼‚å¸¸
+        4'b0110,     // SW çš„ mem_control
+        addr,        // alu_result (åœ°å€)
+        32'hDEADBEEF,// store_data
+        1'b0,        // rf_wen (SW ä¸å†™ GPR)
+        5'd0,        // rf_wdest
+        32'h00400010 // pc
+    };
     #10;
-    
-    if (mem_exception_flag && mem_exception_type == 2'b01) begin
+
+    if (mem_exception_flag && mem_exception_type == 2'b01) begin // AdES = 2'b01
         success_count = success_count + 1;
-        $display("[Í¨¹ı] °ë×ÖÎ´¶ÔÆë¼ì²â³É¹¦");
+        $display("[é€šè¿‡] Storeåœ°å€æœªå¯¹é½æµ‹è¯•æˆåŠŸ");
     end else begin
         fail_count = fail_count + 1;
-        $display("[Ê§°Ü] ÀàĞÍ:%b ±êÖ¾:%b", mem_exception_type, mem_exception_flag);
+        $display("[å¤±è´¥] ç±»å‹:%b æ ‡å¿—:%b", mem_exception_type, mem_exception_flag);
     end
 end
 endtask
 
-//------------------------ ×ÜÏßÉú³Éº¯Êı ---------------------------
-function [151:0] build_exe_bus;
-input [1:0]  ex_type;
-input        ex_flag;
-input [12:0] alu_ctrl;
-input [31:0] op1;
-input [31:0] op2;
-begin
-    build_exe_bus = {
-        ex_type,     // [151:150]
-        ex_flag,     // [149]
-        alu_ctrl,    // [148:136]
-        op1,         // [135:104]
-        op2,         // [103:72]
-        4'b0000,     // mem_control
-        32'h0,       // store_data
-        1'b0,        // rf_wen
-        5'd0,        // rf_wdest
-        32'h00400000 // pc
-    };
-end
-endfunction
 
-function [107:0] build_mem_bus;
-input [1:0]  ex_type;
-input        ex_flag;
-input [3:0]  mem_ctrl;
-input [31:0] addr;
-begin
-    build_mem_bus = {
-        ex_type,     // [107:106]
-        ex_flag,     // [105]
-        mem_ctrl,    // [104:101]
-        32'h0,       // store_data
-        addr,        // alu_result
-        1'b0,        // rf_wen
-        5'd0,        // rf_wdest
-        32'h00400000 // pc
-    };
-end
-endfunction
-
-// ²¨ĞÎ¼ÇÂ¼
+// æ³¢å½¢è®°å½•
 initial begin
     $dumpfile("full_cpu_waves.vcd");
     $dumpvars(0, full_cpu_tb);

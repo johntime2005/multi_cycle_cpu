@@ -9,7 +9,7 @@ set_property PACKAGE_PIN Y5 [get_ports btn_clk]
 
 set_property IOSTANDARD LVCMOS33 [get_ports clk]
 set_property IOSTANDARD LVCMOS33 [get_ports resetn]
-SET_PROPERTY IOSTANDARD LVCMOS33 [get_ports btn_clk]
+set_property IOSTANDARD LVCMOS33 [get_ports btn_clk]
 
 #触摸屏引脚连接
 set_property PACKAGE_PIN J25 [get_ports lcd_rst]
