@@ -22,7 +22,7 @@ main:
 	addiu	$sp,$sp,-24
 	sw	$fp,20($sp)
 	move	$fp,$sp
-	li	$2,5			# 0x5
+	li	$2,1			# 0x1
 	sw	$2,4($fp)
 	li	$2,10			# 0xa
 	sw	$2,8($fp)
