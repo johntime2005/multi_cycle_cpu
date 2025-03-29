@@ -1,0 +1,123 @@
+
+test.o:     file format elf32-tradbigmips
+
+
+Disassembly of section .text:
+
+00000000 <abs>:
+   0:	27bdfff8 	addiu	sp,sp,-8
+   4:	afbe0004 	sw	s8,4(sp)
+   8:	03a0f025 	move	s8,sp
+   c:	afc40008 	sw	a0,8(s8)
+  10:	8fc20008 	lw	v0,8(s8)
+  14:	04410002 	bgez	v0,20 <abs+0x20>
+  18:	00000000 	nop
+  1c:	00021023 	negu	v0,v0
+  20:	03c0e825 	move	sp,s8
+  24:	8fbe0004 	lw	s8,4(sp)
+  28:	27bd0008 	addiu	sp,sp,8
+  2c:	03e00008 	jr	ra
+  30:	00000000 	nop
+
+00000034 <main>:
+  34:	27bdffd8 	addiu	sp,sp,-40
+  38:	afbe0024 	sw	s8,36(sp)
+  3c:	03a0f025 	move	s8,sp
+  40:	24020005 	li	v0,5
+  44:	afc20004 	sw	v0,4(s8)
+  48:	24020003 	li	v0,3
+  4c:	afc20008 	sw	v0,8(s8)
+  50:	8fc30004 	lw	v1,4(s8)
+  54:	8fc20008 	lw	v0,8(s8)
+  58:	00621021 	addu	v0,v1,v0
+  5c:	afc2000c 	sw	v0,12(s8)
+  60:	8fc2000c 	lw	v0,12(s8)
+  64:	00021080 	sll	v0,v0,0x2
+  68:	afc20010 	sw	v0,16(s8)
+  6c:	8fc30004 	lw	v1,4(s8)
+  70:	8fc20008 	lw	v0,8(s8)
+  74:	00621024 	and	v0,v1,v0
+  78:	afc20014 	sw	v0,20(s8)
+  7c:	3c020000 	lui	v0,0x0
+  80:	8fc30014 	lw	v1,20(s8)
+  84:	ac430000 	sw	v1,0(v0)
+  88:	3c020000 	lui	v0,0x0
+  8c:	8c420000 	lw	v0,0(v0)
+  90:	afc20018 	sw	v0,24(s8)
+  94:	8fc20018 	lw	v0,24(s8)
+  98:	18400006 	blez	v0,b4 <main+0x80>
+  9c:	00000000 	nop
+  a0:	8fc20018 	lw	v0,24(s8)
+  a4:	2442ffff 	addiu	v0,v0,-1
+  a8:	afc20004 	sw	v0,4(s8)
+  ac:	10000004 	b	c0 <main+0x8c>
+  b0:	00000000 	nop
+  b4:	8fc20018 	lw	v0,24(s8)
+  b8:	24420001 	addiu	v0,v0,1
+  bc:	afc20004 	sw	v0,4(s8)
+  c0:	8fc20004 	lw	v0,4(s8)
+  c4:	04410002 	bgez	v0,d0 <main+0x9c>
+  c8:	00000000 	nop
+  cc:	00021023 	negu	v0,v0
+  d0:	afc2001c 	sw	v0,28(s8)
+  d4:	8fc2001c 	lw	v0,28(s8)
+  d8:	03c0e825 	move	sp,s8
+  dc:	8fbe0024 	lw	s8,36(sp)
+  e0:	27bd0028 	addiu	sp,sp,40
+  e4:	03e00008 	jr	ra
+  e8:	00000000 	nop
+  ec:	00000000 	nop
+
+Disassembly of section .reginfo:
+
+00000000 <.reginfo>:
+   0:	e000001c 	sc	zero,28(zero)
+	...
+
+Disassembly of section .MIPS.abiflags:
+
+00000000 <.MIPS.abiflags>:
+   0:	00002002 	srl	a0,zero,0x0
+   4:	01010005 	lsa	zero,t0,at,0x1
+	...
+
+Disassembly of section .pdr:
+
+00000000 <.pdr>:
+   0:	00000000 	nop
+   4:	40000000 	mfc0	zero,c0_index
+   8:	fffffffc 	.word	0xfffffffc
+	...
+  14:	00000008 	jr	zero
+  18:	0000001e 	.word	0x1e
+  1c:	0000001f 	.word	0x1f
+  20:	00000000 	nop
+  24:	40000000 	mfc0	zero,c0_index
+  28:	fffffffc 	.word	0xfffffffc
+	...
+  34:	00000028 	.word	0x28
+  38:	0000001e 	.word	0x1e
+  3c:	0000001f 	.word	0x1f
+
+Disassembly of section .comment:
+
+00000000 <.comment>:
+   0:	00474343 	.word	0x474343
+   4:	3a202855 	xori	zero,s1,0x2855
+   8:	62756e74 	.word	0x62756e74
+   c:	75203132 	jalx	480c4c8 <main+0x480c494>
+  10:	2e332e30 	sltiu	s3,s1,11824
+  14:	2d313775 	sltiu	s1,t1,14197
+  18:	62756e74 	.word	0x62756e74
+  1c:	75312920 	jalx	4c4a480 <main+0x4c4a44c>
+  20:	31322e33 	andi	s2,t1,0x2e33
+  24:	Address 0x24 is out of bounds.
+
+
+Disassembly of section .gnu.attributes:
+
+00000000 <.gnu.attributes>:
+   0:	41000000 	mftc0	zero,c0_index
+   4:	0f676e75 	jal	d9db9d4 <main+0xd9db9a0>
+   8:	00010000 	sll	zero,at,0x0
+   c:	00070405 	.word	0x70405
