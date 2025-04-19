@@ -35,7 +35,10 @@ module mem(
     output    [ 69:0]  MEM_WB_bus,   // MEM->WB阶段总线
 
     // 输出当前PC
-    output     [31:0] MEM_pc         // 当前PC值
+    output     [31:0] MEM_pc,        // 当前PC值
+
+    // 冲刷流水线信号
+    input              flush_pipeline // 冲刷流水线信号
 );
 
 //========================== 提取EXE->MEM阶段总线 ==========================
@@ -62,15 +65,19 @@ assign {
 //========================== MEM控制信号解析 ==========================
 wire inst_load;   // load指令标志
 wire inst_store;  // store指令标志
-wire ls_word;     // 数据类型：1-字（word），0-半字或字节
-wire lb_sign;     // load字节是否符号扩展：1-符号扩展，0-无符号扩展
+wire ls_word;     // 数据类型：1-字（word），0-非字
+wire ls_byte;     // 数据类型：1-字节（byte），0-非字节
+wire is_halfword; // 数据类型：1-半字（halfword），0-非半字
 
 assign {
-    inst_load,
-    inst_store,
-    ls_word,
-    lb_sign
+    inst_load,    // [3]
+    inst_store,   // [2]
+    ls_word,      // [1]
+    ls_byte       // [0]
 } = mem_control;
+
+// 半字标志：非字且非字节即为半字
+assign is_halfword = !ls_word && !ls_byte;
 
 //========================== 地址未对齐异常检测 ==========================
 reg addr_error;
@@ -81,7 +88,7 @@ always @(*) begin
             // 如果是字（word）访问，但地址未对齐（低两位非0）
             addr_error = 1'b1;
         end
-        else if ((inst_load || inst_store) && !ls_word && alu_result[0] != 1'b0) begin
+        else if ((inst_load || inst_store) && is_halfword && alu_result[0] != 1'b0) begin
             // 如果是半字（halfword）访问，但地址未对齐（最低位非0）
             addr_error = 1'b1;
         end
@@ -145,7 +152,7 @@ always @(*) begin
 end
 
 //========================== 构造 MEM->WB 总线 ==========================
-assign MEM_WB_bus = {
+assign MEM_WB_bus = flush_pipeline ? 70'b0 : {
     exception_flag,    // [69] 异常标志
     exception_type,    // [68:67] 异常类型
     rf_wen,            // [66] 寄存器写使能
@@ -155,7 +162,7 @@ assign MEM_WB_bus = {
 };
 
 //========================== MEM阶段完成信号 ==========================
-assign MEM_over = MEM_valid && !exception_flag;  // 异常时阻止阶段完成
+assign MEM_over = flush_pipeline ? 1'b0 : (MEM_valid && !exception_flag); // 冲刷流水线时无效
 
 //========================== 输出当前PC ==========================
 assign MEM_pc = pc;

@@ -39,6 +39,7 @@ module fetch(
     wire [31:0] seq_pc;           // 顺序PC值（PC+4）
     wire        jbr_taken;        // 跳转使能
     wire [31:0] jbr_target;       // 跳转目标地址
+    reg         flush_pipeline;   // 流水线冲刷标志
     
     assign {jbr_taken, jbr_target} = jbr_bus; // 解析跳转总线
     
@@ -50,15 +51,17 @@ module fetch(
     assign next_pc = exception_triggered ? `EXCEPTION_VEC : // 异常跳转
                      eret_executed       ? EPC :            // ERET返回
                      jbr_taken           ? jbr_target :     // 分支/跳转
-                                           seq_pc;         // 顺序执行
+                                           seq_pc;          // 顺序执行
     
     // PC寄存器更新
     always @(posedge clk) begin
         if (!resetn) begin
             pc <= `STARTADDR;     // 复位时PC初始化为0
+            flush_pipeline <= 1'b0; // 清空流水线
         end
         else if (next_fetch) begin
             pc <= next_pc;        // 正常更新PC
+            flush_pipeline <= eret_executed || exception_triggered; // 冲刷流水线
         end
     end
     
@@ -72,13 +75,18 @@ module fetch(
 
 //-----{IF执行完成标志}begin-------------------------------------------
     always @(posedge clk) begin
-        IF_over <= IF_valid;      // IF_valid延迟一拍作为完成标志
+        if (flush_pipeline) begin
+            IF_over <= 1'b0;      // 冲刷流水线时，标志无效
+        end else begin
+            IF_over <= IF_valid;  // IF_valid延迟一拍作为完成标志
+        end
     end
 //-----{IF执行完成标志}end---------------------------------------------
 
 //-----{IF->ID总线}begin-----------------------------------------------
-    assign IF_ID_bus = {pc, inst}; // {PC, 指令}
-    assign IF_inst   = inst;      // 输出当前指令（用于显示）
+    assign IF_ID_bus = flush_pipeline ? 64'b0 : {pc, inst}; // 冲刷流水线时清空总线
+    assign IF_inst   = flush_pipeline ? 32'b0 : inst;      // 冲刷流水线时清空指令
+    assign IF_pc     = flush_pipeline ? 32'b0 : pc;        // 冲刷流水线时清空PC
 //-----{IF->ID总线}end-------------------------------------------------
 
 endmodule

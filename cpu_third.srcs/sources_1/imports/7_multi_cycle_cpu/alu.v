@@ -53,6 +53,7 @@ module alu(
     wire [31:0] srl_result;
     wire [31:0] sra_result;
     wire [31:0] lui_result;
+    wire [31:0] div_result;
 
     // 鎸変綅杩愮畻閫昏緫
     assign and_result = alu_src1 & alu_src2;         // 鎸変綅涓�
@@ -60,6 +61,7 @@ module alu(
     assign nor_result = ~or_result;                   // 鎸変綅鎴栭潪锛堝彇鎴栫殑鍙嶏級
     assign xor_result = alu_src1 ^ alu_src2;           // 鎸変綅寮傛垨
     assign lui_result = {alu_src2[15:0], 16'd0};       // 楂樹綅鍔犺浇鎿嶄綔锛屽皢浣�16浣嶆暟鎹斁楂樼
+    assign div_result = alu_src2 != 0 ? alu_src1 / alu_src2 : 32'd0; // 简单实现除法
 
     // --- 鍔犲噺杩愮畻涓庢瘮杈冩搷浣� (slt/sltu) begin -------------------------
     // 浣跨敤鍔犳硶鍣ㄨ绠楀姞娉曟垨鍑忔硶缁撴灉
@@ -164,5 +166,6 @@ module alu(
                         alu_srl         ? srl_result :
                         alu_sra         ? sra_result :
                         alu_lui         ? lui_result :
+                        alu_div         ? div_result : // 添加除法操作
                         32'd0;
 endmodule

@@ -32,7 +32,17 @@ module cp0(
     // Status寄存器（这里只实现EXL位）
     reg status_EXL;
 
-    assign exception_triggered = exception_flag;
+    // 异常触发信号同步处理
+    reg exception_flag_sync;
+    always @(posedge clk or negedge resetn) begin
+        if (!resetn) begin
+            exception_flag_sync <= 1'b0;
+        end else begin
+            exception_flag_sync <= exception_flag;
+        end
+    end
+
+    assign exception_triggered = exception_flag_sync;
     assign status_exl = status_EXL;
 
     always @(posedge clk or negedge resetn) begin

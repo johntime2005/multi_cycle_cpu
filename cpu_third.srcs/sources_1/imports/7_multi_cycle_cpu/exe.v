@@ -17,17 +17,16 @@ module exe(
     // 新增异常信号
     output reg         div_by_zero,   // 除零异常标志
     output reg         overflow_flag, // 溢出异常标志
-    output reg [1:0]   exception_type // 异常类型（10=除零，11=溢出）
+    output reg [1:0]   exception_type, // 异常类型（10=除零，11=溢出）
+
+    // 新增控制信号
+    input              flush_pipeline // 冲刷流水线信号
 );
 
 //-----{ID->EXE总线解析}begin---------------------------------------
-// 扩展后的总线定义：
-// [151:150] exception_type_from_id
-// [149]     exception_flag_from_id
-// [148:0]  原有总线信号
 wire [1:0]  exception_type_from_id;  // ID阶段传递的异常类型
 wire        exception_flag_from_id;  // ID阶段传递的异常标志
-wire [11:0] alu_control;             // ALU控制信号
+wire [12:0] alu_control;             // ALU控制信号（修正为13位）
 wire [31:0] alu_operand1;            // ALU操作数1
 wire [31:0] alu_operand2;            // ALU操作数2
 wire [3:0]  mem_control;             // MEM控制信号
@@ -39,14 +38,14 @@ wire [31:0] pc;                      // PC值
 assign {
     exception_type_from_id,  // [151:150]
     exception_flag_from_id,  // [149]
-    alu_control,             // [148:137]
-    alu_operand1,            // [136:105]
-    alu_operand2,            // [104:73]
-    mem_control,             // [72:69]
-    store_data,              // [68:37]
-    rf_wen,                  // [36]
-    rf_wdest,                // [35:31]
-    pc                       // [30:0]
+    alu_control,             // [148:136] 修正为13位
+    alu_operand1,            // [135:104]
+    alu_operand2,            // [103:72]
+    mem_control,             // [71:68]
+    store_data,              // [67:36]
+    rf_wen,                  // [35]
+    rf_wdest,                // [34:30]
+    pc                       // [29:0]
 } = ID_EXE_bus_r;
 //-----{ID->EXE总线解析}end-----------------------------------------
 
@@ -92,15 +91,11 @@ wire [1:0]  exception_type_final = div_by_zero ? 2'b10 :
 //-----{异常信号合并}end---------------------------------------------
 
 //-----{EXE执行完成标志}begin----------------------------------------
-assign EXE_over = EXE_valid;  // EXE阶段一周期完成
+assign EXE_over = flush_pipeline ? 1'b0 : EXE_valid; // 冲刷流水线时无效
 //-----{EXE执行完成标志}end------------------------------------------
 
 //-----{EXE->MEM总线生成}begin---------------------------------------
-// 扩展后的总线定义：
-// [107:106] exception_type
-// [105]     exception_flag
-// [104:0]  原有总线信号
-assign EXE_MEM_bus = {
+assign EXE_MEM_bus = flush_pipeline ? 108'b0 : {
     exception_type_final,  // [107:106] 异常类型
     exception_flag,        // [105]     异常标志
     mem_control,           // [104:101] MEM控制

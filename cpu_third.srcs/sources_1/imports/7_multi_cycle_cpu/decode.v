@@ -61,6 +61,7 @@ wire inst_SRA, inst_SRAV, inst_SRLV, inst_SLTIU;
 wire inst_SLTI, inst_BGEZ, inst_BGTZ, inst_BLEZ;
 wire inst_BLTZ, inst_LB, inst_LBU, inst_SB;
 wire inst_ANDI, inst_ORI, inst_XORI, inst_JAL;
+wire inst_div; // 除法指令
 
 wire op_zero;  // 操作码全0（R型指令）
 wire sa_zero;  // sa域全0
@@ -84,6 +85,7 @@ assign inst_SRA   = op_zero & (rs==5'd0) & (funct == 6'b000011); // 算术右移
 assign inst_SRAV  = op_zero & sa_zero    & (funct == 6'b000111); // 变量算术右移
 assign inst_SRL   = op_zero & (rs==5'd0) & (funct == 6'b000010); // 逻辑右移
 assign inst_SRLV  = op_zero & sa_zero    & (funct == 6'b000110); // 变量逻辑右移
+assign inst_div   = op_zero & sa_zero    & (funct == 6'b011010); // 除法指令
 
 // I型指令识别
 assign inst_ADDIU = (op == 6'b001001);              // 无符号立即数加
@@ -105,6 +107,13 @@ assign inst_LUI   = (op == 6'b001111) & (rs==5'd0); // 立即数加载高位
 assign inst_ORI   = (op == 6'b001101);              // 立即数逻辑或
 assign inst_XORI  = (op == 6'b001110);              // 立即数逻辑异或
 
+// 添加半字指令识别
+wire inst_LH, inst_LHU, inst_SH;
+
+assign inst_LH  = (op == 6'b100001); // 加载半字（符号扩展）
+assign inst_LHU = (op == 6'b100101); // 加载半字（无符号扩展）
+assign inst_SH  = (op == 6'b101001); // 存储半字
+
 // J型指令识别
 assign inst_J     = (op == 6'b000010);              // 跳转
 assign inst_JAL   = (op == 6'b000011);              // 跳转并链接
@@ -122,7 +131,8 @@ wire valid_instruction =
     inst_SRA | inst_SRAV | inst_SRL | inst_SRLV | inst_ADDIU | inst_SLTI |
     inst_SLTIU | inst_BEQ | inst_BGEZ | inst_BGTZ | inst_BLEZ | inst_BLTZ |
     inst_BNE | inst_LW | inst_SW | inst_LB | inst_LBU | inst_SB | inst_ANDI |
-    inst_LUI | inst_ORI | inst_XORI | inst_J | inst_JAL | inst_ERET;
+    inst_LUI | inst_ORI | inst_XORI | inst_J | inst_JAL | inst_ERET | inst_div |
+    inst_LH | inst_LHU | inst_SH;
 
 always @(*) begin
     if (ID_valid && !valid_instruction) begin  // 仅在译码有效时检测
@@ -173,69 +183,30 @@ assign jbr_bus = {jbr_taken, jbr_target};
 //-----{跳转逻辑}end-----------------------------------------------
 
 //-----{ID执行完成标志}begin----------------------------------------
-assign ID_over = ID_valid;  // ID阶段一周期完成
+assign ID_over = flush_pipeline ? 1'b0 : ID_valid; // 冲刷流水线时无效
 //-----{ID执行完成标志}end------------------------------------------
 
-//-----{ID->EXE总线生成}begin---------------------------------------
-// ALU操作数生成
-wire [11:0] alu_control;
-wire [31:0] alu_operand1;
-wire [31:0] alu_operand2;
-assign alu_operand1 = inst_j_link ? pc : 
-                      inst_shf_sa ? {27'd0, sa} : rs_value;
-assign alu_operand2 = inst_j_link ? 32'd4 :
-                      inst_imm_zero ? {16'd0, imm} :
-                      inst_imm_sign ? {{16{imm[15]}}, imm} : rt_value;
-
-// ALU控制信号
-assign alu_control = {
-    inst_add,   // [11] 加
-    inst_sub,   // [10] 减
-    inst_slt,   // [9]  有符号小于置位
-    inst_sltu,  // [8]  无符号小于置位
-    inst_and,   // [7]  逻辑与
-    inst_nor,   // [6]  逻辑或非
-    inst_or,    // [5]  逻辑或
-    inst_xor,   // [4]  逻辑异或
-    inst_sll,   // [3]  逻辑左移
-    inst_srl,   // [2]  逻辑右移
-    inst_sra,   // [1]  算术右移
-    inst_lui    // [0]  加载高位
+//-----{MEM控制信号生成}begin---------------------------------------
+assign mem_control = {
+    inst_LW | inst_LB | inst_LBU | inst_LH | inst_LHU, // [3] load指令
+    inst_SW | inst_SB | inst_SH,                      // [2] store指令
+    inst_LW | inst_SW,                                // [1] 数据类型：字（word）
+    inst_LB | inst_LBU                                // [0] 数据类型：字节（byte）
 };
+//-----{MEM控制信号生成}end-----------------------------------------
 
-// MEM控制信号
-wire lb_sign = inst_LB;
-wire ls_word = inst_LW | inst_SW;
-wire [3:0] mem_control = {inst_load, inst_store, ls_word, lb_sign};
-
-// 寄存器回写控制
-wire inst_wdest_rt = inst_imm_zero | inst_ADDIU | inst_SLTI | 
-                     inst_SLTIU | inst_load;
-wire inst_wdest_31 = inst_JAL;
-wire inst_wdest_rd = inst_ADDU | inst_SUBU | inst_SLT | inst_SLTU | 
-                     inst_JALR | inst_AND | inst_NOR | inst_OR | 
-                     inst_XOR | inst_SLL | inst_SLLV | inst_SRA | 
-                     inst_SRAV | inst_SRL | inst_SRLV;
-wire rf_wen = inst_wdest_rt | inst_wdest_31 | inst_wdest_rd;
-wire [4:0] rf_wdest = inst_wdest_rt ? rt :
-                      inst_wdest_31 ? 5'd31 :
-                      inst_wdest_rd ? rd : 5'd0;
-
-// 存储数据
-wire [31:0] store_data = rt_value;
-
-// ID->EXE总线（扩展异常信号）
-assign ID_EXE_bus = {
+//-----{ID->EXE总线生成}begin---------------------------------------
+assign ID_EXE_bus = flush_pipeline ? 152'b0 : {
     exception_type,     // [151:150] 异常类型
     exception_flag,     // [149]     异常标志
-    alu_control,        // [148:137] ALU控制
-    alu_operand1,       // [136:105] ALU操作数1
-    alu_operand2,       // [104:73]  ALU操作数2
-    mem_control,        // [72:69]   MEM控制
-    store_data,         // [68:37]   存储数据
-    rf_wen,             // [36]      寄存器写使能
-    rf_wdest,           // [35:31]   目标寄存器地址
-    pc                  // [30:0]    PC值
+    alu_control,        // [148:136] ALU控制
+    alu_operand1,       // [135:104] ALU操作数1
+    alu_operand2,       // [103:72]  ALU操作数2
+    mem_control,        // [71:68]   MEM控制
+    store_data,         // [67:36]   存储数据
+    rf_wen,             // [35]      寄存器写使能
+    rf_wdest,           // [34:30]   目标寄存器地址
+    pc                  // [29:0]    PC值
 };
 //-----{ID->EXE总线生成}end-----------------------------------------
 

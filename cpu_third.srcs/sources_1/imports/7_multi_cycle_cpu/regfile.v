@@ -1,38 +1,46 @@
 `timescale 1ns / 1ps
 //*************************************************************************
-// 文件名       : regfile.v
+// 文件各1�7       : regfile.v
 // 功能         : 实现三端口寄存器文件
-//              - 两个读端口采用组合逻辑进行读操作
-//              - 一个写端口在时钟上升沿写入数据
-//              - 寄存器0始终被固定为0
-// 作者         : LOONGSON
+//              - 两个读端口采用组合��辑进行读操佄1�7
+//              - 丢�个写端口在时钟上升沿写入数据
+//              - 寄存噄1�70始终被固定为0
+// 作��1�7         : LOONGSON
 // 创建日期     : 2016-04-14
 //*************************************************************************
 module regfile(
     input             clk,       // 时钟信号
-    input             wen,       // 写使能信号
-    input      [4 :0] raddr1,    // 读端口1地址
-    input      [4 :0] raddr2,    // 读端口2地址
-    input      [4 :0] waddr,     // 写端口地址
+    input             wen,       // 写使能信叄1�7
+    input      [4 :0] raddr1,    // 读端叄1�71地址
+    input      [4 :0] raddr2,    // 读端叄1�72地址
+    input      [4 :0] waddr,     // 写端口地坢�
     input      [31:0] wdata,     // 写入数据
-    output reg [31:0] rdata1,    // 读端口1数据
-    output reg [31:0] rdata2,    // 读端口2数据
+    output reg [31:0] rdata1,    // 读端叄1�71数据
+    output reg [31:0] rdata2,    // 读端叄1�72数据
     input      [4 :0] test_addr, // 调试接口地址
-    output reg [31:0] test_data  // 调试接口数据输出
+    output reg [31:0] test_data, // 调试接口数据输出
+    input             resetn     // ��λ�ź�
     );
     
-    // 定义32个32位寄存器
+    // 定义32丄1�732位寄存器
     reg [31:0] rf[31:0];
      
-    // 写操作：在时钟上升沿写入数据（寄存器0始终为0，因此waddr为0时不写入）
-    always @(posedge clk)
-    begin
-        if (wen && (waddr != 5'd0)) begin
-            rf[waddr] <= wdata;
+    // 写操作：在时钟上升沿写入数据（寄存器0始终丄1�70，因此waddr丄1�70时不写入＄1�7
+    always @(posedge clk or negedge resetn) begin
+        if (!resetn) begin
+            // ��λʱ��ʼ�����мĴ���Ϊ0
+            for (integer i = 0; i < 32; i = i + 1) begin  // ���� "<" ����
+                rf[i] <= 32'd0;
+            end
+        end else begin
+            // ԭ��д�߼�
+            if (wen && (waddr != 5'd0)) begin
+                rf[waddr] <= wdata;
+            end
         end
     end
      
-    // 读端口1：根据地址产生对应的读数据，如果地址为0则返回0
+    // 读端叄1�71：根据地坢�产生对应的读数据，如果地坢�丄1�70则返囄1�70
     always @(*)
     begin
         case (raddr1)
@@ -72,7 +80,7 @@ module regfile(
         endcase
     end
 
-    // 读端口2：与读端口1类似
+    // 读端叄1�72：与读端叄1�71类似
     always @(*)
     begin
         case (raddr2)
@@ -112,7 +120,7 @@ module regfile(
         endcase
     end
 
-    // 调试端口：通过test_addr显示对应寄存器的值
+    // 调试端口：��过test_addr显示对应寄存器的倄1�7
     always @(*)
     begin
         case (test_addr)

@@ -1,14 +1,13 @@
 `timescale 1ns / 1ps
 //*************************************************************************
-//   > æ–‡ä»¶å: multi_cycle_cpu.v
-//   > æè¿°  :å¤šå‘¨æœŸCPUæ¨¡å—ï¼Œå…±å®ç°36æ¡æŒ‡ä»¤
-//   >        æŒ‡ä»¤romå’Œæ•°æ®ramå‡å®ä¾‹åŒ–xilinx IPå¾—åˆ°ï¼Œä¸ºåŒæ­¥è¯»å†™
-//   > ä½œè€…  : LOONGSON
-//   > æ—¥æœŸ  : 2016-04-14
+//   > ÎÄ¼şÃû: multi_cycle_cpu.v
+//   > ÃèÊö  : ¶àÖÜÆÚCPUÄ£¿é£¬Ö§³ÖÒì³£´¦Àí
+//   > ×÷Õß  : LOONGSON
+//   > ÈÕÆÚ  : 2016-04-14
 //*************************************************************************
-module multi_cycle_cpu(  // å¤šå‘¨æœŸcpu
-    input clk,           // æ—¶é’Ÿ
-    input resetn,        // å¤ä½ä¿¡å·ï¼Œä½ç”µå¹³æœ‰æ•ˆ
+module multi_cycle_cpu(  // ¶àÖÜÆÚCPU
+    input clk,           // Ê±ÖÓ
+    input resetn,        // ¸´Î»ĞÅºÅ£¬µÍµçÆ½ÓĞĞ§
     
     //display data
     input  [ 4:0] rf_addr,
@@ -23,127 +22,127 @@ module multi_cycle_cpu(  // å¤šå‘¨æœŸcpu
     output [31:0] WB_pc,
     output [31:0] display_state
     );
-//----------------------{æ§åˆ¶å¤šå‘¨æœŸçš„çŠ¶æ€æœº}begin------------------------//
-    reg [2:0] state;       // å½“å‰çŠ¶æ€
-    reg [2:0] next_state;  // ä¸‹ä¸€çŠ¶æ€
+//----------------------{¿ØÖÆ¶àÖÜÆÚµÄ×´Ì¬»ú}begin------------------------//
+    reg [2:0] state;       // µ±Ç°×´Ì¬
+    reg [2:0] next_state;  // ÏÂÒ»×´Ì¬
 
-    //å±•ç¤ºå½“å‰å¤„ç†å™¨æ­£åœ¨æ‰§è¡Œå“ªä¸ªæ¨¡å—
-    assign display_state = {29'd0,state};
-    // çŠ¶æ€æœºçŠ¶æ€
-    parameter IDLE   = 3'd0;  // å¼€å§‹
-    parameter FETCH  = 3'd1;  // å–æŒ‡
-    parameter DECODE = 3'd2;  // è¯‘ç 
-    parameter EXE    = 3'd3;  // æ‰§è¡Œ
-    parameter MEM    = 3'd4;  // è®¿å­˜
-    parameter WB     = 3'd5;  // å†™å›
+    // ÏÔÊ¾µ±Ç°´¦ÀíÆ÷ÕıÔÚÖ´ĞĞÄÄ¸öÄ£¿é
+    assign display_state = {29'd0, state};
+    // ×´Ì¬»ú×´Ì¬
+    parameter IDLE   = 3'd0;  // ³õÊ¼
+    parameter FETCH  = 3'd1;  // È¡Ö¸
+    parameter DECODE = 3'd2;  // ÒëÂë
+    parameter EXE    = 3'd3;  // Ö´ĞĞ
+    parameter MEM    = 3'd4;  // ´æ´¢
+    parameter WB     = 3'd5;  // Ğ´»Ø
 
-    always @ (posedge clk)        // å½“å‰çŠ¶æ€
+    always @ (posedge clk)        // µ±Ç°×´Ì¬
     begin
-        if (!resetn) begin        // å¦‚æœå¤ä½ä¿¡å·æœ‰æ•ˆ
-            state <= IDLE;       // å½“å‰çŠ¶æ€ä¸º å¼€å§‹
+        if (!resetn) begin        // Èç¹û¸´Î»ĞÅºÅÓĞĞ§
+            state <= IDLE;       // µ±Ç°×´Ì¬Îª ³õÊ¼
         end
-        else begin                // å¦åˆ™
-            state <= next_state;  // ä¸ºä¸‹ä¸€çŠ¶æ€
+        else begin                // ·ñÔò
+            state <= next_state;  // ÎªÏÂÒ»¸ö×´Ì¬
         end
     end
 
-    wire IF_over;     // IFæ¨¡å—å·²æ‰§è¡Œå®Œ
-    wire ID_over;     // IDæ¨¡å—å·²æ‰§è¡Œå®Œ
-    wire EXE_over;    // EXEæ¨¡å—å·²æ‰§è¡Œå®Œ
-    wire MEM_over;    // MEMæ¨¡å—å·²æ‰§è¡Œå®Œ
-    wire WB_over;     // WBæ¨¡å—å·²æ‰§è¡Œå®Œ
-    wire jbr_not_link;//åˆ†æ”¯æŒ‡ä»¤(élinkç±»)ï¼Œåªèµ°IFå’ŒIDçº§
-    always @ (*)                             // ä¸‹ä¸€çŠ¶æ€ 
+    wire IF_over;     // IFÄ£¿éÒÑÖ´ĞĞÍê
+    wire ID_over;     // IDÄ£¿éÒÑÖ´ĞĞÍê
+    wire EXE_over;    // EXEÄ£¿éÒÑÖ´ĞĞÍê
+    wire MEM_over;    // MEMÄ£¿éÒÑÖ´ĞĞÍê
+    wire WB_over;     // WBÄ£¿éÒÑÖ´ĞĞÍê
+    wire jbr_not_link;//·ÖÖ§Ö¸Áî(·ÇlinkÀà)£¬Ö»Éæ¼°IFºÍID½×¶Î
+    always @ (*)                             // ÏÂÒ»×´Ì¬ 
     begin
         case (state)
             IDLE : 
             begin
-                next_state = FETCH;    // å¼€å§‹->å–æŒ‡
+                next_state = FETCH;    // ³õÊ¼->È¡Ö¸
             end
             FETCH: 
             begin
                 if (IF_over)
                 begin
-                    next_state = DECODE;   // å–æŒ‡->è¯‘ç 
+                    next_state = DECODE;   // È¡Ö¸->ÒëÂë
                 end
                 else
                 begin
-                    next_state = FETCH;    // å–æŒ‡->è¯‘ç 
+                    next_state = FETCH;    // È¡Ö¸->È¡Ö¸
                 end
             end
             DECODE: 
             begin
                 if (ID_over)
-                begin                      // è¯‘ç ->æ‰§è¡Œæˆ–å–æŒ‡   
+                begin                      // ÒëÂë->Ö´ĞĞ»òÈ¡Ö¸   
                     next_state = jbr_not_link ? FETCH : EXE;
                 end
                 else
                 begin
-                    next_state = DECODE;   // å–æŒ‡->è¯‘ç 
+                    next_state = DECODE;   // È¡Ö¸->ÒëÂë
                 end
             end
             EXE: 
             begin
                 if (EXE_over)
                 begin
-                    next_state = MEM;      // æ‰§è¡Œ->è®¿å­˜
+                    next_state = MEM;      // Ö´ĞĞ->´æ´¢
                 end
                 else
                 begin
-                    next_state = EXE;   // å–æŒ‡->è¯‘ç 
+                    next_state = EXE;   // È¡Ö¸->ÒëÂë
                 end
             end
             MEM:
             begin
                 if (MEM_over)
                 begin
-                    next_state = WB;       // è®¿å­˜->å†™å›
+                    next_state = WB;       // ´æ´¢->Ğ´»Ø
                 end
                 else
                 begin
-                    next_state = MEM;   // å–æŒ‡->è¯‘ç 
+                    next_state = MEM;   // È¡Ö¸->ÒëÂë
                 end
             end
             WB:
             begin
                 if (WB_over)
                 begin
-                    next_state = FETCH;    // å†™å›->å–æŒ‡
+                    next_state = FETCH;    // Ğ´»Ø->È¡Ö¸
                 end
                 else
                 begin
-                    next_state = WB;   // å–æŒ‡->è¯‘ç 
+                    next_state = WB;   // È¡Ö¸->ÒëÂë
                 end
             end
             default : next_state = IDLE;
         endcase
     end
-    //5æ¨¡å—çš„validä¿¡å·
+    //5Ä£¿éµÄvalidĞÅºÅ
     wire IF_valid;
     wire ID_valid;
     wire EXE_valid;
     wire MEM_valid;
     wire WB_valid;
-    assign  IF_valid = (state == FETCH );  // å½“å‰çŠ¶æ€ä¸ºå–æŒ‡æ—¶ï¼ŒIFçº§æœ‰æ•ˆ
-    assign  ID_valid = (state == DECODE);  // å½“å‰çŠ¶æ€ä¸ºè¯‘ç æ—¶ï¼ŒIDçº§æœ‰æ•ˆ
-    assign EXE_valid = (state == EXE   );  // å½“å‰çŠ¶æ€ä¸ºæ‰§è¡Œæ—¶ï¼ŒEXEçº§æœ‰æ•ˆ
-    assign MEM_valid = (state == MEM   );  // å½“å‰çŠ¶æ€ä¸ºè®¿å­˜æ—¶ï¼ŒMEMçº§æœ‰æ•ˆ
-    assign  WB_valid = (state == WB    );  // å½“å‰çŠ¶æ€ä¸ºå†™å›æ—¶ï¼ŒWBçº§æœ‰æ•ˆ
-//-----------------------{æ§åˆ¶å¤šå‘¨æœŸçš„çŠ¶æ€æœº}end-------------------------//
+    assign  IF_valid = (state == FETCH );  // µ±Ç°×´Ì¬ÎªÈ¡Ö¸Ê±£¬IF¶ÎÓĞĞ§
+    assign  ID_valid = (state == DECODE);  // µ±Ç°×´Ì¬ÎªÒëÂëÊ±£¬ID¶ÎÓĞĞ§
+    assign EXE_valid = (state == EXE   );  // µ±Ç°×´Ì¬ÎªÖ´ĞĞÊ±£¬EXE¶ÎÓĞĞ§
+    assign MEM_valid = (state == MEM   );  // µ±Ç°×´Ì¬Îª´æ´¢Ê±£¬MEM¶ÎÓĞĞ§
+    assign  WB_valid = (state == WB    );  // µ±Ç°×´Ì¬ÎªĞ´»ØÊ±£¬WB¶ÎÓĞĞ§
+//-----------------------{¿ØÖÆ¶àÖÜÆÚµÄ×´Ì¬»ú}end-------------------------//
 
-//--------------------------{5çº§é—´çš„æ€»çº¿}begin---------------------------//
-    wire [ 63:0] IF_ID_bus;   // IF->IDçº§æ€»çº¿
-    wire [149:0] ID_EXE_bus;  // ID->EXEçº§æ€»çº¿
-    wire [105:0] EXE_MEM_bus; // EXE->MEMçº§æ€»çº¿
-    wire [ 69:0] MEM_WB_bus;  // MEM->WBçº§æ€»çº¿
+//--------------------------{5¶Î¼äµÄÁ÷Ë®Ïß}begin---------------------------//
+    wire [ 63:0] IF_ID_bus;   // IF->IDÁ÷Ë®Ïß
+    wire [149:0] ID_EXE_bus;  // ID->EXEÁ÷Ë®Ïß
+    wire [105:0] EXE_MEM_bus; // EXE->MEMÁ÷Ë®Ïß
+    wire [ 69:0] MEM_WB_bus;  // MEM->WBÁ÷Ë®Ïß
     
-    //é”å­˜ä»¥ä¸Šæ€»çº¿ä¿¡å·
+    //¼Ä´æÉÏÊöÁ÷Ë®ÏßĞÅºÅ
     reg [ 63:0] IF_ID_bus_r;
     reg [149:0] ID_EXE_bus_r;
     reg [105:0] EXE_MEM_bus_r;
     reg [ 69:0] MEM_WB_bus_r;
     
-    //IFåˆ°IDçš„é”å­˜ä¿¡å·
+    //IFµ½IDµÄ¼Ä´æĞÅºÅ
     always @(posedge clk)
     begin
         if(IF_over)
@@ -151,7 +150,7 @@ module multi_cycle_cpu(  // å¤šå‘¨æœŸcpu
             IF_ID_bus_r <= IF_ID_bus;
         end
     end
-    //IDåˆ°EXEçš„é”å­˜ä¿¡å·
+    //IDµ½EXEµÄ¼Ä´æĞÅºÅ
     always @(posedge clk)
     begin
         if(ID_over)
@@ -159,7 +158,7 @@ module multi_cycle_cpu(  // å¤šå‘¨æœŸcpu
             ID_EXE_bus_r <= ID_EXE_bus;
         end
     end
-    //EXEåˆ°MEMçš„é”å­˜ä¿¡å·
+    //EXEµ½MEMµÄ¼Ä´æĞÅºÅ
     always @(posedge clk)
     begin
         if(EXE_over)
@@ -167,7 +166,7 @@ module multi_cycle_cpu(  // å¤šå‘¨æœŸcpu
             EXE_MEM_bus_r <= EXE_MEM_bus;
         end
     end    
-    //MEMåˆ°WBçš„é”å­˜ä¿¡å·
+    //MEMµ½WBµÄ¼Ä´æĞÅºÅ
     always @(posedge clk)
     begin
         if(MEM_over)
@@ -175,41 +174,39 @@ module multi_cycle_cpu(  // å¤šå‘¨æœŸcpu
             MEM_WB_bus_r <= MEM_WB_bus;
         end
     end
-//---------------------------{5çº§é—´çš„æ€»çº¿}end----------------------------//
+//---------------------------{5¶Î¼äµÄÁ÷Ë®Ïß}end----------------------------//
 
-//--------------------------{å…¶ä»–äº¤äº’ä¿¡å·}begin--------------------------//
-    //è·³è½¬æ€»çº¿
+//--------------------------{ÆäËû½»»¥ĞÅºÅ}begin--------------------------//
+    //Ìø×ªÁ÷Ë®Ïß
     wire [ 32:0] jbr_bus;    
 
-    //IFä¸inst_romäº¤äº’
+    //IFÓëinst_rom½»»¥
     wire [31:0] inst_addr;
     wire [31:0] inst;
 
-    //MEMä¸data_ramäº¤äº’    
+    //MEMÓëdata_ram½»»¥    
     wire [ 3:0] dm_wen;
     wire [31:0] dm_addr;
     wire [31:0] dm_wdata;
     wire [31:0] dm_rdata;
 
-    //IDä¸regfileäº¤äº’
+    //IDÓëregfile½»»¥
     wire [ 4:0] rs;
     wire [ 4:0] rt;   
     wire [31:0] rs_value;
     wire [31:0] rt_value;
     
-    //WBä¸regfileäº¤äº’
+    //WBÓëregfile½»»¥
     wire        rf_wen;
     wire [ 4:0] rf_wdest;
     wire [31:0] rf_wdata;    
-//---------------------------{å…¶ä»–äº¤äº’ä¿¡å·}end---------------------------//
+//---------------------------{ÆäËû½»»¥ĞÅºÅ}end---------------------------//
 
-//-------------------------{å„æ¨¡å—å®ä¾‹åŒ–}begin---------------------------//
-    wire next_fetch; //å³å°†è¿è¡Œå–æŒ‡æ¨¡å—ï¼Œéœ€è¦å…ˆé”å­˜PCå€¼
-    //å½“å‰çŠ¶æ€ä¸ºdecodeï¼Œä¸”æŒ‡ä»¤ä¸ºè·³è½¬åˆ†æ”¯æŒ‡ä»¤(élinkç±»)ï¼Œä¸”decodeæ‰§è¡Œå®Œæˆ
-    //æˆ–è€…ï¼Œå½“å‰çŠ¶æ€ä¸ºwbï¼Œä¸”wbæ‰§è¡Œå®Œæˆï¼Œåˆ™å³å°†è¿›å…¥fetchçŠ¶æ€
+//-------------------------{¸÷Ä£¿éÊµÀı»¯}begin---------------------------//
+    wire next_fetch; //¼´½«ÔËĞĞÈ¡Ö¸Ä£¿é£¬ĞèÒªÏÈ¼Ä´æPCÖµ
     assign next_fetch = (state==DECODE & ID_over & jbr_not_link)
                       | (state==WB     & WB_over);
-    fetch IF_module(             // å–æŒ‡çº§
+    fetch IF_module(             // È¡Ö¸¶Î
         .clk       (clk       ),  // I, 1
         .resetn    (resetn    ),  // I, 1
         .IF_valid  (IF_valid  ),  // I, 1
@@ -220,12 +217,12 @@ module multi_cycle_cpu(  // å¤šå‘¨æœŸcpu
         .IF_over   (IF_over   ),  // O, 1
         .IF_ID_bus (IF_ID_bus ),  // O, 64
         
-        //å±•ç¤ºPCå’Œå–å‡ºçš„æŒ‡ä»¤
+        //ÏÔÊ¾PCºÍÈ¡³öµÄÖ¸Áî
         .IF_pc     (IF_pc     ),
         .IF_inst   (IF_inst   )
     );
 
-    decode ID_module(               // è¯‘ç çº§
+    decode ID_module(               // ÒëÂë¶Î
         .ID_valid    (ID_valid    ),  // I, 1
         .IF_ID_bus_r (IF_ID_bus_r ),  // I, 64
         .rs_value    (rs_value    ),  // I, 32
@@ -237,21 +234,21 @@ module multi_cycle_cpu(  // å¤šå‘¨æœŸcpu
         .ID_over     (ID_over     ),  // O, 1
         .ID_EXE_bus  (ID_EXE_bus  ),  // O, 150
         
-        //å±•ç¤ºPC
+        //ÏÔÊ¾PC
         .ID_pc      (ID_pc      )
     );
 
-    exe EXE_module(                   // æ‰§è¡Œçº§
+    exe EXE_module(                   // Ö´ĞĞ¶Î
         .EXE_valid   (EXE_valid   ),  // I, 1
         .ID_EXE_bus_r(ID_EXE_bus_r),  // I, 150
         .EXE_over    (EXE_over    ),  // O, 1 
         .EXE_MEM_bus (EXE_MEM_bus ),  // O, 106
         
-        //å±•ç¤ºPC
+        //ÏÔÊ¾PC
         .EXE_pc      (EXE_pc      )
     );
 
-    mem MEM_module(                     // è®¿å­˜çº§
+    mem MEM_module(                     // ´æ´¢¶Î
         .clk          (clk          ),  // I, 1 
         .MEM_valid    (MEM_valid    ),  // I, 1
         .EXE_MEM_bus_r(EXE_MEM_bus_r),  // I, 106
@@ -262,11 +259,11 @@ module multi_cycle_cpu(  // å¤šå‘¨æœŸcpu
         .MEM_over     (MEM_over     ),  // O, 1
         .MEM_WB_bus   (MEM_WB_bus   ),  // O, 70
         
-        //å±•ç¤ºPC
+        //ÏÔÊ¾PC
         .MEM_pc       (MEM_pc       )
     );          
  
-    wb WB_module(                     // å†™å›çº§
+    wb WB_module(                     // Ğ´»Ø¶Î
         .WB_valid    (WB_valid    ),  // I, 1
         .MEM_WB_bus_r(MEM_WB_bus_r),  // I, 70
         .rf_wen      (rf_wen      ),  // O, 1
@@ -274,17 +271,34 @@ module multi_cycle_cpu(  // å¤šå‘¨æœŸcpu
         .rf_wdata    (rf_wdata    ),  // O, 32
         .WB_over     (WB_over     ),  // O, 1
         
-        //å±•ç¤ºPC
+        //ÏÔÊ¾PC
         .WB_pc       (WB_pc       )
     );
 
-    inst_rom inst_rom_module(         // æŒ‡ä»¤å­˜å‚¨å™¨
-        .clka       (clk           ),  // I, 1 ,æ—¶é’Ÿ
-        .addra      (inst_addr[9:2]),  // I, 8 ,æŒ‡ä»¤åœ°å€
-        .douta      (inst          )   // O, 32,æŒ‡ä»¤
+    exception_controller exception_controller_module( // Òì³£¿ØÖÆÆ÷
+        .id_exception_type (id_exception_type ), // I, 2
+        .id_exception_flag (id_exception_flag ), // I, 1
+        .id_pc             (ID_pc             ), // I, 32
+        .exe_exception_type(exe_exception_type), // I, 2
+        .exe_exception_flag(exe_exception_flag), // I, 1
+        .exe_pc            (EXE_pc            ), // I, 32
+        .mem_exception_type(mem_exception_type), // I, 2
+        .mem_exception_flag(mem_exception_flag), // I, 1
+        .mem_pc            (MEM_pc            ), // I, 32
+        .exception_triggered(exception_triggered), // O, 1
+        .final_exception_type(final_exception_type), // O, 2
+        .cp0_pc            (cp0_pc            ), // O, 32
+        .cp0_exception_type(cp0_exception_type), // O, 2
+        .cp0_exception_flag(cp0_exception_flag)  // O, 1
     );
 
-    regfile rf_module(        // å¯„å­˜å™¨å †æ¨¡å—
+    inst_rom inst_rom_module(         // Ö¸Áî´æ´¢Æ÷
+        .clka       (clk           ),  // I, 1 ,Ê±ÖÓ
+        .addra      (inst_addr[9:2]),  // I, 8 ,Ö¸ÁîµØÖ·
+        .douta      (inst          )   // O, 32,Ö¸Áî
+    );
+
+    regfile rf_module(        // ¼Ä´æÆ÷¶ÑÄ£¿é
         .clk    (clk      ),  // I, 1
         .wen    (rf_wen   ),  // I, 1
         .raddr1 (rs       ),  // I, 5
@@ -299,12 +313,12 @@ module multi_cycle_cpu(  // å¤šå‘¨æœŸcpu
         .test_data(rf_data)
     );
     
-    data_ram data_ram_module(   // æ•°æ®å­˜å‚¨æ¨¡å—
-        .clka   (clk         ),  // I, 1,  æ—¶é’Ÿ
-        .wea    (dm_wen      ),  // I, 1,  å†™ä½¿èƒ½
-        .addra  (dm_addr[9:2]),  // I, 8,  è¯»åœ°å€
-        .dina   (dm_wdata    ),  // I, 32, å†™æ•°æ®
-        .douta  (dm_rdata    ),  // O, 32, è¯»æ•°æ®
+    data_ram data_ram_module(   // Êı¾İ´æ´¢Ä£¿é
+        .clka   (clk         ),  // I, 1,  Ê±ÖÓ
+        .wea    (dm_wen      ),  // I, 1,  Ğ´Ê¹ÄÜ
+        .addra  (dm_addr[9:2]),  // I, 8,  Ğ´µØÖ·
+        .dina   (dm_wdata    ),  // I, 32, Ğ´Êı¾İ
+        .douta  (dm_rdata    ),  // O, 32, ¶ÁÊı¾İ
 
         //display mem
         .clkb   (clk          ),
@@ -313,5 +327,5 @@ module multi_cycle_cpu(  // å¤šå‘¨æœŸcpu
         .doutb  (mem_data     ),
         .dinb   (32'd0        )
     );
-//--------------------------{å„æ¨¡å—å®ä¾‹åŒ–}end----------------------------//
+//--------------------------{¸÷Ä£¿éÊµÀı»¯}end----------------------------//
 endmodule
