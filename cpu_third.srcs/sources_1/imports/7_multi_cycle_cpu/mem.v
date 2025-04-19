@@ -1,63 +1,69 @@
 `timescale 1ns / 1ps
 //*************************************************************************
-// æ–‡ä»¶å       : mem.v
-// åŠŸèƒ½         : å®ç°å¤šå‘¨æœŸCPUä¸­MEMé˜¶æ®µçš„æ•°æ®å­˜å‚¨æ“ä½œ
-// ä½œè€…         : LOONGSON
-// åˆ›å»ºæ—¥æœŸ     : 2016-04-14
+// ÎÄ¼şÃû       : mem.v
+// ¹¦ÄÜ         : ÊµÏÖ¶àÖÜÆÚCPUÖĞMEM½×¶ÎµÄÊı¾İ´æ´¢²Ù×÷£¬Ö§³ÖÒì³£´¦Àí
+// ×÷Õß         : LOONGSON
+// ´´½¨ÈÕÆÚ     : 2016-04-14
+// ĞŞ¸ÄÈÕÆÚ     : 2023-10-20
+// ĞŞ¸ÄÄÚÈİ     : Ìí¼Ó¶ÔÇ°ÃæËùÓĞÄ£¿é¶¨ÒåµÄÒì³£µÄ´¦Àí
 //*************************************************************************
 
 module mem(
-    // æ—¶é’ŸåŠæ§åˆ¶ä¿¡å·
-    input              clk,          // æ—¶é’Ÿä¿¡å·
-    input              MEM_valid,    // MEMé˜¶æ®µæœ‰æ•ˆä¿¡å·
-    
-    // EXE->MEMé˜¶æ®µæ€»çº¿ï¼ŒåŒ…å«ä»¥ä¸‹å„å­—æ®µï¼š
-// [105:102] - mem_control : MEMæ§åˆ¶ä¿¡å·
-// [101:70]  - store_data  : å­˜å‚¨æ•°æ®
-// [69:38]   - alu_result  : ALUè¿ç®—ç»“æœ
-// [37]      - rf_wen      : å¯„å­˜å™¨å†™ä½¿èƒ½
-// [36:32]   - rf_wdest    : å¯„å­˜å™¨å†™ç›®çš„åœ°å€
-// [31:0]    - pc          : å½“å‰PCå€¼
-    input      [105:0] EXE_MEM_bus_r,
-    
-    // æ•°æ®å­˜å‚¨å™¨æ¥å£
-    input      [31:0] dm_rdata,     // æ•°æ®å­˜å‚¨å™¨è¯»æ•°æ®
-    output     [31:0] dm_addr,      // æ•°æ®å­˜å‚¨å™¨åœ°å€
-    output reg [ 3:0] dm_wen,       // æ•°æ®å­˜å‚¨å™¨å†™ä½¿èƒ½
-    output reg [31:0] dm_wdata,     // æ•°æ®å­˜å‚¨å™¨å†™æ•°æ®
-    
-    // MEMé˜¶æ®µè¾“å‡ºæ€»çº¿ä¿¡æ¯
-    output             MEM_over,     // MEMé˜¶æ®µç»“æŸä¿¡å·
-    output    [ 69:0]  MEM_WB_bus,   // MEM->WBé˜¶æ®µæ€»çº¿
-    
-    // è¾“å‡ºå½“å‰PC
-    output     [31:0] MEM_pc        // å½“å‰PCå€¼
+    // Ê±ÖÓÓë¿ØÖÆĞÅºÅ
+    input              clk,          // Ê±ÖÓĞÅºÅ
+    input              MEM_valid,    // MEM½×¶ÎÓĞĞ§ĞÅºÅ
+
+    // EXE->MEM½×¶Î×ÜÏß£¬°üº¬ÒÔÏÂ×Ö¶Î£º
+    // [107:106] - exception_type : Òì³£ÀàĞÍ£¨´ÓEXE½×¶Î´«µİ£©
+    // [105]     - exception_flag : Òì³£±êÖ¾£¨´ÓEXE½×¶Î´«µİ£©
+    // [104:101] - mem_control    : MEM¿ØÖÆĞÅºÅ
+    // [100:69]  - store_data     : ´æ´¢Êı¾İ
+    // [68:37]   - alu_result     : ALU¼ÆËã½á¹û
+    // [36]      - rf_wen         : ¼Ä´æÆ÷Ğ´Ê¹ÄÜ
+    // [35:31]   - rf_wdest       : ¼Ä´æÆ÷Ğ´Ä¿±êµØÖ·
+    // [30:0]    - pc             : µ±Ç°PCÖµ
+    input      [107:0] EXE_MEM_bus_r,
+
+    // Êı¾İ´æ´¢Æ÷½Ó¿Ú
+    input      [31:0] dm_rdata,      // Êı¾İ´æ´¢Æ÷¶ÁÈ¡Êı¾İ
+    output     [31:0] dm_addr,       // Êı¾İ´æ´¢Æ÷µØÖ·
+    output reg [ 3:0] dm_wen,        // Êı¾İ´æ´¢Æ÷Ğ´Ê¹ÄÜ
+    output reg [31:0] dm_wdata,      // Êı¾İ´æ´¢Æ÷Ğ´Êı¾İ
+
+    // MEM½×¶ÎÊä³ö×ÜÏßĞÅÏ¢
+    output             MEM_over,     // MEM½×¶Î½áÊøĞÅºÅ
+    output    [ 69:0]  MEM_WB_bus,   // MEM->WB½×¶Î×ÜÏß
+
+    // Êä³öµ±Ç°PC
+    output     [31:0] MEM_pc         // µ±Ç°PCÖµ
 );
 
-//========================== æå–EXE->MEMé˜¶æ®µæ€»çº¿ ==========================
-
-wire [3 :0] mem_control;  // MEMæ§åˆ¶ä¿¡å·
-wire [31:0] store_data;   // å­˜å‚¨æ•°æ®
-wire [31:0] alu_result;   // ALUè¿ç®—ç»“æœ
-wire        rf_wen;       // å¯„å­˜å™¨å†™ä½¿èƒ½
-wire [4:0]  rf_wdest;     // å¯„å­˜å™¨å†™ç›®çš„åœ°å€
-wire [31:0] pc;           // å½“å‰PCå€¼
+//========================== ÌáÈ¡EXE->MEM½×¶Î×ÜÏß ==========================
+wire exception_flag_from_exe;  // Òì³£±êÖ¾
+wire [1:0] exception_type_from_exe;  // Òì³£ÀàĞÍ
+wire [3:0] mem_control;              // MEM¿ØÖÆĞÅºÅ
+wire [31:0] store_data;              // ´æ´¢Êı¾İ
+wire [31:0] alu_result;              // ALU¼ÆËã½á¹û
+wire rf_wen;                         // ¼Ä´æÆ÷Ğ´Ê¹ÄÜ
+wire [4:0] rf_wdest;                 // ¼Ä´æÆ÷Ğ´Ä¿±êµØÖ·
+wire [31:0] pc;                      // µ±Ç°PCÖµ
 
 assign {
-    mem_control,
-    store_data,
-    alu_result,
-    rf_wen,
-    rf_wdest,
-    pc
+    exception_type_from_exe,  // [107:106]
+    exception_flag_from_exe,  // [105]
+    mem_control,              // [104:101]
+    store_data,               // [100:69]
+    alu_result,               // [68:37]
+    rf_wen,                   // [36]
+    rf_wdest,                 // [35:31]
+    pc                        // [30:0]
 } = EXE_MEM_bus_r;
 
-//======================== è§£æMEMæ§åˆ¶ä¿¡å· ================================
-
-wire inst_load;   // loadæŒ‡ä»¤æ ‡å¿—
-wire inst_store;  // storeæŒ‡ä»¤æ ‡å¿—
-wire ls_word;     // å­˜å–æ•°æ®ç±»å‹ï¼š1-å­—(word)ï¼Œ0-åŠå­—æˆ–å­—èŠ‚
-wire lb_sign;     // loadå­—èŠ‚æ˜¯å¦å¸¦ç¬¦å·æ‰©å±•ï¼š1-å¸¦ç¬¦å·ï¼Œ0-æ— ç¬¦å·
+//========================== MEM¿ØÖÆĞÅºÅ½âÎö ==========================
+wire inst_load;   // loadÖ¸Áî±êÖ¾
+wire inst_store;  // storeÖ¸Áî±êÖ¾
+wire ls_word;     // Êı¾İÀàĞÍ£º1-×Ö£¨word£©£¬0-°ë×Ö»ò×Ö½Ú
+wire lb_sign;     // load×Ö½ÚÊÇ·ñ·ûºÅÀ©Õ¹£º1-·ûºÅÀ©Õ¹£¬0-ÎŞ·ûºÅÀ©Õ¹
 
 assign {
     inst_load,
@@ -66,18 +72,48 @@ assign {
     lb_sign
 } = mem_control;
 
-//======================== æ•°æ®å­˜å‚¨å™¨å†™æ“ä½œ ================================
-
-// å­˜å‚¨å™¨åœ°å€ç›´æ¥ç”±ALUè¿ç®—ç»“æœç»™å‡º
-assign dm_addr = alu_result;
-
-// æ ¹æ®storeæŒ‡ä»¤å’Œæ•°æ®ç±»å‹äº§ç”Ÿå†™ä½¿èƒ½ä¿¡å·
-always @ (*) begin
-    if (MEM_valid && inst_store) begin // å½“æœ‰æ•ˆä¸”ä¸ºstoreæŒ‡ä»¤æ—¶
-        if (ls_word) begin
-            dm_wen <= 4'b1111; // å†™æ•´å­—ï¼ˆ4å­—èŠ‚ï¼‰
+//========================== µØÖ·Î´¶ÔÆëÒì³£¼ì²â ==========================
+reg addr_error;
+always @(*) begin
+    addr_error = 1'b0;  // ³õÊ¼»¯ÎªÎŞÒì³£
+    if (MEM_valid) begin
+        if ((inst_load || inst_store) && ls_word && (alu_result[1:0] != 2'b00)) begin
+            // Èç¹ûÊÇ×Ö£¨word£©·ÃÎÊ£¬µ«µØÖ·Î´¶ÔÆë£¨µÍÁ½Î»·Ç0£©
+            addr_error = 1'b1;
         end
-        else begin // å†™å•å­—èŠ‚ï¼Œæ ¹æ®åœ°å€ä½2ä½å†³å®šä½¿èƒ½å“ªä¸€ä¸ªå­—èŠ‚
+        else if ((inst_load || inst_store) && !ls_word && alu_result[0] != 1'b0) begin
+            // Èç¹ûÊÇ°ë×Ö£¨halfword£©·ÃÎÊ£¬µ«µØÖ·Î´¶ÔÆë£¨×îµÍÎ»·Ç0£©
+            addr_error = 1'b1;
+        end
+    end
+end
+
+//========================== Òì³£ĞÅºÅºÏ²¢ ==========================
+reg exception_flag;
+reg [1:0] exception_type;
+
+always @(*) begin
+    // ³õÊ¼»¯Òì³£±êÖ¾ºÍÀàĞÍ
+    exception_flag = exception_flag_from_exe;
+    exception_type = exception_type_from_exe;
+
+    // ¼ì²âµØÖ·Î´¶ÔÆëÒì³£
+    if (addr_error) begin
+        exception_flag = 1'b1;
+        exception_type = 2'b01;  // µØÖ·Î´¶ÔÆëÒì³£
+    end
+end
+
+//========================== Êı¾İ´æ´¢Æ÷Ğ´²Ù×÷ ==========================
+assign dm_addr = alu_result;  // Êı¾İ´æ´¢Æ÷µØÖ·Ö±½ÓÓÉALU½á¹ûÌá¹©
+
+always @(*) begin
+    if (MEM_valid && inst_store && !exception_flag) begin
+        if (ls_word) begin
+            dm_wen <= 4'b1111; // Ğ´Õû¸ö×Ö£¨4×Ö½Ú£©
+        end
+        else begin
+            // Ğ´µ¥×Ö½Ú£¬¸ù¾İµØÖ·µÍÁ½Î»¾ö¶¨Ğ´ÄÄ¸ö×Ö½Ú
             case (dm_addr[1:0])
                 2'b00: dm_wen <= 4'b0001;
                 2'b01: dm_wen <= 4'b0010;
@@ -88,16 +124,16 @@ always @ (*) begin
         end
     end
     else begin
-        dm_wen <= 4'b0000; // éstoreæ“ä½œæ—¶ï¼Œä¸å†™æ•°æ®å­˜å‚¨å™¨
+        dm_wen <= 4'b0000; // ·Çstore²Ù×÷»òÒì³£Ê±£¬²»Ğ´Êı¾İ´æ´¢Æ÷
     end
 end
 
-// æ ¹æ®æ•°æ®ç±»å‹è°ƒæ•´å†™æ•°æ®
-always @ (*) begin
+always @(*) begin
     if (ls_word) begin
-        dm_wdata <= store_data; // å†™æ•´å­—æ•°æ®
+        dm_wdata <= store_data; // Ğ´Õû¸ö×Ö
     end
-    else begin // å†™å•å­—èŠ‚æ•°æ®æ—¶ï¼Œå°†æ•°æ®æ‰©å……åˆ°32ä½ï¼ŒæŒ‰åœ°å€ä½ä¸¤ä½è°ƒæ•´ä½ç½®
+    else begin
+        // Ğ´µ¥×Ö½Ú£¬¸ù¾İµØÖ·µÍÁ½Î»µ÷ÕûÊı¾İÎ»ÖÃ
         case (dm_addr[1:0])
             2'b00: dm_wdata <= store_data;
             2'b01: dm_wdata <= {16'd0, store_data[7:0], 8'd0};
@@ -108,52 +144,20 @@ always @ (*) begin
     end
 end
 
-//======================== å¤„ç†æ•°æ®å­˜å‚¨å™¨è¯»å– ================================
-
-// å¯¹äºloadæ“ä½œï¼Œéœ€è¦æ ¹æ®å­˜å‚¨å™¨åœ°å€å’Œæ•°æ®ç±»å‹è¿›è¡Œè¯»å–å¤„ç†
-wire load_sign;  // è¢«åŠ è½½æ•°æ®çš„ç¬¦å·ä½
-assign load_sign = (dm_addr[1:0] == 2'd0) ? dm_rdata[7]  :
-                   (dm_addr[1:0] == 2'd1) ? dm_rdata[15] :
-                   (dm_addr[1:0] == 2'd2) ? dm_rdata[23] :
-                                            dm_rdata[31];
-
-// è¯»å–å•å­—èŠ‚æ•°æ®ï¼ˆ8ä½ï¼‰æ‰©å±•åˆ°32ä½
-wire [31:0] load_result;
-assign load_result[7:0] = (dm_addr[1:0] == 2'd0) ? dm_rdata[7:0]  :
-                          (dm_addr[1:0] == 2'd1) ? dm_rdata[15:8] :
-                          (dm_addr[1:0] == 2'd2) ? dm_rdata[23:16] :
-                                                   dm_rdata[31:24];
-assign load_result[31:8] = ls_word ? dm_rdata[31:8] : // å¦‚æœæ˜¯å­—(load word)ï¼Œåˆ™ç›´æ¥æ‰©å±•
-                           {24{lb_sign & load_sign}}; // å¦åˆ™è¿›è¡Œç¬¦å·æ‰©å±•ï¼ˆlbï¼‰ï¼Œæ— ç¬¦å·åˆ™æ‰©0
-
-//======================== MEMé˜¶æ®µå®Œæˆä¿¡å·å¤„ç† ================================
-
-// å¯¹äºloadæŒ‡ä»¤ï¼ŒMEM_overä¿¡å·å»¶è¿Ÿä¸€æ‹ï¼Œå¦åˆ™ç›´æ¥ä¼ é€’MEM_valid
-reg MEM_valid_r;
-always @(posedge clk) begin
-    MEM_valid_r <= MEM_valid;
-end
-
-assign MEM_over = inst_load ? MEM_valid_r : MEM_valid;
-
-//======================== æ„é€  MEM->WBé˜¶æ®µæ€»çº¿ ================================
-
-// æ€»çº¿æ ¼å¼ï¼š
-// [69]      - rf_wen     : å¯„å­˜å™¨å†™ä½¿èƒ½
-// [68:64]   - rf_wdest   : å¯„å­˜å™¨å†™ç›®çš„åœ°å€
-// [63:32]   - mem_result : æ•°æ®å­˜å‚¨å™¨æ•°æ®æˆ–è€…ALUç»“æœ
-// [31:0]    - pc         : å½“å‰PCå€¼
-wire [31:0] mem_result;
-assign mem_result = inst_load ? load_result : alu_result;
-
+//========================== ¹¹Ôì MEM->WB ×ÜÏß ==========================
 assign MEM_WB_bus = {
-    rf_wen,
-    rf_wdest,
-    mem_result,
-    pc
+    exception_flag,    // [69] Òì³£±êÖ¾
+    exception_type,    // [68:67] Òì³£ÀàĞÍ
+    rf_wen,            // [66] ¼Ä´æÆ÷Ğ´Ê¹ÄÜ
+    rf_wdest,          // [65:61] ¼Ä´æÆ÷Ğ´Ä¿±êµØÖ·
+    alu_result,        // [60:29] ALU½á¹û»òÊı¾İ´æ´¢Æ÷¶ÁÈ¡½á¹û
+    pc                 // [28:0] µ±Ç°PCÖµ
 };
 
-//======================== è¾“å‡ºPC ================================
+//========================== MEM½×¶ÎÍê³ÉĞÅºÅ ==========================
+assign MEM_over = MEM_valid && !exception_flag;  // Òì³£Ê±×èÖ¹½×¶ÎÍê³É
+
+//========================== Êä³öµ±Ç°PC ==========================
 assign MEM_pc = pc;
 
 endmodule

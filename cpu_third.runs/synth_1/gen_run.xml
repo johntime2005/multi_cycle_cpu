@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7a200tfbg676-2" LaunchTime="1742813826" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/multi_cycle_cpu_display.dcp">
-  <File Type="PA-TCL" Name="multi_cycle_cpu_display.tcl"/>
+<GenRun Id="synth_1" LaunchPart="xc7a200tfbg676-2" LaunchTime="1744441618" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/multi_cycle_cpu_display.dcp">
   <File Type="REPORTS-TCL" Name="multi_cycle_cpu_display_reports.tcl"/>
-  <File Type="RDS-RDS" Name="multi_cycle_cpu_display.vds"/>
-  <File Type="RDS-PROPCONSTRS" Name="multi_cycle_cpu_display_drc_synth.rpt"/>
   <File Type="RDS-UTIL" Name="multi_cycle_cpu_display_utilization_synth.rpt"/>
   <File Type="RDS-UTIL-PB" Name="multi_cycle_cpu_display_utilization_synth.pb"/>
+  <File Type="PA-TCL" Name="multi_cycle_cpu_display.tcl"/>
+  <File Type="RDS-RDS" Name="multi_cycle_cpu_display.vds"/>
   <File Type="RDS-DCP" Name="multi_cycle_cpu_display.dcp"/>
-  <File Type="VDS-TIMINGSUMMARY" Name="multi_cycle_cpu_display_timing_summary_synth.rpt"/>
-  <File Type="VDS-TIMING-PB" Name="multi_cycle_cpu_display_timing_summary_synth.pb"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PSRCDIR/sources_1/imports/multi_cpu/lcd_module.dcp">
@@ -119,6 +116,24 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
+    <File Path="$PSRCDIR/sources_1/ip/inst_rom/inst_rom.coe">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/ip/data_ram/data_ram.coe">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/test.coe">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
     <Config>
       <Option Name="DesignMode" Val="RTL"/>
       <Option Name="TopModule" Val="multi_cycle_cpu_display"/>
@@ -163,11 +178,9 @@
     </Config>
   </FileSet>
   <Strategy Version="1" Minor="2">
-    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2024">
-      <Desc>Vivado Synthesis Defaults</Desc>
-    </StratHandle>
+    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2024"/>
     <Step Id="synth_design"/>
   </Strategy>
-  <BlockFileSet Type="BlockSrcs" Name="inst_rom"/>
   <BlockFileSet Type="BlockSrcs" Name="data_ram"/>
+  <BlockFileSet Type="BlockSrcs" Name="inst_rom"/>
 </GenRun>

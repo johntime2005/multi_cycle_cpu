@@ -1,257 +1,246 @@
 `timescale 1ns / 1ps
 //*************************************************************************
-//   > æ–‡ä»¶å: decode.v
-//   > æè¿°  :å¤šå‘¨æœŸCPUçš„è¯‘ç æ¨¡å—
-//   > ä½œè€…  : LOONGSON
-//   > æ—¥æœŸ  : 2016-04-14
+//   > ÎÄ¼şÃû: decode.v
+//   > ÃèÊö  : ¶àÖÜÆÚCPUµÄÒëÂëÄ£¿é£¨Ö§³ÖÒì³£´¦Àí£©
+//   > ×÷Õß  : LOONGSON
+//   > ÈÕÆÚ  : 2016-04-14
+//   > ĞŞ¸Ä  : Ìí¼ÓÒì³£´¦Àí»úÖÆ£¨2023-10-20£©
 //*************************************************************************
-module decode(                      // è¯‘ç çº§
-    input              ID_valid,    // è¯‘ç çº§æœ‰æ•ˆä¿¡å·
-    input      [ 63:0] IF_ID_bus_r, // IF->IDæ€»çº¿
-    input      [ 31:0] rs_value,    // ç¬¬ä¸€æºæ“ä½œæ•°å€¼
-    input      [ 31:0] rt_value,    // ç¬¬äºŒæºæ“ä½œæ•°å€¼
-    output     [  4:0] rs,          // ç¬¬ä¸€æºæ“ä½œæ•°åœ°å€ 
-    output     [  4:0] rt,          // ç¬¬äºŒæºæ“ä½œæ•°åœ°å€
-    output     [ 32:0] jbr_bus,     // è·³è½¬æ€»çº¿
-    output             jbr_not_link,// æŒ‡ä»¤ä¸ºè·³è½¬åˆ†æ”¯æŒ‡ä»¤,ä¸”élinkç±»æŒ‡ä»¤
-    output             ID_over,     // IDæ¨¡å—æ‰§è¡Œå®Œæˆ
-    output    [149:0]  ID_EXE_bus,  // ID->EXEæ€»çº¿
-    
-    //å±•ç¤ºPC
-    output     [ 31:0] ID_pc
+module decode(                      // ÒëÂëÄ£¿é
+    input              ID_valid,    // ÒëÂë½×¶ÎÓĞĞ§ĞÅºÅ
+    input      [63:0]  IF_ID_bus_r, // IF->ID×ÜÏß {PC, Ö¸Áî}
+    input      [31:0]  rs_value,    // µÚÒ»Ô´²Ù×÷ÊıÖµ
+    input      [31:0]  rt_value,    // µÚ¶şÔ´²Ù×÷ÊıÖµ
+    output     [4:0]   rs,          // µÚÒ»Ô´²Ù×÷ÊıµØÖ· 
+    output     [4:0]   rt,          // µÚ¶şÔ´²Ù×÷ÊıµØÖ·
+    output     [32:0]  jbr_bus,     // Ìø×ª×ÜÏß {jbr_taken, jbr_target}
+    output             jbr_not_link,// Ö¸ÁîÎªÌø×ª·ÖÖ§Ö¸Áî,ÇÒ·ÇlinkÀàÖ¸Áî
+    output             ID_over,     // IDÄ£¿éÖ´ĞĞÍê³É
+    output     [151:0] ID_EXE_bus,  // ID->EXE×ÜÏß£¨À©Õ¹Òì³£ĞÅºÅ£©
+    output     [31:0]  ID_pc,       // µ±Ç°PCÖµ£¨ÓÃÓÚÏÔÊ¾£©
+
+    // ĞÂÔöÒì³£ĞÅºÅ
+    output reg         exception_flag,  // Òì³£´¥·¢±êÖ¾
+    output reg [1:0]   exception_type,  // Òì³£ÀàĞÍ£¨01=·Ç·¨Ö¸Áî£©
+    output             eret_executed    // ERETÖ¸ÁîÖ´ĞĞĞÅºÅ
 );
-//-----{IF->IDæ€»çº¿}begin
-    wire [31:0] pc;
-    wire [31:0] inst;
-    assign {pc, inst} = IF_ID_bus_r;  // IF->IDæ€»çº¿ä¼ PCå’ŒæŒ‡ä»¤
-//-----{IF->IDæ€»çº¿}end
 
-//-----{æŒ‡ä»¤è¯‘ç }begin
-    wire [5:0] op;       
-    wire [4:0] rd;       
-    wire [4:0] sa;      
-    wire [5:0] funct;    
-    wire [15:0] imm;     
-    wire [15:0] offset;  
-    wire [25:0] target;  
+//-----{IF->ID×ÜÏß½âÎö}begin---------------------------------------
+wire [31:0] pc;
+wire [31:0] inst;
+assign {pc, inst} = IF_ID_bus_r;  // ½âÎöPCºÍÖ¸Áî
+//-----{IF->ID×ÜÏß½âÎö}end-----------------------------------------
 
-    assign op     = inst[31:26];  // æ“ä½œç 
-    assign rs     = inst[25:21];  // æºæ“ä½œæ•°1
-    assign rt     = inst[20:16];  // æºæ“ä½œæ•°2
-    assign rd     = inst[15:11];  // ç›®æ ‡æ“ä½œæ•°
-    assign sa     = inst[10:6];   // ç‰¹æ®ŠåŸŸï¼Œå¯èƒ½å­˜æ”¾åç§»é‡
-    assign funct  = inst[5:0];    // åŠŸèƒ½ç 
-    assign imm    = inst[15:0];   // ç«‹å³æ•°
-    assign offset = inst[15:0];   // åœ°å€åç§»é‡
-    assign target = inst[25:0];   // ç›®æ ‡åœ°å€
+//-----{Ö¸ÁîÒëÂë£¨²Ù×÷Âë½âÎö£©}begin-------------------------------
+wire [5:0] op;        // ²Ù×÷Âë
+wire [4:0] rd;        // Ä¿±ê²Ù×÷ÊıµØÖ·
+wire [4:0] sa;        // ÒÆÎ»Á¿
+wire [5:0] funct;     // ¹¦ÄÜÂë
+wire [15:0] imm;      // Á¢¼´Êı
+wire [15:0] offset;   // µØÖ·Æ«ÒÆ
+wire [25:0] target;   // Ìø×ªÄ¿±êµØÖ·
 
-    // å®ç°æŒ‡ä»¤åˆ—è¡¨
-    wire inst_ADDU, inst_SUBU , inst_SLT , inst_AND;
-    wire inst_NOR , inst_OR   , inst_XOR , inst_SLL;
-    wire inst_SRL , inst_ADDIU, inst_BEQ , inst_BNE;
-    wire inst_LW  , inst_SW   , inst_LUI , inst_J;
-    wire inst_SLTU, inst_JALR , inst_JR  , inst_SLLV;
-    wire inst_SRA , inst_SRAV , inst_SRLV, inst_SLTIU;
-    wire inst_SLTI, inst_BGEZ , inst_BGTZ, inst_BLEZ;
-    wire inst_BLTZ, inst_LB   , inst_LBU , inst_SB;
-    wire inst_ANDI, inst_ORI  , inst_XORI, inst_JAL;
-    wire op_zero;  // æ“ä½œç å…¨0
-    wire sa_zero;  // saåŸŸå…¨0
-    assign op_zero = ~(|op);
-    assign sa_zero = ~(|sa);
-    assign inst_ADDU  = op_zero & sa_zero    & (funct == 6'b100001);//æ— ç¬¦å·åŠ æ³•
-    assign inst_SUBU  = op_zero & sa_zero    & (funct == 6'b100011);//æ— ç¬¦å·å‡æ³•
-    assign inst_SLT   = op_zero & sa_zero    & (funct == 6'b101010);//å°äºåˆ™ç½®ä½
-    assign inst_SLTU  = op_zero & sa_zero    & (funct == 6'b101011);//æ— ç¬¦å·å°åˆ™ç½®
-    assign inst_JALR  = op_zero & (rt==5'd0) & (rd==5'd31) 
-                      & sa_zero & (funct == 6'b001001);          //è·³è½¬å¯„å­˜å™¨å¹¶é“¾æ¥ 
-    assign inst_JR    = op_zero & (rt==5'd0) & (rd==5'd0 )
-                      & sa_zero & (funct == 6'b001000);             //è·³è½¬å¯„å­˜å™¨
-    assign inst_AND   = op_zero & sa_zero    & (funct == 6'b100100);//ä¸è¿ç®—
-    assign inst_NOR   = op_zero & sa_zero    & (funct == 6'b100111);//æˆ–éè¿ç®—
-    assign inst_OR    = op_zero & sa_zero    & (funct == 6'b100101);//æˆ–è¿ç®—
-    assign inst_XOR   = op_zero & sa_zero    & (funct == 6'b100110);//å¼‚æˆ–è¿ç®—
-    assign inst_SLL   = op_zero & (rs==5'd0) & (funct == 6'b000000);//é€»è¾‘å·¦ç§»
-    assign inst_SLLV  = op_zero & sa_zero    & (funct == 6'b000100);//å˜é‡é€»è¾‘å·¦ç§»
-    assign inst_SRA   = op_zero & (rs==5'd0) & (funct == 6'b000011);//ç®—æœ¯å³ç§»
-    assign inst_SRAV  = op_zero & sa_zero    & (funct == 6'b000111);//å˜é‡ç®—æœ¯å³ç§»
-    assign inst_SRL   = op_zero & (rs==5'd0) & (funct == 6'b000010);//é€»è¾‘å³ç§»
-    assign inst_SRLV  = op_zero & sa_zero    & (funct == 6'b000110);//å˜é‡é€»è¾‘å³ç§»
-    assign inst_ADDIU = (op == 6'b001001);              //ç«‹å³æ•°æ— ç¬¦å·åŠ æ³•
-    assign inst_SLTI  = (op == 6'b001010);              //å°äºç«‹å³æ•°åˆ™ç½®ä½
-    assign inst_SLTIU = (op == 6'b001011);              //æ— ç¬¦å·å°äºç«‹å³æ•°åˆ™ç½®ä½
-    assign inst_BEQ   = (op == 6'b000100);              //åˆ¤æ–­ç›¸ç­‰è·³è½¬
-    assign inst_BGEZ  = (op == 6'b000001) & (rt==5'd1); //å¤§äºç­‰äº0è·³è½¬
-    assign inst_BGTZ  = (op == 6'b000111) & (rt==5'd0); //å¤§äº0è·³è½¬
-    assign inst_BLEZ  = (op == 6'b000110) & (rt==5'd0); //å°äºç­‰äº0è·³è½¬
-    assign inst_BLTZ  = (op == 6'b000001) & (rt==5'd0); //å°äº0è·³è½¬
-    assign inst_BNE   = (op == 6'b000101);              //åˆ¤æ–­ä¸ç­‰è·³è½¬
-    assign inst_LW    = (op == 6'b100011);              //ä»å†…å­˜è£…è½½å­—
-    assign inst_SW    = (op == 6'b101011);              //å‘å†…å­˜å­˜å‚¨å­—
-    assign inst_LB    = (op == 6'b100000);              //loadå­—èŠ‚ï¼ˆç¬¦å·æ‰©å±•ï¼‰
-    assign inst_LBU   = (op == 6'b100100);              //loadå­—èŠ‚ï¼ˆæ— ç¬¦å·æ‰©å±•ï¼‰
-    assign inst_SB    = (op == 6'b101000);              //å‘å†…å­˜å­˜å‚¨å­—èŠ‚
-    assign inst_ANDI  = (op == 6'b001100);              //ç«‹å³æ•°ä¸
-    assign inst_LUI   = (op == 6'b001111) & (rs==5'd0); //ç«‹å³æ•°è£…è½½é«˜åŠå­—èŠ‚
-    assign inst_ORI   = (op == 6'b001101);              //ç«‹å³æ•°æˆ–
-    assign inst_XORI  = (op == 6'b001110);              //ç«‹å³æ•°å¼‚æˆ–
-    assign inst_J     = (op == 6'b000010);              //è·³è½¬
-    assign inst_JAL   = (op == 6'b000011);              //è·³è½¬å’Œé“¾æ¥
-    
-    //è·³è½¬åˆ†æ”¯æŒ‡ä»¤
-    wire inst_jr;    //å¯„å­˜å™¨è·³è½¬æŒ‡ä»¤
-    wire inst_j_link;//é“¾æ¥è·³è½¬æŒ‡ä»¤
-    assign inst_jr     = inst_JALR | inst_JR;
-    assign inst_j_link = inst_JAL  | inst_JALR;
-    assign jbr_not_link= inst_J    | inst_JR      //å…¨éƒ¨élinkç±»è·³è½¬æŒ‡ä»¤
-                       | inst_BEQ  | inst_BNE  | inst_BGEZ
-                       | inst_BGTZ | inst_BLEZ | inst_BLTZ;
-        
-    //load store
-    wire inst_load;
-    wire inst_store;
-    assign inst_load  = inst_LW | inst_LB | inst_LBU;  // loadæŒ‡ä»¤
-    assign inst_store = inst_SW | inst_SB;             // storeæŒ‡ä»¤
-    
-    //aluæ“ä½œåˆ†ç±»
-    wire inst_add, inst_sub, inst_slt,inst_sltu;
-    wire inst_and, inst_nor, inst_or, inst_xor;
-    wire inst_sll, inst_srl, inst_sra,inst_lui;
-    assign inst_add = inst_ADDU  | inst_ADDIU | inst_load
-                     | inst_store | inst_j_link;            // åšåŠ æ³•
-    assign inst_sub = inst_SUBU;                            // å‡æ³•
-    assign inst_slt = inst_SLT | inst_SLTI;                 // æœ‰ç¬¦å·å°äºç½®ä½
-    assign inst_sltu= inst_SLTIU | inst_SLTU;               // æ— ç¬¦å·å°äºç½®ä½
-    assign inst_and = inst_AND | inst_ANDI;                 // é€»è¾‘ä¸
-    assign inst_nor = inst_NOR;                             // é€»è¾‘æˆ–é
-    assign inst_or  = inst_OR  | inst_ORI;                  // é€»è¾‘æˆ–
-    assign inst_xor = inst_XOR | inst_XORI;                 // é€»è¾‘å¼‚æˆ–
-    assign inst_sll = inst_SLL | inst_SLLV;                 // é€»è¾‘å·¦ç§»
-    assign inst_srl = inst_SRL | inst_SRLV;                 // é€»è¾‘å³ç§»
-    assign inst_sra = inst_SRA | inst_SRAV;                 // ç®—æœ¯å³ç§»
-    assign inst_lui = inst_LUI;                             // ç«‹å³æ•°è£…è½½é«˜ä½
-    
-    //ä½¿ç”¨saåŸŸä½œä¸ºåç§»é‡çš„ç§»ä½æŒ‡ä»¤
-    wire inst_shf_sa;
-    assign inst_shf_sa =  inst_SLL | inst_SRL | inst_SRA;
-    
-    //ä¾æ®ç«‹å³æ•°æ‰©å±•æ–¹å¼åˆ†ç±»
-    wire inst_imm_zero; //ç«‹å³æ•°0æ‰©å±•
-    wire inst_imm_sign; //ç«‹å³æ•°ç¬¦å·æ‰©å±•
-    assign inst_imm_zero = inst_ANDI  | inst_LUI  | inst_ORI | inst_XORI;
-    assign inst_imm_sign = inst_ADDIU | inst_SLTI | inst_SLTIU
-                         | inst_load  | inst_store;
-    
-    //ä¾æ®ç›®çš„å¯„å­˜å™¨å·åˆ†ç±»
-    wire inst_wdest_rt;  // å¯„å­˜å™¨å †å†™å…¥åœ°å€ä¸ºrtçš„æŒ‡ä»¤
-    wire inst_wdest_31;  // å¯„å­˜å™¨å †å†™å…¥åœ°å€ä¸º31çš„æŒ‡ä»¤
-    wire inst_wdest_rd;  // å¯„å­˜å™¨å †å†™å…¥åœ°å€ä¸ºrdçš„æŒ‡ä»¤
-    assign inst_wdest_rt = inst_imm_zero | inst_ADDIU | inst_SLTI
-                         | inst_SLTIU    | inst_load;
-    assign inst_wdest_31 = inst_JAL;
-    assign inst_wdest_rd = inst_ADDU | inst_SUBU | inst_SLT  | inst_SLTU
-                         | inst_JALR | inst_AND  | inst_NOR  | inst_OR
-                         | inst_XOR  | inst_SLL  | inst_SLLV | inst_SRA 
-                         | inst_SRAV | inst_SRL  | inst_SRLV;
-//-----{æŒ‡ä»¤è¯‘ç }end
+assign op     = inst[31:26];  // ²Ù×÷Âë
+assign rs     = inst[25:21];  // Ô´²Ù×÷Êı1µØÖ·
+assign rt     = inst[20:16];  // Ô´²Ù×÷Êı2µØÖ·
+assign rd     = inst[15:11];  // Ä¿±ê²Ù×÷ÊıµØÖ·
+assign sa     = inst[10:6];   // ÒÆÎ»Á¿
+assign funct  = inst[5:0];    // ¹¦ÄÜÂë
+assign imm    = inst[15:0];   // Á¢¼´Êı
+assign offset = inst[15:0];   // µØÖ·Æ«ÒÆ
+assign target = inst[25:0];   // Ìø×ªÄ¿±êµØÖ·
 
-//-----{åˆ†æ”¯æŒ‡ä»¤æ‰§è¡Œ}begin
-    //æ— æ¡ä»¶è·³è½¬
-    wire        j_taken;
-    wire [31:0] j_target;
-    assign j_taken = inst_J | inst_JAL | inst_jr;
-    //å¯„å­˜å™¨è·³è½¬åœ°å€ä¸ºrs_value,å…¶ä»–è·³è½¬ä¸º{pc[31:28],target,2'b00}
-    assign j_target = inst_jr ? rs_value : {pc[31:28],target,2'b00};
+//-----{Ö¸ÁîÀàĞÍÊ¶±ğ}begin-----------------------------------------
+// ºÏ·¨Ö¸Áî¶¨Òå£¨¸²¸ÇËùÓĞÖ§³ÖµÄÖ¸Áî£©
+wire inst_ADDU, inst_SUBU, inst_SLT, inst_AND;
+wire inst_NOR, inst_OR, inst_XOR, inst_SLL;
+wire inst_SRL, inst_ADDIU, inst_BEQ, inst_BNE;
+wire inst_LW, inst_SW, inst_LUI, inst_J;
+wire inst_SLTU, inst_JALR, inst_JR, inst_SLLV;
+wire inst_SRA, inst_SRAV, inst_SRLV, inst_SLTIU;
+wire inst_SLTI, inst_BGEZ, inst_BGTZ, inst_BLEZ;
+wire inst_BLTZ, inst_LB, inst_LBU, inst_SB;
+wire inst_ANDI, inst_ORI, inst_XORI, inst_JAL;
 
-    //branchæŒ‡ä»¤
-    wire rs_equql_rt;
-    wire rs_ez;
-    wire rs_ltz;
-    assign rs_equql_rt = (rs_value == rt_value);   // GPR[rs]==GPR[rt]
-    assign rs_ez       = ~(|rs_value);             // rså¯„å­˜å™¨å€¼ä¸º0
-    assign rs_ltz      = rs_value[31];             // rså¯„å­˜å™¨å€¼å°äº0
-    wire br_taken;
-    wire [31:0] br_target;
-    assign br_taken = inst_BEQ  & rs_equql_rt      // ç›¸ç­‰è·³è½¬
-                    | inst_BNE  & ~rs_equql_rt     // ä¸ç­‰è·³è½¬
-                    | inst_BGEZ & ~rs_ltz          // å¤§äºç­‰äº0è·³è½¬
-                    | inst_BGTZ & ~rs_ltz & ~rs_ez // å¤§äº0è·³è½¬
-                    | inst_BLEZ & (rs_ltz | rs_ez) // å°äºç­‰äº0è·³è½¬
-                    | inst_BLTZ & rs_ltz;          // å°äº0è·³è½¬
-    // åˆ†æ”¯è·³è½¬ç›®æ ‡åœ°å€ï¼šPC=PC+offset<<2
-    assign br_target[31:2] = pc[31:2] + {{14{offset[15]}}, offset};  
-    assign br_target[1:0]  = pc[1:0];
-    
-    //jump and branchæŒ‡ä»¤
-    wire jbr_taken;
-    wire [31:0] jbr_target;
-    assign jbr_taken  = j_taken | br_taken; 
-    assign jbr_target = j_taken ? j_target : br_target;
-    
-    //IDåˆ°IFçš„è·³è½¬æ€»çº¿
-    assign jbr_bus = {jbr_taken, jbr_target};
-//-----{åˆ†æ”¯æŒ‡ä»¤æ‰§è¡Œ}end
+wire op_zero;  // ²Ù×÷ÂëÈ«0£¨RĞÍÖ¸Áî£©
+wire sa_zero;  // saÓòÈ«0
+assign op_zero = ~(|op);
+assign sa_zero = ~(|sa);
 
-//-----{IDæ‰§è¡Œå®Œæˆ}begin
-    //ç”±äºæ˜¯å¤šå‘¨æœŸçš„ï¼Œä¸å­˜åœ¨æ•°æ®ç›¸å…³
-    //æ•…IDæ¨¡å—ä¸€æ‹å°±èƒ½å®Œæˆæ‰€æœ‰æ“ä½œ
-    //æ•…ID_validå³æ˜¯ID_overä¿¡å·
-    assign ID_over = ID_valid;
-//-----{IDæ‰§è¡Œå®Œæˆ}end
+// RĞÍÖ¸ÁîÊ¶±ğ
+assign inst_ADDU  = op_zero & sa_zero    & (funct == 6'b100001); // ÎŞ·ûºÅ¼Ó
+assign inst_SUBU  = op_zero & sa_zero    & (funct == 6'b100011); // ÎŞ·ûºÅ¼õ
+assign inst_SLT   = op_zero & sa_zero    & (funct == 6'b101010); // ÓĞ·ûºÅĞ¡ÓÚÖÃÎ»
+assign inst_SLTU  = op_zero & sa_zero    & (funct == 6'b101011); // ÎŞ·ûºÅĞ¡ÓÚÖÃÎ»
+assign inst_JALR  = op_zero & (rt==5'd0) & (rd==5'd31) & sa_zero & (funct == 6'b001001); // Ìø×ª²¢Á´½Ó
+assign inst_JR    = op_zero & (rt==5'd0) & (rd==5'd0)  & sa_zero & (funct == 6'b001000); // Ìø×ª
+assign inst_AND   = op_zero & sa_zero    & (funct == 6'b100100); // Âß¼­Óë
+assign inst_NOR   = op_zero & sa_zero    & (funct == 6'b100111); // Âß¼­»ò·Ç
+assign inst_OR    = op_zero & sa_zero    & (funct == 6'b100101); // Âß¼­»ò
+assign inst_XOR   = op_zero & sa_zero    & (funct == 6'b100110); // Âß¼­Òì»ò
+assign inst_SLL   = op_zero & (rs==5'd0) & (funct == 6'b000000); // Âß¼­×óÒÆ
+assign inst_SLLV  = op_zero & sa_zero    & (funct == 6'b000100); // ±äÁ¿Âß¼­×óÒÆ
+assign inst_SRA   = op_zero & (rs==5'd0) & (funct == 6'b000011); // ËãÊõÓÒÒÆ
+assign inst_SRAV  = op_zero & sa_zero    & (funct == 6'b000111); // ±äÁ¿ËãÊõÓÒÒÆ
+assign inst_SRL   = op_zero & (rs==5'd0) & (funct == 6'b000010); // Âß¼­ÓÒÒÆ
+assign inst_SRLV  = op_zero & sa_zero    & (funct == 6'b000110); // ±äÁ¿Âß¼­ÓÒÒÆ
 
-//-----{ID->EXEæ€»çº¿}begin
-    //EXEéœ€è¦ç”¨åˆ°çš„ä¿¡æ¯
-    //ALUä¸¤ä¸ªæºæ“ä½œæ•°å’Œæ§åˆ¶ä¿¡å·
-    wire [11:0] alu_control;
-    wire [31:0] alu_operand1;
-    wire [31:0] alu_operand2;
-    
-    //æ‰€è°“é“¾æ¥è·³è½¬æ˜¯å°†è·³è½¬è¿”å›çš„PCå€¼å­˜æ”¾åˆ°31å·å¯„å­˜å™¨é‡Œ
-    //åœ¨å¤šå‘¨æœŸCPUé‡Œï¼Œä¸è€ƒè™‘å»¶è¿Ÿæ§½ï¼Œæ•…é“¾æ¥è·³è½¬éœ€è¦è®¡ç®—PC+4ï¼Œå­˜æ”¾åˆ°31å·å¯„å­˜å™¨é‡Œ
-    assign alu_operand1 = inst_j_link ? pc :  
-                          inst_shf_sa ? {27'd0,sa} : rs_value;
-    assign alu_operand2 = inst_j_link ? 32'd4 :
-                          inst_imm_zero ? {16'd0, imm} :
-                          inst_imm_sign ?  {{16{imm[15]}}, imm} : rt_value;
-    assign alu_control = {inst_add,        // ALUæ“ä½œç ï¼Œç‹¬çƒ­ç¼–ç 
-                          inst_sub,
-                          inst_slt,
-                          inst_sltu,
-                          inst_and,
-                          inst_nor,
-                          inst_or, 
-                          inst_xor,
-                          inst_sll,
-                          inst_srl,
-                          inst_sra,
-                          inst_lui};
-    //è®¿å­˜éœ€è¦ç”¨åˆ°çš„load/storeä¿¡æ¯
-    wire lb_sign;  //loadä¸€å­—èŠ‚ä¸ºæœ‰ç¬¦å·load
-    wire ls_word;  //load/storeä¸ºå­—èŠ‚è¿˜æ˜¯å­—,0:byte;1:word
-    wire [3:0] mem_control;  //MEMéœ€è¦ä½¿ç”¨çš„æ§åˆ¶ä¿¡å·
-    wire [31:0] store_data;  //storeæ“ä½œçš„å­˜çš„æ•°æ®
-    assign lb_sign = inst_LB;
-    assign ls_word = inst_LW | inst_SW;
-    assign mem_control = {inst_load,
-                          inst_store,
-                          ls_word,
-                          lb_sign };
-                          
-    //å†™å›éœ€è¦ç”¨åˆ°çš„ä¿¡æ¯
-    wire       rf_wen;    //å†™å›çš„å¯„å­˜å™¨å†™ä½¿èƒ½
-    wire [4:0] rf_wdest;  //å†™å›çš„ç›®çš„å¯„å­˜å™¨
-    assign rf_wen   = inst_wdest_rt | inst_wdest_31 | inst_wdest_rd;
-    assign rf_wdest = inst_wdest_rt ? rt :      //åœ¨ä¸å†™å¯„å­˜å™¨å †æ—¶ï¼Œè®¾ç½®ä¸º0
+// IĞÍÖ¸ÁîÊ¶±ğ
+assign inst_ADDIU = (op == 6'b001001);              // ÎŞ·ûºÅÁ¢¼´Êı¼Ó
+assign inst_SLTI  = (op == 6'b001010);              // ÓĞ·ûºÅÁ¢¼´ÊıĞ¡ÓÚÖÃÎ»
+assign inst_SLTIU = (op == 6'b001011);              // ÎŞ·ûºÅÁ¢¼´ÊıĞ¡ÓÚÖÃÎ»
+assign inst_BEQ   = (op == 6'b000100);              // µÈÓÚ·ÖÖ§
+assign inst_BGEZ  = (op == 6'b000001) & (rt==5'd1); // ´óÓÚµÈÓÚÁã·ÖÖ§
+assign inst_BGTZ  = (op == 6'b000111) & (rt==5'd0); // ´óÓÚÁã·ÖÖ§
+assign inst_BLEZ  = (op == 6'b000110) & (rt==5'd0); // Ğ¡ÓÚµÈÓÚÁã·ÖÖ§
+assign inst_BLTZ  = (op == 6'b000001) & (rt==5'd0); // Ğ¡ÓÚÁã·ÖÖ§
+assign inst_BNE   = (op == 6'b000101);              // ²»µÈÓÚ·ÖÖ§
+assign inst_LW    = (op == 6'b100011);              // ¼ÓÔØ×Ö
+assign inst_SW    = (op == 6'b101011);              // ´æ´¢×Ö
+assign inst_LB    = (op == 6'b100000);              // ¼ÓÔØ×Ö½Ú£¨·ûºÅÀ©Õ¹£©
+assign inst_LBU   = (op == 6'b100100);              // ¼ÓÔØ×Ö½Ú£¨ÎŞ·ûºÅÀ©Õ¹£©
+assign inst_SB    = (op == 6'b101000);              // ´æ´¢×Ö½Ú
+assign inst_ANDI  = (op == 6'b001100);              // Á¢¼´ÊıÂß¼­Óë
+assign inst_LUI   = (op == 6'b001111) & (rs==5'd0); // Á¢¼´Êı¼ÓÔØ¸ßÎ»
+assign inst_ORI   = (op == 6'b001101);              // Á¢¼´ÊıÂß¼­»ò
+assign inst_XORI  = (op == 6'b001110);              // Á¢¼´ÊıÂß¼­Òì»ò
+
+// JĞÍÖ¸ÁîÊ¶±ğ
+assign inst_J     = (op == 6'b000010);              // Ìø×ª
+assign inst_JAL   = (op == 6'b000011);              // Ìø×ª²¢Á´½Ó
+
+//-----{ERETÖ¸ÁîÊ¶±ğ£¨COP0Ö¸Áî£©}begin-----------------------------
+wire inst_ERET = (op == 6'b010000) && (funct == 6'b011000); // ERETÖ¸Áî
+assign eret_executed = inst_ERET;  // Êä³öERETÖ´ĞĞĞÅºÅ
+//-----{ERETÖ¸ÁîÊ¶±ğ}end-------------------------------------------
+
+//-----{·Ç·¨Ö¸Áî¼ì²â}begin-----------------------------------------
+// ¼ì²éÖ¸ÁîÊÇ·ñÎ´±»ÈÎºÎºÏ·¨Ö¸Áî¸²¸Ç
+wire valid_instruction = 
+    inst_ADDU | inst_SUBU | inst_SLT | inst_SLTU | inst_JALR | inst_JR |
+    inst_AND | inst_NOR | inst_OR | inst_XOR | inst_SLL | inst_SLLV |
+    inst_SRA | inst_SRAV | inst_SRL | inst_SRLV | inst_ADDIU | inst_SLTI |
+    inst_SLTIU | inst_BEQ | inst_BGEZ | inst_BGTZ | inst_BLEZ | inst_BLTZ |
+    inst_BNE | inst_LW | inst_SW | inst_LB | inst_LBU | inst_SB | inst_ANDI |
+    inst_LUI | inst_ORI | inst_XORI | inst_J | inst_JAL | inst_ERET;
+
+always @(*) begin
+    if (ID_valid && !valid_instruction) begin  // ½öÔÚÒëÂëÓĞĞ§Ê±¼ì²â
+        exception_flag = 1'b1;
+        exception_type = 2'b01;  // Òì³£ÀàĞÍ£º·Ç·¨Ö¸Áî
+    end else begin
+        exception_flag = 1'b0;
+        exception_type = 2'b00;  // ÎŞÒì³£
+    end
+end
+//-----{·Ç·¨Ö¸Áî¼ì²â}end-------------------------------------------
+
+//-----{Ìø×ªÂß¼­}begin---------------------------------------------
+wire inst_jr;     // ¼Ä´æÆ÷Ìø×ªÖ¸Áî
+wire inst_j_link; // Á´½ÓÌø×ªÖ¸Áî
+assign inst_jr     = inst_JALR | inst_JR;
+assign inst_j_link = inst_JAL  | inst_JALR;
+assign jbr_not_link= inst_J    | inst_JR | inst_BEQ | inst_BNE | 
+                     inst_BGEZ | inst_BGTZ | inst_BLEZ | inst_BLTZ;
+
+// Ìø×ªÄ¿±ê¼ÆËã
+wire        j_taken;
+wire [31:0] j_target;
+assign j_taken = inst_J | inst_JAL | inst_jr;
+assign j_target = inst_jr ? rs_value : {pc[31:28], target, 2'b00};
+
+// ·ÖÖ§Âß¼­
+wire rs_equal_rt = (rs_value == rt_value);
+wire rs_ez       = ~(|rs_value);
+wire rs_ltz      = rs_value[31];
+wire br_taken;
+wire [31:0] br_target;
+assign br_taken = inst_BEQ  & rs_equal_rt    |
+                  inst_BNE  & ~rs_equal_rt   |
+                  inst_BGEZ & ~rs_ltz        |
+                  inst_BGTZ & ~rs_ltz & ~rs_ez |
+                  inst_BLEZ & (rs_ltz | rs_ez) |
+                  inst_BLTZ & rs_ltz;
+assign br_target[31:2] = pc[31:2] + {{14{offset[15]}}, offset};
+assign br_target[1:0]  = pc[1:0];
+
+// Ìø×ª×ÜÏßÉú³É
+wire jbr_taken;
+wire [31:0] jbr_target;
+assign jbr_taken  = j_taken | br_taken;
+assign jbr_target = j_taken ? j_target : br_target;
+assign jbr_bus = {jbr_taken, jbr_target};
+//-----{Ìø×ªÂß¼­}end-----------------------------------------------
+
+//-----{IDÖ´ĞĞÍê³É±êÖ¾}begin----------------------------------------
+assign ID_over = ID_valid;  // ID½×¶ÎÒ»ÖÜÆÚÍê³É
+//-----{IDÖ´ĞĞÍê³É±êÖ¾}end------------------------------------------
+
+//-----{ID->EXE×ÜÏßÉú³É}begin---------------------------------------
+// ALU²Ù×÷ÊıÉú³É
+wire [11:0] alu_control;
+wire [31:0] alu_operand1;
+wire [31:0] alu_operand2;
+assign alu_operand1 = inst_j_link ? pc : 
+                      inst_shf_sa ? {27'd0, sa} : rs_value;
+assign alu_operand2 = inst_j_link ? 32'd4 :
+                      inst_imm_zero ? {16'd0, imm} :
+                      inst_imm_sign ? {{16{imm[15]}}, imm} : rt_value;
+
+// ALU¿ØÖÆĞÅºÅ
+assign alu_control = {
+    inst_add,   // [11] ¼Ó
+    inst_sub,   // [10] ¼õ
+    inst_slt,   // [9]  ÓĞ·ûºÅĞ¡ÓÚÖÃÎ»
+    inst_sltu,  // [8]  ÎŞ·ûºÅĞ¡ÓÚÖÃÎ»
+    inst_and,   // [7]  Âß¼­Óë
+    inst_nor,   // [6]  Âß¼­»ò·Ç
+    inst_or,    // [5]  Âß¼­»ò
+    inst_xor,   // [4]  Âß¼­Òì»ò
+    inst_sll,   // [3]  Âß¼­×óÒÆ
+    inst_srl,   // [2]  Âß¼­ÓÒÒÆ
+    inst_sra,   // [1]  ËãÊõÓÒÒÆ
+    inst_lui    // [0]  ¼ÓÔØ¸ßÎ»
+};
+
+// MEM¿ØÖÆĞÅºÅ
+wire lb_sign = inst_LB;
+wire ls_word = inst_LW | inst_SW;
+wire [3:0] mem_control = {inst_load, inst_store, ls_word, lb_sign};
+
+// ¼Ä´æÆ÷»ØĞ´¿ØÖÆ
+wire inst_wdest_rt = inst_imm_zero | inst_ADDIU | inst_SLTI | 
+                     inst_SLTIU | inst_load;
+wire inst_wdest_31 = inst_JAL;
+wire inst_wdest_rd = inst_ADDU | inst_SUBU | inst_SLT | inst_SLTU | 
+                     inst_JALR | inst_AND | inst_NOR | inst_OR | 
+                     inst_XOR | inst_SLL | inst_SLLV | inst_SRA | 
+                     inst_SRAV | inst_SRL | inst_SRLV;
+wire rf_wen = inst_wdest_rt | inst_wdest_31 | inst_wdest_rd;
+wire [4:0] rf_wdest = inst_wdest_rt ? rt :
                       inst_wdest_31 ? 5'd31 :
                       inst_wdest_rd ? rd : 5'd0;
-    assign store_data = rt_value;
-   assign ID_EXE_bus = {alu_control,alu_operand1, alu_operand2, //EXEéœ€è¦ä½¿ç”¨çš„ä¿¡æ¯
-                        mem_control,store_data,                 //MEMéœ€è¦ä½¿ç”¨çš„ä¿¡å·
-                        rf_wen, rf_wdest,                       //WBéœ€è¦ä½¿ç”¨çš„ä¿¡å·
-                        pc};                                    //PCå€¼
-//-----{ID->EXEæ€»çº¿}end
 
-//-----{å±•ç¤ºIDæ¨¡å—çš„PCå€¼}begin
-    assign ID_pc = pc;
-//-----{å±•ç¤ºIDæ¨¡å—çš„PCå€¼}end
+// ´æ´¢Êı¾İ
+wire [31:0] store_data = rt_value;
+
+// ID->EXE×ÜÏß£¨À©Õ¹Òì³£ĞÅºÅ£©
+assign ID_EXE_bus = {
+    exception_type,     // [151:150] Òì³£ÀàĞÍ
+    exception_flag,     // [149]     Òì³£±êÖ¾
+    alu_control,        // [148:137] ALU¿ØÖÆ
+    alu_operand1,       // [136:105] ALU²Ù×÷Êı1
+    alu_operand2,       // [104:73]  ALU²Ù×÷Êı2
+    mem_control,        // [72:69]   MEM¿ØÖÆ
+    store_data,         // [68:37]   ´æ´¢Êı¾İ
+    rf_wen,             // [36]      ¼Ä´æÆ÷Ğ´Ê¹ÄÜ
+    rf_wdest,           // [35:31]   Ä¿±ê¼Ä´æÆ÷µØÖ·
+    pc                  // [30:0]    PCÖµ
+};
+//-----{ID->EXE×ÜÏßÉú³É}end-----------------------------------------
+
+//-----{ÏÔÊ¾ĞÅºÅ}begin----------------------------------------------
+assign ID_pc = pc;  // Êä³öµ±Ç°PCÖµ
+//-----{ÏÔÊ¾ĞÅºÅ}end------------------------------------------------
+
 endmodule

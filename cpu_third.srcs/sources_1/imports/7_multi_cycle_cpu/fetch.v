@@ -1,81 +1,84 @@
 `timescale 1ns / 1ps
 //*************************************************************************
-//   > æ–‡ä»¶å: fetch.v
-//   > æè¿°  :å¤šå‘¨æœŸCPUçš„å–æŒ‡æ¨¡å—
-//   > ä½œè€…  : LOONGSON
-//   > æ—¥æœŸ  : 2016-04-14
+//   > ÎÄ¼şÃû: fetch.v
+//   > ÃèÊö  : ¶àÖÜÆÚCPUµÄÈ¡Ö¸Ä£¿é£¨Ö§³ÖÒì³£´¦Àí£©
+//   > ×÷Õß  : LOONGSON
+//   > ÈÕÆÚ  : 2016-04-14
+//   > ĞŞ¸Ä  : Ìí¼ÓÒì³£´¦Àí»úÖÆ£¨2023-10-20£©
 //*************************************************************************
-`define STARTADDR 32'd0   // ç¨‹åºèµ·å§‹åœ°å€ä¸º0
-module fetch(                    // å–æŒ‡çº§
-    input             clk,       // æ—¶é’Ÿ
-    input             resetn,    // å¤ä½ä¿¡å·ï¼Œä½ç”µå¹³æœ‰æ•ˆ
-    input             IF_valid,  // å–æŒ‡çº§æœ‰æ•ˆä¿¡å·
-    input             next_fetch,// å–ä¸‹ä¸€æ¡æŒ‡ä»¤ï¼Œç”¨æ¥é”å­˜PCå€¼
-    input      [31:0] inst,      // inst_romå–å‡ºçš„æŒ‡ä»¤
-    input      [32:0] jbr_bus,   // è·³è½¬æ€»çº¿
-    output     [31:0] inst_addr, // å‘å¾€inst_romçš„å–æŒ‡åœ°å€
-     output reg        IF_over,   // IFæ¨¡å—æ‰§è¡Œå®Œæˆ
-    output     [63:0] IF_ID_bus, // IF->IDæ€»çº¿
+`define STARTADDR     32'd0       // ³ÌĞòÆğÊ¼µØÖ·Îª0
+`define EXCEPTION_VEC 32'h80000080 // MIPS±ê×¼Òì³£Èë¿ÚµØÖ·
+
+module fetch(
+    // »ù´¡ĞÅºÅ
+    input             clk,        // Ê±ÖÓ
+    input             resetn,     // ¸´Î»ĞÅºÅ£¬µÍµçÆ½ÓĞĞ§
+    input             IF_valid,   // È¡Ö¸½×¶ÎÓĞĞ§ĞÅºÅ
+    input             next_fetch, // È¡ÏÂÒ»ÌõÖ¸Áî£¬ÓÃÓÚËø´æPCÖµ
     
-    //å±•ç¤ºPCå’Œå–å‡ºçš„æŒ‡ä»¤
-    output     [31:0] IF_pc,
-    output     [31:0] IF_inst
+    // Ö¸ÁîºÍÊı¾İ
+    input      [31:0] inst,       // ´Óinst_romÈ¡³öµÄÖ¸Áî
+    input      [32:0] jbr_bus,    // Ìø×ª×ÜÏß {jbr_taken, jbr_target}
+    
+    // Òì³£´¦ÀíĞÂÔöĞÅºÅ
+    input             exception_triggered, // Òì³£´¥·¢ĞÅºÅ£¨À´×Ô¿ØÖÆÄ£¿é£©
+    input      [31:0] EPC,        // Òì³£³ÌĞò¼ÆÊıÆ÷£¨À´×Ôregfile.v£©
+    input             eret_executed, // ERETÖ¸ÁîÖ´ĞĞĞÅºÅ
+    
+    // Êä³öĞÅºÅ
+    output     [31:0] inst_addr,  // ·¢Íùinst_romµÄÈ¡Ö¸µØÖ·
+    output reg        IF_over,    // IFÄ£¿éÖ´ĞĞÍê³É
+    output     [63:0] IF_ID_bus,  // IF->ID×ÜÏß {PC, inst}
+    output     [31:0] IF_pc,      // µ±Ç°PCÖµ£¨ÓÃÓÚÏÔÊ¾£©
+    output     [31:0] IF_inst     // µ±Ç°Ö¸Áî£¨ÓÃÓÚÏÔÊ¾£©
 );
 
-//-----{ç¨‹åºè®¡æ•°å™¨PC}begin
-    wire [31:0] next_pc; //ä¸‹ä¸€æ¡pcå€¼
-    wire [31:0] seq_pc;  //é¡ºåºpcå€¼
-     reg  [31:0] pc;   //pcå¯„å­˜å™¨
-    //è·³è½¬pc
-    wire        jbr_taken;  //æ˜¯å¦è·³è½¬
-    wire [31:0] jbr_target;  //è·³è½¬ç›®æ ‡åœ°å€
-    assign {jbr_taken, jbr_target} = jbr_bus; //è·³è½¬æ€»çº¿
+//-----{³ÌĞò¼ÆÊıÆ÷PC}begin---------------------------------------------
+    reg  [31:0] pc;               // PC¼Ä´æÆ÷
+    wire [31:0] next_pc;          // ÏÂÒ»ÖÜÆÚPCÖµ
+    wire [31:0] seq_pc;           // Ë³ĞòPCÖµ£¨PC+4£©
+    wire        jbr_taken;        // Ìø×ªÊ¹ÄÜ
+    wire [31:0] jbr_target;       // Ìø×ªÄ¿±êµØÖ·
     
-    assign seq_pc[31:2]  = pc[31:2] + 1'b1;   //ä¸‹ä¸€æŒ‡ä»¤åœ°å€ï¼šPC=PC+4
-    assign seq_pc[1 :0]  = pc[1:0];           //ä½ä½ä¿æŒä¸å˜
-
-    // æ–°æŒ‡ä»¤ï¼šè‹¥æŒ‡ä»¤è·³è½¬ï¼Œä¸ºè·³è½¬åœ°å€ï¼›å¦åˆ™ä¸ºä¸‹ä¸€æŒ‡ä»¤
-    assign next_pc = jbr_taken ? jbr_target : seq_pc; 
+    assign {jbr_taken, jbr_target} = jbr_bus; // ½âÎöÌø×ª×ÜÏß
     
-    always @(posedge clk)    // PCç¨‹åºè®¡æ•°å™¨
-    begin
-        if (!resetn)
-        begin
-            pc <= `STARTADDR; // å¤ä½ï¼Œå–ç¨‹åºèµ·å§‹åœ°å€
+    // ¼ÆËãË³ĞòPC£¨PC+4£©
+    assign seq_pc[31:2] = pc[31:2] + 1'b1;
+    assign seq_pc[1:0]  = pc[1:0];
+    
+    // ÏÂÒ»PCÖµÓÅÏÈ¼¶£ºÒì³£ > ERET > Ìø×ª > Ë³ĞòÖ´ĞĞ
+    assign next_pc = exception_triggered ? `EXCEPTION_VEC : // Òì³£Ìø×ª
+                     eret_executed       ? EPC :            // ERET·µ»Ø
+                     jbr_taken           ? jbr_target :     // ·ÖÖ§/Ìø×ª
+                                           seq_pc;         // Ë³ĞòÖ´ĞĞ
+    
+    // PC¼Ä´æÆ÷¸üĞÂ
+    always @(posedge clk) begin
+        if (!resetn) begin
+            pc <= `STARTADDR;     // ¸´Î»Ê±PC³õÊ¼»¯Îª0
         end
-        else if (next_fetch)
-        begin
-            pc <= next_pc;    // ä¸å¤ä½ï¼Œå–æ–°æŒ‡ä»¤
+        else if (next_fetch) begin
+            pc <= next_pc;        // Õı³£¸üĞÂPC
         end
     end
-//-----{ç¨‹åºè®¡æ•°å™¨PC}end
+    
+    // Êä³öµ±Ç°PCÖµ£¨ÓÃÓÚ±£´æµ½EPC£©
+    assign IF_pc = pc;
+//-----{³ÌĞò¼ÆÊıÆ÷PC}end-----------------------------------------------
 
-//-----{å‘å¾€inst_romçš„å–æŒ‡åœ°å€}begin
-    assign inst_addr = pc;
-//-----{å‘å¾€inst_romçš„å–æŒ‡åœ°å€}end
+//-----{·¢Íùinst_romµÄÈ¡Ö¸µØÖ·}begin------------------------------------
+    assign inst_addr = pc;        // Ö±½ÓÊä³öPCÖµ
+//-----{·¢Íùinst_romµÄÈ¡Ö¸µØÖ·}end--------------------------------------
 
-//-----{IFæ‰§è¡Œå®Œæˆ}begin
-    //ç”±äºæŒ‡ä»¤romä¸ºåŒæ­¥è¯»å†™çš„,
-    //å–æ•°æ®æ—¶ï¼Œæœ‰ä¸€æ‹å»¶æ—¶
-    //å³å‘åœ°å€çš„ä¸‹ä¸€æ‹æ—¶é’Ÿæ‰èƒ½å¾—åˆ°å¯¹åº”çš„æŒ‡ä»¤
-    //æ•…å–æŒ‡æ¨¡å—éœ€è¦ä¸¤æ‹æ—¶é—´
-    //å°†IF_validé”å­˜ä¸€æ‹å³æ˜¯IF_overä¿¡å·
-   always @(posedge clk)
-    begin
-        IF_over <= IF_valid;
+//-----{IFÖ´ĞĞÍê³É±êÖ¾}begin-------------------------------------------
+    always @(posedge clk) begin
+        IF_over <= IF_valid;      // IF_validÑÓ³ÙÒ»ÅÄ×÷ÎªÍê³É±êÖ¾
     end
-    //å¦‚æœæŒ‡ä»¤romä¸ºå¼‚æ­¥è¯»çš„ï¼Œåˆ™IF_validå³æ˜¯IF_overä¿¡å·ï¼Œ
-    //å³å–æŒ‡ä¸€æ‹å®Œæˆ
-//-----{IFæ‰§è¡Œå®Œæˆ}end
+//-----{IFÖ´ĞĞÍê³É±êÖ¾}end---------------------------------------------
 
-//-----{IF->IDæ€»çº¿}begin
-    assign IF_ID_bus = {pc, inst};
-//-----{IF->IDæ€»çº¿}end
+//-----{IF->ID×ÜÏß}begin-----------------------------------------------
+    assign IF_ID_bus = {pc, inst}; // {PC, Ö¸Áî}
+    assign IF_inst   = inst;      // Êä³öµ±Ç°Ö¸Áî£¨ÓÃÓÚÏÔÊ¾£©
+//-----{IF->ID×ÜÏß}end-------------------------------------------------
 
-//-----{å±•ç¤ºIFæ¨¡å—çš„PCå€¼å’ŒæŒ‡ä»¤}begin
-    assign IF_pc   = pc;
-    assign IF_inst = inst;
-//-----{å±•ç¤ºIFæ¨¡å—çš„PCå€¼å’ŒæŒ‡ä»¤}end
 endmodule
-
-//æ€»ç»“ï¼šæ›´æ–°PCå€¼ï¼Œå°†PCå€¼é€å…¥æŒ‡ä»¤å­˜å‚¨å™¨ï¼ŒæŒ‡ä»¤å­˜å‚¨å™¨é€å‡ºæŒ‡ä»¤ï¼Œå°†PCå€¼å’ŒæŒ‡ä»¤é€å¾€è¯‘ç çº§

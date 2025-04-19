@@ -1,73 +1,119 @@
 `timescale 1ns / 1ps
 //*************************************************************************
-//   > Êñá‰ª∂Âêç: exe.v
-//   > ÊèèËø∞  :Â§öÂë®ÊúüCPUÁöÑÊâßË°åÊ®°Âùó
-//   > ‰ΩúËÄÖ  : LOONGSON
-//   > Êó•Êúü  : 2016-04-14
+//   > Œƒº˛√˚: exe.v
+//   > √Ë ˆ  : ∂‡÷‹∆⁄CPUµƒ÷¥––ƒ£øÈ£®÷ß≥÷“Ï≥£¥¶¿Ì£©
+//   > ◊˜’ﬂ  : LOONGSON
+//   > »’∆⁄  : 2016-04-14
+//   > –ﬁ∏ƒ  : ÃÌº”∂‘∏ƒΩ¯∫ÛµƒALUµƒ  ≈‰∫Õ“Ï≥£¥¶¿Ìª˙÷∆£®2023-10-20£©
 //*************************************************************************
-module exe(                         // ÊâßË°åÁ∫ß
-    input              EXE_valid,   // ÊâßË°åÁ∫ßÊúâÊïà‰ø°Âè∑
-    input      [149:0] ID_EXE_bus_r,// ID->EXEÊÄªÁ∫ø
-    output             EXE_over,    // EXEÊ®°ÂùóÊâßË°åÂÆåÊàê
-    output     [105:0] EXE_MEM_bus, // EXE->MEMÊÄªÁ∫ø
-    
-    //Â±ïÁ§∫PC
-    output     [ 31:0] EXE_pc
+module exe(
+    // ª˘¥°–≈∫≈
+    input              EXE_valid,     // ÷¥––Ω◊∂Œ”––ß–≈∫≈
+    input      [151:0] ID_EXE_bus_r,  // ID->EXE◊‹œﬂ£®¿©’π“Ï≥£–≈∫≈£©
+    output             EXE_over,      // EXEƒ£øÈ÷¥––ÕÍ≥…
+    output     [107:0] EXE_MEM_bus,   // EXE->MEM◊‹œﬂ£®¿©’π“Ï≥£–≈∫≈£©
+    output     [31:0]  EXE_pc,        // µ±«∞PC÷µ£®”√”⁄œ‘ æ£©
+
+    // –¬‘ˆ“Ï≥£–≈∫≈
+    output reg         div_by_zero,   // ≥˝¡„“Ï≥£±Í÷æ
+    output reg         overflow_flag, // “Á≥ˆ“Ï≥£±Í÷æ
+    output reg [1:0]   exception_type // “Ï≥£¿‡–Õ£®10=≥˝¡„£¨11=“Á≥ˆ£©
 );
-//-----{ID->EXEÊÄªÁ∫ø}begin
-    //EXEÈúÄË¶ÅÁî®Âà∞ÁöÑ‰ø°ÊÅØ
-    //ALU‰∏§‰∏™Ê∫êÊìç‰ΩúÊï∞ÂíåÊéßÂà∂‰ø°Âè∑
-    wire [11:0] alu_control;
-    wire [31:0] alu_operand1;
-    wire [31:0] alu_operand2;
 
-    //ËÆøÂ≠òÈúÄË¶ÅÁî®Âà∞ÁöÑload/store‰ø°ÊÅØ
-    wire [3:0] mem_control;  //MEMÈúÄË¶Å‰ΩøÁî®ÁöÑÊéßÂà∂‰ø°Âè∑
-    wire [31:0] store_data;  //storeÊìç‰ΩúÁöÑÂ≠òÁöÑÊï∞ÊçÆ
-                          
-    //ÂÜôÂõûÈúÄË¶ÅÁî®Âà∞ÁöÑ‰ø°ÊÅØ
-    wire       rf_wen;    //ÂÜôÂõûÁöÑÂØÑÂ≠òÂô®ÂÜô‰ΩøËÉΩ
-    wire [4:0] rf_wdest;  //ÂÜôÂõûÁöÑÁõÆÁöÑÂØÑÂ≠òÂô®
-    
-    //pc
-    wire [31:0] pc;
-    assign {alu_control,
-            alu_operand1,
-            alu_operand2,
-            mem_control,
-            store_data,
-            rf_wen,
-            rf_wdest,
-            pc          } = ID_EXE_bus_r;
-//-----{ID->EXEÊÄªÁ∫ø}end
+//-----{ID->EXE◊‹œﬂΩ‚Œˆ}begin---------------------------------------
+// ¿©’π∫Ûµƒ◊‹œﬂ∂®“Â£∫
+// [151:150] exception_type_from_id
+// [149]     exception_flag_from_id
+// [148:0]  ‘≠”–◊‹œﬂ–≈∫≈
+wire [1:0]  exception_type_from_id;  // IDΩ◊∂Œ¥´µ›µƒ“Ï≥£¿‡–Õ
+wire        exception_flag_from_id;  // IDΩ◊∂Œ¥´µ›µƒ“Ï≥£±Í÷æ
+wire [11:0] alu_control;             // ALUøÿ÷∆–≈∫≈
+wire [31:0] alu_operand1;            // ALU≤Ÿ◊˜ ˝1
+wire [31:0] alu_operand2;            // ALU≤Ÿ◊˜ ˝2
+wire [3:0]  mem_control;             // MEMøÿ÷∆–≈∫≈
+wire [31:0] store_data;              // ¥Ê¥¢ ˝æ›
+wire        rf_wen;                  // ºƒ¥Ê∆˜–¥ πƒ‹
+wire [4:0]  rf_wdest;                // ƒø±Íºƒ¥Ê∆˜µÿ÷∑
+wire [31:0] pc;                      // PC÷µ
 
-//-----{ALU}begin
-    wire [31:0] alu_result;
+assign {
+    exception_type_from_id,  // [151:150]
+    exception_flag_from_id,  // [149]
+    alu_control,             // [148:137]
+    alu_operand1,            // [136:105]
+    alu_operand2,            // [104:73]
+    mem_control,             // [72:69]
+    store_data,              // [68:37]
+    rf_wen,                  // [36]
+    rf_wdest,                // [35:31]
+    pc                       // [30:0]
+} = ID_EXE_bus_r;
+//-----{ID->EXE◊‹œﬂΩ‚Œˆ}end-----------------------------------------
 
-    alu alu_module(
-        .alu_control  (alu_control ),  // I, 12, ALUÊéßÂà∂‰ø°Âè∑
-        .alu_src1     (alu_operand1),  // I, 32, ALUÊìç‰ΩúÊï∞1
-        .alu_src2     (alu_operand2),  // I, 32, ALUÊìç‰ΩúÊï∞2
-        .alu_result   (alu_result  )   // O, 32, ALUÁªìÊûú
-    );
-//-----{ALU}end
+//-----{ALU µ¿˝ªØ}begin---------------------------------------------
+wire [31:0] alu_result;       // ALU‘ÀÀ„Ω·π˚
+wire        alu_overflow;     // ALU“Á≥ˆ±Í÷æ
 
-//-----{EXEÊâßË°åÂÆåÊàê}begin
-    //Áî±‰∫éÊòØÂ§öÂë®ÊúüÁöÑÔºå‰∏çÂ≠òÂú®Êï∞ÊçÆÁõ∏ÂÖ≥
-    //‰∏îÊâÄÊúâALUËøêÁÆóÈÉΩÂèØÂú®‰∏ÄÊãçÂÜÖÂÆåÊàê
-    //ÊïÖEXEÊ®°Âùó‰∏ÄÊãçÂ∞±ËÉΩÂÆåÊàêÊâÄÊúâÊìç‰Ωú
-    //ÊïÖEXE_validÂç≥ÊòØEXE_over‰ø°Âè∑
-    assign EXE_over = EXE_valid;
-//-----{EXEÊâßË°åÂÆåÊàê}end
+alu alu_module(
+    .alu_control  (alu_control),    // ALUøÿ÷∆–≈∫≈
+    .alu_src1     (alu_operand1),   // ≤Ÿ◊˜ ˝1
+    .alu_src2     (alu_operand2),   // ≤Ÿ◊˜ ˝2
+    .alu_result   (alu_result),     // ‘ÀÀ„Ω·π˚
+    .overflow_flag(alu_overflow)    // “Á≥ˆ±Í÷æ
+);
+//-----{ALU µ¿˝ªØ}end-----------------------------------------------
 
-//-----{EXE->MEMÊÄªÁ∫ø}begin
-    assign EXE_MEM_bus = {mem_control,store_data,   //load/store‰ø°ÊÅØÂíåstoreÊï∞ÊçÆ
-                          alu_result,               //aluËøêÁÆóÁªìÊûú
-                          rf_wen,rf_wdest,          // WBÈúÄË¶Å‰ΩøÁî®ÁöÑ‰ø°Âè∑
-                          pc};                      // PC
-//-----{EXE->MEMÊÄªÁ∫ø}end
+//-----{“Ï≥£ºÏ≤‚}begin---------------------------------------------
+always @(*) begin
+    // ≥ı ºªØ“Ï≥£±Í÷æ
+    div_by_zero = 1'b0;
+    overflow_flag = 1'b0;
+    exception_type = 2'b00;
 
-//-----{Â±ïÁ§∫EXEÊ®°ÂùóÁöÑPCÂÄº}begin
-    assign EXE_pc = pc;
-//-----{Â±ïÁ§∫EXEÊ®°ÂùóÁöÑPCÂÄº}end
+    // ºÏ≤‚≥˝¡„“Ï≥££®ºŸ…Ëalu_control[8]±Ì æ≥˝∑®£©
+    if (EXE_valid && alu_control[8] && (alu_operand2 == 32'd0)) begin
+        div_by_zero = 1'b1;          // ¥•∑¢≥˝¡„“Ï≥£
+        exception_type = 2'b10;      // “Ï≥£¿‡–Õ£∫≥˝¡„
+    end
+    // ºÏ≤‚“Á≥ˆ“Ï≥££®º”∑®ªÚºı∑®£©
+    else if (EXE_valid && alu_overflow) begin
+        overflow_flag = 1'b1;        // ¥•∑¢“Á≥ˆ“Ï≥£
+        exception_type = 2'b11;      // “Ï≥£¿‡–Õ£∫“Á≥ˆ
+    end
+end
+//-----{“Ï≥£ºÏ≤‚}end------------------------------------------------
+
+//-----{“Ï≥£–≈∫≈∫œ≤¢}begin-------------------------------------------
+// ”≈œ»º∂£∫EXEΩ◊∂Œ“Ï≥£ > IDΩ◊∂Œ“Ï≥£
+wire        exception_flag = div_by_zero | overflow_flag | exception_flag_from_id;
+wire [1:0]  exception_type_final = div_by_zero ? 2'b10 :
+                                   overflow_flag ? 2'b11 :
+                                   exception_type_from_id;
+//-----{“Ï≥£–≈∫≈∫œ≤¢}end---------------------------------------------
+
+//-----{EXE÷¥––ÕÍ≥…±Í÷æ}begin----------------------------------------
+assign EXE_over = EXE_valid;  // EXEΩ◊∂Œ“ª÷‹∆⁄ÕÍ≥…
+//-----{EXE÷¥––ÕÍ≥…±Í÷æ}end------------------------------------------
+
+//-----{EXE->MEM◊‹œﬂ…˙≥…}begin---------------------------------------
+// ¿©’π∫Ûµƒ◊‹œﬂ∂®“Â£∫
+// [107:106] exception_type
+// [105]     exception_flag
+// [104:0]  ‘≠”–◊‹œﬂ–≈∫≈
+assign EXE_MEM_bus = {
+    exception_type_final,  // [107:106] “Ï≥£¿‡–Õ
+    exception_flag,        // [105]     “Ï≥£±Í÷æ
+    mem_control,           // [104:101] MEMøÿ÷∆
+    store_data,            // [100:69]  ¥Ê¥¢ ˝æ›
+    alu_result,            // [68:37]   ALUΩ·π˚
+    rf_wen,                // [36]      ºƒ¥Ê∆˜–¥ πƒ‹
+    rf_wdest,              // [35:31]   ƒø±Íºƒ¥Ê∆˜µÿ÷∑
+    pc                     // [30:0]    PC÷µ
+};
+//-----{EXE->MEM◊‹œﬂ…˙≥…}end-----------------------------------------
+
+//-----{œ‘ æ–≈∫≈}begin-----------------------------------------------
+assign EXE_pc = pc;  //  ‰≥ˆµ±«∞PC÷µ
+//-----{œ‘ æ–≈∫≈}end-------------------------------------------------
+
 endmodule
