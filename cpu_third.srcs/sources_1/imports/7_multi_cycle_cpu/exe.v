@@ -71,7 +71,7 @@ always @(*) begin
     exception_type = 2'b00;
 
     // 检测除零异常（假设alu_control[8]表示除法）
-    if (EXE_valid && alu_control[8] && (alu_operand2 == 32'd0)) begin
+    if (EXE_valid && alu_control[12] && (alu_operand2 == 32'd0)) begin
         div_by_zero = 1'b1;          // 触发除零异常
         exception_type = 2'b10;      // 异常类型：除零
     end

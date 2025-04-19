@@ -1,17 +1,23 @@
 `timescale 1ns / 1ps
 //*************************************************************************
-//   > æ–‡ä»¶å: adder.v
-//   > æè¿°  ï¼šåŠ æ³•å™¨ï¼Œç›´æ¥ä½¿ç”¨"+"ï¼Œä¼šè‡ªåŠ¨è°ƒç”¨åº“é‡Œçš„åŠ æ³•å™¨
-//   > ä½œè€…  : LOONGSON
-//   > æ—¥æœŸ  : 2016-04-14
+//   > ÎÄ¼şÃû: adder.v
+//   > ÃèÊö  : ¼Ó·¨Æ÷£¬Ö§³ÖÎŞ·ûºÅ½øÎ»ºÍ·ûºÅÒç³ö¼ì²â
+//   > ×÷Õß  : LOONGSON
+//   > ÈÕÆÚ  : 2016-04-14
 //*************************************************************************
 module adder(
-    input  [31:0] operand1,
-    input  [31:0] operand2,
-    input         cin,
-    output [31:0] result,
-    output        cout
+    input  [31:0] operand1,    // ²Ù×÷Êı1
+    input  [31:0] operand2,    // ²Ù×÷Êı2
+    input         cin,         // ½øÎ»ÊäÈë
+    output [31:0] result,      // ¼Ó·¨½á¹û
+    output        cout,        // ÎŞ·ûºÅ½øÎ»Êä³ö
+    output        overflow_flag // ·ûºÅÒç³ö±êÖ¾
     );
-    assign {cout,result} = operand1 + operand2 + cin;
+
+    // ¼Ó·¨ÔËËã
+    assign {cout, result} = operand1 + operand2 + cin;
+
+    // ·ûºÅÒç³ö¼ì²â
+    assign overflow_flag = (operand1[31] == operand2[31]) && (result[31] != operand1[31]);
 
 endmodule

@@ -1,31 +1,33 @@
 `timescale 1ns / 1ps
 //*************************************************************************
 // ALU模块 (Arithmetic Logic Unit)
-// 作者         : LOONGSON
+// 作��1�7         : LOONGSON
 // 创建日期     : 2016-04-14
-// 功能         : 实现加、减、有符号/无符号比较、按位运算及移位操作
+// 功能         : 实现加��减、有符号/无符号比较��按位运算及移位操作
 //*************************************************************************
 module alu(
-    input  [11:0] alu_control,  // ALU控制信号，各位对应不同的运算（加、减、比较、逻辑、移位等）
-    input  [31:0] alu_src1,     // 运算操作数1
-    input  [31:0] alu_src2,     // 运算操作数2
+    input  [11:0] alu_control,  // ALU控制信号，各位对应不同的运算（加、减、比较����辑、移位等＄1�7
+    input  [31:0] alu_src1,     // 运算操作敄1�71
+    input  [31:0] alu_src2,     // 运算操作敄1�72
     output [31:0] alu_result    // 运算结果
     );
 
     // 分解alu_control各个位的含义
     wire alu_add;   // 加法使能
     wire alu_sub;   // 减法使能
-    wire alu_slt;   // 有符号小于比较使能
-    wire alu_sltu;  // 无符号小于比较使能
-    wire alu_and;   // 按位与使能
+    wire alu_slt;   // 有符号小于比较使胄1�7
+    wire alu_sltu;  // 无符号小于比较使胄1�7
+    wire alu_and;   // 按位与使胄1�7
     wire alu_nor;   // 按位或非使能
-    wire alu_or;    // 按位或使能
+    wire alu_or;    // 按位或使胄1�7
     wire alu_xor;   // 按位异或使能
     wire alu_sll;   // 逻辑左移使能
     wire alu_srl;   // 逻辑右移使能
     wire alu_sra;   // 算术右移使能
     wire alu_lui;   // load upper immediate指令使能
+    wire alu_div;   // 加减使能
 
+    assign alu_div  = alu_control[12];
     assign alu_add  = alu_control[11];
     assign alu_sub  = alu_control[10];
     assign alu_slt  = alu_control[ 9];
@@ -53,13 +55,13 @@ module alu(
     wire [31:0] lui_result;
 
     // 按位运算逻辑
-    assign and_result = alu_src1 & alu_src2;         // 按位与
-    assign or_result  = alu_src1 | alu_src2;          // 按位或
+    assign and_result = alu_src1 & alu_src2;         // 按位丄1�7
+    assign or_result  = alu_src1 | alu_src2;          // 按位戄1�7
     assign nor_result = ~or_result;                   // 按位或非（取或的反）
     assign xor_result = alu_src1 ^ alu_src2;           // 按位异或
-    assign lui_result = {alu_src2[15:0], 16'd0};       // 高位加载操作，将低16位数据放高端
+    assign lui_result = {alu_src2[15:0], 16'd0};       // 高位加载操作，将佄1�716位数据放高端
 
-    // --- 加减运算与比较操作 (slt/sltu) begin -------------------------
+    // --- 加减运算与比较操佄1�7 (slt/sltu) begin -------------------------
     // 使用加法器计算加法或减法结果
     wire [31:0] adder_operand1;
     wire [31:0] adder_operand2;
@@ -68,9 +70,9 @@ module alu(
     wire        adder_cout;
     
     assign adder_operand1 = alu_src1;
-    // 加法时直接用alu_src2，减法时取反alu_src2（用于2的补码减法）
+    // 加法时直接用alu_src2，减法时取反alu_src2（用亄1�72的补码减法）
     assign adder_operand2 = alu_add ? alu_src2 : ~alu_src2;
-    // 加法时进位为0，减法时进位置1
+    // 加法时进位为0，减法时进位罄1�71
     assign adder_cin      = ~alu_add;
     
     adder adder_module(
@@ -81,23 +83,23 @@ module alu(
         .cout    (adder_cout)
     );
     
-    // 加法与减法结果
+    // 加法与减法结构1�7
     assign add_sub_result = adder_result;
     
-    // 有符号小于比较 (slt)
-    // 只保留结果的最低位，其余位补零
+    // 有符号小于比辄1�7 (slt)
+    // 只保留结果的朢�低位，其余位补零
     assign slt_result[31:1] = 31'd0;
     // 若alu_src1为负而alu_src2为正；或者两数符号相同且减法结果为负，则认为alu_src1小于alu_src2
     assign slt_result[0]    = (alu_src1[31] & ~alu_src2[31]) | 
                               (~(alu_src1[31] ^ alu_src2[31]) & adder_result[31]);
 
-    // 无符号小于比较 (sltu)
-    // 利用加法器的进位信息，若进位为0(即~adder_cout为1)则表示alu_src1小于alu_src2
+    // 无符号小于比辄1�7 (sltu)
+    // 利用加法器的进位信息，若进位丄1�70(即~adder_cout丄1�71)则表示alu_src1小于alu_src2
     assign sltu_result = {31'd0, ~adder_cout};
-    // --- 加减运算与比较操作 end ---------------------------------------
+    // --- 加减运算与比较操佄1�7 end ---------------------------------------
 
     // --- 移位操作 begin -----------------------------------------------
-    // 从alu_src1中提取移位数（取低5位）
+    // 从alu_src1中提取移位数（取佄1�75位）
     wire [4:0] shf;
     assign shf = alu_src1[4:0];
     wire [1:0] shf_1_0 = shf[1:0];
@@ -106,28 +108,28 @@ module alu(
     // 逻辑左移 (SLL)
     wire [31:0] sll_step1;
     wire [31:0] sll_step2;
-    // 根据低2位进行初步左移
+    // 根据佄1�72位进行初步左秄1�7
     assign sll_step1 = {32{shf_1_0 == 2'b00}} & alu_src2                   | 
                        {32{shf_1_0 == 2'b01}} & {alu_src2[30:0], 1'd0}     | 
                        {32{shf_1_0 == 2'b10}} & {alu_src2[29:0], 2'd0}     | 
                        {32{shf_1_0 == 2'b11}} & {alu_src2[28:0], 3'd0};
-    // 根据高2位进一步左移
+    // 根据髄1�72位进丢�步左秄1�7
     assign sll_step2 = {32{shf_3_2 == 2'b00}} & sll_step1                  | 
                        {32{shf_3_2 == 2'b01}} & {sll_step1[27:0], 4'd0}    | 
                        {32{shf_3_2 == 2'b10}} & {sll_step1[23:0], 8'd0}    | 
                        {32{shf_3_2 == 2'b11}} & {sll_step1[19:0], 12'd0};
-    // 若shf的最高位为1，则再左移16位
+    // 若shf的最高位丄1�71，则再左秄1�716佄1�7
     assign sll_result = shf[4] ? {sll_step2[15:0], 16'd0} : sll_step2;
 
     // 逻辑右移 (SRL)
     wire [31:0] srl_step1;
     wire [31:0] srl_step2;
-    // 根据低2位右移，左侧补0
+    // 根据佄1�72位右移，左侧衄1�70
     assign srl_step1 = {32{shf_1_0 == 2'b00}} & alu_src2                   | 
                        {32{shf_1_0 == 2'b01}} & {1'd0, alu_src2[31:1]}     | 
                        {32{shf_1_0 == 2'b10}} & {2'd0, alu_src2[31:2]}     | 
                        {32{shf_1_0 == 2'b11}} & {3'd0, alu_src2[31:3]};
-    // 根据高2位进一步右移
+    // 根据髄1�72位进丢�步右秄1�7
     assign srl_step2 = {32{shf_3_2 == 2'b00}} & srl_step1                  | 
                        {32{shf_3_2 == 2'b01}} & {4'd0, srl_step1[31:4]}    | 
                        {32{shf_3_2 == 2'b10}} & {8'd0, srl_step1[31:8]}    | 
@@ -142,7 +144,7 @@ module alu(
                        {32{shf_1_0 == 2'b01}} & {alu_src2[31], alu_src2[31:1]}           | 
                        {32{shf_1_0 == 2'b10}} & {{2{alu_src2[31]}}, alu_src2[31:2]}      | 
                        {32{shf_1_0 == 2'b11}} & {{3{alu_src2[31]}}, alu_src2[31:3]};
-    // 根据高2位进一步右移并保持符号扩展
+    // 根据髄1�72位进丢�步右移并保持符号扩展
     assign sra_step2 = {32{shf_3_2 == 2'b00}} & sra_step1                                | 
                        {32{shf_3_2 == 2'b01}} & {{4{ sra_step1[31]}}, sra_step1[31:4]}    | 
                        {32{shf_3_2 == 2'b10}} & {{8{ sra_step1[31]}}, sra_step1[31:8]}    | 
@@ -150,7 +152,7 @@ module alu(
     assign sra_result = shf[4] ? {{16{sra_step2[31]}}, sra_step2[31:16]} : sra_step2;
     // --- 移位操作 end -------------------------------------------------
 
-    // 根据控制信号选择最终的运算结果
+    // 根据控制信号选择朢�终的运算结果
     assign alu_result = (alu_add | alu_sub) ? add_sub_result :
                         alu_slt         ? slt_result :
                         alu_sltu        ? sltu_result :

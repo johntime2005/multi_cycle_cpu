@@ -244,3 +244,16 @@ selectTab((HResource) null, (HResource) null, "Messages", 1); // aa
 selectTree(PAResourceItoN.MsgTreePanel_MESSAGE_VIEW_TREE, "[, Vivado Commands, General Messages, [USF-XSim-62] 'compile' step failed with error(s). Please check the Tcl console output or 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/xvlog.log' file for more information.. ]", 27, false); // u.d (PAResourceItoN.MsgTreePanel_MESSAGE_VIEW_TREE)
 selectTree(PAResourceItoN.MsgTreePanel_MESSAGE_VIEW_TREE, "[, Vivado Commands, General Messages, [Vivado 12-4473] Detected error while running simulation. Please correct the issue and retry this operation.. ]", 28, false); // u.d (PAResourceItoN.MsgTreePanel_MESSAGE_VIEW_TREE)
 // HMemoryUtils.trashcanNow. Engine heap size: 945 MB. GUI used memory: 73 MB. Current time: 4/19/25, 3:03:15 PM CST
+// WARNING: HEventQueue.dispatchEvent() is taking  2168 ms.
+// HMemoryUtils.trashcanNow. Engine heap size: 945 MB. GUI used memory: 73 MB. Current time: 4/19/25, 3:33:17 PM CST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/L.f': 02h:40m:06s
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/L.f': 02h:40m:08s
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/L.f': 02h:40m:10s
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/L.f': 02h:43m:05s
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/L.f': 02h:43m:07s
