@@ -1,7 +1,7 @@
 # compile verilog/system verilog design source files
 verilog xil_defaultlib  \
-"../../../../cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/cp0.v" \
-"../../../../cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v" \
+"../../../../cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/mem.v" \
+"../../../../cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/mem_tb.v" \
 
 # compile glbl module
 verilog xil_defaultlib "glbl.v"

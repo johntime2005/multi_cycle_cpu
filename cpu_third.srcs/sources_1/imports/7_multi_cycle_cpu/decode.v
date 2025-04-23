@@ -114,15 +114,16 @@ wire valid_instruction = inst_ADDU | inst_SUBU | inst_SLT | inst_SLTU |
 always @(*) begin
     exception_flag = 1'b0;
     exception_type = 2'b00;
-    if (ID_valid && !valid_instruction) begin
+    if (ID_valid && !flush_pipeline && !valid_instruction) begin  // 添加冲刷信号判断
         exception_flag = 1'b1;
         exception_type = 2'b01; // 非法指令
     end
 end
+
 always @(*) begin
-        id_exception_type = exception_type; // 内部信号 -> 输出端口
-        id_exception_flag = exception_flag;
-    end
+    id_exception_type = exception_type; // 内部信号 -> 输出端口
+    id_exception_flag = exception_flag;
+end
 
 //======================== 控制信号生成 ========================
 // ALU控制信号
@@ -195,12 +196,12 @@ wire [31:0] j_target  = {pc[31:28], target, 2'b00};
 assign jbr_taken  = br_taken | inst_J | inst_JAL | inst_JR | inst_JALR;
 assign jbr_target  = (inst_J | inst_JAL) ? j_target : 
                     (inst_JR | inst_JALR) ? rs_value : br_target;
-assign jbr_bus     = {jbr_taken, jbr_target};
+assign jbr_bus = flush_pipeline ? 33'b0 : {jbr_taken, jbr_target};  // 冲刷时清零跳转总线
 assign jbr_not_link = jbr_taken & ~(inst_JAL | inst_JALR);
 
 //======================== 总线输出 ========================
-assign ID_over = ID_valid & ~flush_pipeline;
-assign ID_EXE_bus = flush_pipeline ? 152'b0 : {
+assign ID_over = ID_valid & ~flush_pipeline;  // 冲刷时无效
+assign ID_EXE_bus = flush_pipeline ? 152'b0 : {  // 冲刷时清零总线
     exception_type,     // [151:150]
     exception_flag,     // [149]
     alu_control,        // [148:145]

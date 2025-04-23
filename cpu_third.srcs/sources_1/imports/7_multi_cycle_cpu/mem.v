@@ -29,7 +29,7 @@ module mem(
     output             MEM_over,        // MEM阶段结束信号
     output    [69:0]   MEM_WB_bus,      // MEM->WB阶段总线
     output    [31:0]   MEM_pc,          // 当前PC值
-    input              flush_pipeline,   // 冲刷流水线信号
+    input              flush_pipeline,  // 冲刷流水线信号
 
     // 新增异常信号输出
     output reg [1:0]   mem_exception_type, // MEM阶段异常类型
@@ -65,7 +65,7 @@ wire ls_byte     = mem_control[0];  // 字节操作标志
 wire is_halfword = !ls_word && !ls_byte; // 半字操作标志
 
 //========================== 地址未对齐异常检测 ==========================
-wire addr_unaligned = 
+wire addr_misaligned = 
     (inst_load || inst_store) && 
     ((ls_word && (alu_result[1:0] != 2'b00)) ||  // 字未对齐
      (is_halfword && alu_result[0]));            // 半字未对齐
@@ -75,11 +75,14 @@ always @(*) begin
     // 默认继承EXE阶段的异常
     mem_exception_flag = exe_exception_flag;
     mem_exception_type = exe_exception_type;
-    
+
     // 检测MEM阶段异常（优先级高于EXE异常）
-    if (MEM_valid && addr_unaligned) begin
+    if (MEM_valid && !flush_pipeline && addr_misaligned) begin
         mem_exception_flag = 1'b1;
         mem_exception_type = 2'b01;  // 地址未对齐异常
+    end else if (flush_pipeline) begin
+        mem_exception_flag = 1'b0;  // 冲刷时清除异常标志
+        mem_exception_type = 2'b00; // 冲刷时清除异常类型
     end
 end
 
@@ -123,7 +126,7 @@ assign MEM_WB_bus = flush_pipeline ? 70'b0 : {
     rf_wen,              // [66]
     rf_wdest,            // [65:61]
     wb_data,             // [60:29] ALU结果或存储器数据
-    pc                   // [28:0] 当前PC
+    pc                   // [28:0]
 };
 
 //========================== 输出信号 ==========================
