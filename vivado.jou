@@ -26,3 +26,6 @@ open_project C:/Users/91629/Desktop/risc-v_cpu/cpu_third.xpr
 update_compile_order -fileset sources_1
 launch_simulation
 source tb.tcl
+close_sim
+launch_simulation
+source tb.tcl
