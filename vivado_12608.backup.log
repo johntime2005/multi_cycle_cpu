@@ -1,0 +1,1015 @@
+#-----------------------------------------------------------
+# Vivado v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Wed Apr 23 16:25:44 2025
+# Process ID         : 12608
+# Current directory  : C:/Users/91629/Desktop/risc-v_cpu
+# Command line       : vivado.exe -gui_launcher_event rodinguilauncherevent4272 C:\Users\91629\Desktop\risc-v_cpu\cpu_third.xpr
+# Log file           : C:/Users/91629/Desktop/risc-v_cpu/vivado.log
+# Journal file       : C:/Users/91629/Desktop/risc-v_cpu\vivado.jou
+# Running On         : wangzhangzhuo
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 22631
+# Processor Detail   : AMD Ryzen 7 7840H w/Radeon 780M Graphics
+# CPU Frequency      : 3793 MHz
+# CPU Physical cores : 8
+# CPU Logical cores  : 16
+# Host memory        : 16334 MB
+# Swap memory        : 11811 MB
+# Total Virtual      : 28146 MB
+# Available Virtual  : 18065 MB
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/91629/Desktop/risc-v_cpu/cpu_third.xpr
+CRITICAL WARNING: [Project 1-19] Could not find the file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/ip/inst_rom/inst_rom.coe'.
+CRITICAL WARNING: [Project 1-19] Could not find the file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/ip/data_ram/data_ram.coe'.
+Scanning sources...
+Finished scanning sources
+CRITICAL WARNING: [Runs 36-271] Incremental checkpoint part, xc7k70tfbv676-2, does not match run part, xc7a200tfbg676-2.
+CRITICAL WARNING: [Runs 36-271] Incremental checkpoint part, xc7k70tfbv676-2, does not match run part, xc7a200tfbg676-2.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'D:/Xilinx/Vivado/2024.2/data/ip'.
+WARNING: [IP_Flow 19-2162] IP 'data_ram' is locked:
+* Current project part 'xc7a200tfbg676-2' and the part 'xc7k70tfbv676-2' used to customize the IP 'data_ram' do not match.
+WARNING: [IP_Flow 19-2162] IP 'inst_rom' is locked:
+* Current project part 'xc7a200tfbg676-2' and the part 'xc7k70tfbv676-2' used to customize the IP 'inst_rom' do not match.
+update_compile_order -fileset sources_1
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-12493] Simulation top is 'tb'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'D:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'D:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-20] The project contains locked or custom IPs. The pre-compiled version of these IPs will not be referenced and the sources from these IP libraries will be compiled locally.
+INFO: [SIM-utils-54] Inspecting design source files for 'tb' in fileset 'sim_1'...
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe": no such file or directory
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe": no such file or directory
+INFO: [SIM-utils-43] Exported 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/test.coe'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tb_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/ipstatic/simulation/blk_mem_gen_v8_4.v" into library blk_mem_gen_v8_4_9
+INFO: [VRFC 10-311] analyzing module STATE_LOGIC_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_muxf7_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_clr_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_pre_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_ce_clr_v8_4
+INFO: [VRFC 10-311] analyzing module write_netlist_v8_4
+INFO: [VRFC 10-311] analyzing module read_netlist_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_write_wrapper_beh_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_read_wrapper_beh_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_regs_fwd_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_output_stage
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_softecc_output_reg_stage
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_mem_module
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.gen/sources_1/ip/data_ram/sim/data_ram.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module data_ram
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.gen/sources_1/ip/inst_rom/sim/inst_rom.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module inst_rom
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module decode
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'rs' is not allowed [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v:43]
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'rt' is not allowed [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v:44]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exception_controller.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module exception_controller
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exe.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module exe
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/fetch.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fetch
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/mem.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mem
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module multi_cycle_cpu
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module regfile
+WARNING: [VRFC 10-8374] loop variable declaration is not allowed in this mode of Verilog [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v:32]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/wb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module wb
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb
+WARNING: [VRFC 10-8497] literal value 'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF truncated to fit in 32 bits [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:105]
+WARNING: [VRFC 10-8497] literal value 'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF truncated to fit in 32 bits [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:144]
+ERROR: [VRFC 10-2989] 'fetch' is not declared [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:106]
+ERROR: [VRFC 10-2989] 'exe' is not declared [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:119]
+ERROR: [VRFC 10-2989] 'mem' is not declared [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:132]
+ERROR: [VRFC 10-2989] 'fetch' is not declared [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:145]
+ERROR: [VRFC 10-2989] 'wb' is not declared [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:152]
+ERROR: [VRFC 10-8530] module 'tb' is ignored due to previous errors [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:3]
+INFO: [USF-XSim-69] 'compile' step finished in '3' seconds
+INFO: [USF-XSim-99] Step results log file:'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/xvlog.log'
+ERROR: [USF-XSim-62] 'compile' step failed with error(s). Please check the Tcl console output or 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/xvlog.log' file for more information.
+ERROR: [Vivado 12-4473] Detected error while running simulation. Please correct the issue and retry this operation.
+ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors.
+set_property used_in_synthesis false [get_files  C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu_display.v]
+set_property used_in_synthesis true [get_files  C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu_display.v]
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-12493] Simulation top is 'tb'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'D:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'D:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-20] The project contains locked or custom IPs. The pre-compiled version of these IPs will not be referenced and the sources from these IP libraries will be compiled locally.
+INFO: [SIM-utils-54] Inspecting design source files for 'tb' in fileset 'sim_1'...
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe": no such file or directory
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe": no such file or directory
+INFO: [SIM-utils-43] Exported 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/test.coe'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tb_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/ipstatic/simulation/blk_mem_gen_v8_4.v" into library blk_mem_gen_v8_4_9
+INFO: [VRFC 10-311] analyzing module STATE_LOGIC_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_muxf7_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_clr_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_pre_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_ce_clr_v8_4
+INFO: [VRFC 10-311] analyzing module write_netlist_v8_4
+INFO: [VRFC 10-311] analyzing module read_netlist_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_write_wrapper_beh_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_read_wrapper_beh_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_regs_fwd_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_output_stage
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_softecc_output_reg_stage
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_mem_module
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.gen/sources_1/ip/data_ram/sim/data_ram.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module data_ram
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.gen/sources_1/ip/inst_rom/sim/inst_rom.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module inst_rom
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module decode
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'rs' is not allowed [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v:43]
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'rt' is not allowed [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v:44]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exception_controller.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module exception_controller
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exe.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module exe
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/fetch.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fetch
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/mem.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mem
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module multi_cycle_cpu
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module regfile
+WARNING: [VRFC 10-8374] loop variable declaration is not allowed in this mode of Verilog [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v:32]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/wb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module wb
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb
+WARNING: [VRFC 10-8497] literal value 'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF truncated to fit in 32 bits [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:115]
+WARNING: [VRFC 10-8497] literal value 'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF truncated to fit in 32 bits [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:154]
+INFO: [USF-XSim-69] 'compile' step finished in '3' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xelab --incr --debug typical --relax --mt 2 -L xil_defaultlib -L blk_mem_gen_v8_4_9 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_behav xil_defaultlib.tb xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: D:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug typical --relax --mt 2 -L xil_defaultlib -L blk_mem_gen_v8_4_9 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_behav xil_defaultlib.tb xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+ERROR: [VRFC 10-3180] cannot find port 'state' on this module [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:51]
+ERROR: [VRFC 10-8530] module 'blk_mem_gen_v8_4_9(C_FAMILY="kintex7",C_XDEVICEFAMILY="kintex7",C_ELABORATION_DIR="./",C_AXI_TYPE=1,C_MEM_TYPE=3,C_PRIM_TYPE=1,C_INIT_FILE_NAME="no_coe_file_loaded",C_INIT_FILE="inst_rom.mem",C_HAS_ENA=0,C_WRITE_DEPTH_A=256,C_READ_DEPTH_A=256,C_ADDRA_WIDTH=8,C_INITB_VAL="0",C_HAS_ENB=0,C_WRITE_DEPTH_B=256,C_READ_DEPTH_B=256,C_ADDRB_WIDTH=8,C_HAS_MEM_OUTPUT_REGS_A=1,C_SIM_COLLISION_CHECK="ALL",C_COMMON_CLK=0,C_COUNT_36K_BRAM="0",C_COUNT_18K_BRAM="1",C_EST_POWER_SUMMARY="Estimated_Power_for_IP_____:_____3.375199_mW")' is ignored due to previous errors [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/ipstatic/simulation/blk_mem_gen_v8_4.v:3457]
+ERROR: [XSIM 43-3322] Static elaboration of top level Verilog design unit(s) in library work failed.
+INFO: [USF-XSim-69] 'elaborate' step finished in '3' seconds
+INFO: [USF-XSim-99] Step results log file:'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/elaborate.log'
+ERROR: [USF-XSim-62] 'elaborate' step failed with error(s). Please check the Tcl console output or 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/elaborate.log' file for more information.
+ERROR: [Vivado 12-4473] Detected error while running simulation. Please correct the issue and retry this operation.
+launch_simulation: Time (s): cpu = 00:00:00 ; elapsed = 00:00:05 . Memory (MB): peak = 1247.688 ; gain = 0.000
+ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors.
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-12493] Simulation top is 'tb'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'D:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'D:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-20] The project contains locked or custom IPs. The pre-compiled version of these IPs will not be referenced and the sources from these IP libraries will be compiled locally.
+INFO: [SIM-utils-54] Inspecting design source files for 'tb' in fileset 'sim_1'...
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe": no such file or directory
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe": no such file or directory
+INFO: [SIM-utils-43] Exported 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/test.coe'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tb_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/ipstatic/simulation/blk_mem_gen_v8_4.v" into library blk_mem_gen_v8_4_9
+INFO: [VRFC 10-311] analyzing module STATE_LOGIC_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_muxf7_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_clr_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_pre_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_ce_clr_v8_4
+INFO: [VRFC 10-311] analyzing module write_netlist_v8_4
+INFO: [VRFC 10-311] analyzing module read_netlist_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_write_wrapper_beh_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_read_wrapper_beh_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_regs_fwd_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_output_stage
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_softecc_output_reg_stage
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_mem_module
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.gen/sources_1/ip/data_ram/sim/data_ram.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module data_ram
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.gen/sources_1/ip/inst_rom/sim/inst_rom.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module inst_rom
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module decode
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'rs' is not allowed [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v:43]
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'rt' is not allowed [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v:44]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exception_controller.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module exception_controller
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exe.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module exe
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/fetch.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fetch
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/mem.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mem
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module multi_cycle_cpu
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module regfile
+WARNING: [VRFC 10-8374] loop variable declaration is not allowed in this mode of Verilog [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v:32]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/wb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module wb
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xelab --incr --debug typical --relax --mt 2 -L xil_defaultlib -L blk_mem_gen_v8_4_9 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_behav xil_defaultlib.tb xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: D:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug typical --relax --mt 2 -L xil_defaultlib -L blk_mem_gen_v8_4_9 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_behav xil_defaultlib.tb xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+WARNING: [VRFC 10-3091] actual bit length 10 differs from formal bit length 32 for port 'mem_addr' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:31]
+WARNING: [VRFC 10-3091] actual bit length 150 differs from formal bit length 152 for port 'ID_EXE_bus' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v:232]
+WARNING: [VRFC 10-3091] actual bit length 150 differs from formal bit length 152 for port 'ID_EXE_bus_r' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v:240]
+WARNING: [VRFC 10-3091] actual bit length 106 differs from formal bit length 108 for port 'EXE_MEM_bus' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v:242]
+WARNING: [VRFC 10-3091] actual bit length 13 differs from formal bit length 12 for port 'alu_control' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exe.v:55]
+WARNING: [VRFC 10-3091] actual bit length 106 differs from formal bit length 108 for port 'EXE_MEM_bus_r' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v:251]
+WARNING: [VRFC 10-3705] select index 12 into 'alu_control' is out of bounds [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/alu.v:30]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.fetch
+Compiling module xil_defaultlib.decode
+Compiling module xil_defaultlib.adder
+Compiling module xil_defaultlib.alu
+Compiling module xil_defaultlib.exe
+Compiling module xil_defaultlib.mem
+Compiling module xil_defaultlib.wb
+Compiling module xil_defaultlib.exception_controller
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_output_stage(...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_output_stage(...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_softecc_outpu...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_mem_module(C_...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9(C_FAMILY="kin...
+Compiling module xil_defaultlib.inst_rom
+Compiling module xil_defaultlib.regfile
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_mem_module(C_...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_axi_regs_fwd_v8_4(C_DATA...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9(C_FAMILY="kin...
+Compiling module xil_defaultlib.data_ram
+Compiling module xil_defaultlib.multi_cycle_cpu
+Compiling module xil_defaultlib.tb
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_behav
+run_program: Time (s): cpu = 00:00:00 ; elapsed = 00:00:07 . Memory (MB): peak = 1254.238 ; gain = 0.000
+INFO: [USF-XSim-69] 'elaborate' step finished in '7' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "tb_behav -key {Behavioral:sim_1:Functional:tb} -tclbatch {tb.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Time resolution is 1 ps
+source tb.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 1000ns
+Block Memory Generator module tb.uut.inst_rom_module.inst.native_mem_module.blk_mem_gen_v8_4_9_inst is using a behavioral model for simulation which will not precisely model memory collision behavior.
+Block Memory Generator module tb.uut.data_ram_module.inst.native_mem_module.blk_mem_gen_v8_4_9_inst is using a behavioral model for simulation which will not precisely model memory collision behavior.
+非法指令异常跳转失败
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'tb_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+launch_simulation: Time (s): cpu = 00:00:00 ; elapsed = 00:00:11 . Memory (MB): peak = 1279.926 ; gain = 25.688
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-12493] Simulation top is 'tb'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'D:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'D:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-20] The project contains locked or custom IPs. The pre-compiled version of these IPs will not be referenced and the sources from these IP libraries will be compiled locally.
+INFO: [SIM-utils-54] Inspecting design source files for 'tb' in fileset 'sim_1'...
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe": no such file or directory
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe": no such file or directory
+INFO: [SIM-utils-43] Exported 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/test.coe'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tb_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/ipstatic/simulation/blk_mem_gen_v8_4.v" into library blk_mem_gen_v8_4_9
+INFO: [VRFC 10-311] analyzing module STATE_LOGIC_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_muxf7_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_clr_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_pre_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_ce_clr_v8_4
+INFO: [VRFC 10-311] analyzing module write_netlist_v8_4
+INFO: [VRFC 10-311] analyzing module read_netlist_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_write_wrapper_beh_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_read_wrapper_beh_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_regs_fwd_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_output_stage
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_softecc_output_reg_stage
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_mem_module
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.gen/sources_1/ip/data_ram/sim/data_ram.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module data_ram
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.gen/sources_1/ip/inst_rom/sim/inst_rom.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module inst_rom
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module decode
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'rs' is not allowed [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v:43]
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'rt' is not allowed [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v:44]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exception_controller.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module exception_controller
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exe.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module exe
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/fetch.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fetch
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/mem.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mem
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module multi_cycle_cpu
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module regfile
+WARNING: [VRFC 10-8374] loop variable declaration is not allowed in this mode of Verilog [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v:32]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/wb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module wb
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xelab --incr --debug typical --relax --mt 2 -L xil_defaultlib -L blk_mem_gen_v8_4_9 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_behav xil_defaultlib.tb xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: D:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug typical --relax --mt 2 -L xil_defaultlib -L blk_mem_gen_v8_4_9 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_behav xil_defaultlib.tb xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+WARNING: [VRFC 10-3091] actual bit length 10 differs from formal bit length 32 for port 'mem_addr' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:31]
+WARNING: [VRFC 10-3091] actual bit length 150 differs from formal bit length 152 for port 'ID_EXE_bus' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v:232]
+WARNING: [VRFC 10-3091] actual bit length 150 differs from formal bit length 152 for port 'ID_EXE_bus_r' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v:240]
+WARNING: [VRFC 10-3091] actual bit length 106 differs from formal bit length 108 for port 'EXE_MEM_bus' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v:242]
+WARNING: [VRFC 10-3091] actual bit length 13 differs from formal bit length 12 for port 'alu_control' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exe.v:55]
+WARNING: [VRFC 10-3091] actual bit length 106 differs from formal bit length 108 for port 'EXE_MEM_bus_r' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v:251]
+WARNING: [VRFC 10-3705] select index 12 into 'alu_control' is out of bounds [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/alu.v:30]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.fetch
+Compiling module xil_defaultlib.decode
+Compiling module xil_defaultlib.adder
+Compiling module xil_defaultlib.alu
+Compiling module xil_defaultlib.exe
+Compiling module xil_defaultlib.mem
+Compiling module xil_defaultlib.wb
+Compiling module xil_defaultlib.exception_controller
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_output_stage(...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_output_stage(...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_softecc_outpu...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_mem_module(C_...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9(C_FAMILY="kin...
+Compiling module xil_defaultlib.inst_rom
+Compiling module xil_defaultlib.regfile
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_mem_module(C_...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_axi_regs_fwd_v8_4(C_DATA...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9(C_FAMILY="kin...
+Compiling module xil_defaultlib.data_ram
+Compiling module xil_defaultlib.multi_cycle_cpu
+Compiling module xil_defaultlib.tb
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '5' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "tb_behav -key {Behavioral:sim_1:Functional:tb} -tclbatch {tb.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Time resolution is 1 ps
+source tb.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 1000ns
+Block Memory Generator module tb.uut.inst_rom_module.inst.native_mem_module.blk_mem_gen_v8_4_9_inst is using a behavioral model for simulation which will not precisely model memory collision behavior.
+Block Memory Generator module tb.uut.data_ram_module.inst.native_mem_module.blk_mem_gen_v8_4_9_inst is using a behavioral model for simulation which will not precisely model memory collision behavior.
+开始测试：非法指令异常
+非法指令异常跳转失败，cp0_pc = 00000000
+开始测试：除零异常
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'tb_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+launch_simulation: Time (s): cpu = 00:00:00 ; elapsed = 00:00:08 . Memory (MB): peak = 2113.691 ; gain = 0.000
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-12493] Simulation top is 'tb'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'D:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'D:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-20] The project contains locked or custom IPs. The pre-compiled version of these IPs will not be referenced and the sources from these IP libraries will be compiled locally.
+INFO: [SIM-utils-54] Inspecting design source files for 'tb' in fileset 'sim_1'...
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe": no such file or directory
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe": no such file or directory
+INFO: [SIM-utils-43] Exported 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/test.coe'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tb_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/ipstatic/simulation/blk_mem_gen_v8_4.v" into library blk_mem_gen_v8_4_9
+INFO: [VRFC 10-311] analyzing module STATE_LOGIC_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_muxf7_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_clr_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_pre_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_ce_clr_v8_4
+INFO: [VRFC 10-311] analyzing module write_netlist_v8_4
+INFO: [VRFC 10-311] analyzing module read_netlist_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_write_wrapper_beh_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_read_wrapper_beh_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_regs_fwd_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_output_stage
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_softecc_output_reg_stage
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_mem_module
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.gen/sources_1/ip/data_ram/sim/data_ram.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module data_ram
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.gen/sources_1/ip/inst_rom/sim/inst_rom.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module inst_rom
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module decode
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'rs' is not allowed [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v:43]
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'rt' is not allowed [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v:44]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exception_controller.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module exception_controller
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exe.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module exe
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/fetch.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fetch
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/mem.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mem
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module multi_cycle_cpu
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module regfile
+WARNING: [VRFC 10-8374] loop variable declaration is not allowed in this mode of Verilog [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v:32]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/wb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module wb
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb
+INFO: [USF-XSim-69] 'compile' step finished in '2' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xelab --incr --debug typical --relax --mt 2 -L xil_defaultlib -L blk_mem_gen_v8_4_9 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_behav xil_defaultlib.tb xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: D:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug typical --relax --mt 2 -L xil_defaultlib -L blk_mem_gen_v8_4_9 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_behav xil_defaultlib.tb xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+WARNING: [VRFC 10-3091] actual bit length 10 differs from formal bit length 32 for port 'mem_addr' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:31]
+WARNING: [VRFC 10-3091] actual bit length 150 differs from formal bit length 152 for port 'ID_EXE_bus' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v:232]
+WARNING: [VRFC 10-3091] actual bit length 150 differs from formal bit length 152 for port 'ID_EXE_bus_r' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v:240]
+WARNING: [VRFC 10-3091] actual bit length 106 differs from formal bit length 108 for port 'EXE_MEM_bus' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v:242]
+WARNING: [VRFC 10-3091] actual bit length 13 differs from formal bit length 12 for port 'alu_control' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exe.v:55]
+WARNING: [VRFC 10-3091] actual bit length 106 differs from formal bit length 108 for port 'EXE_MEM_bus_r' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v:251]
+WARNING: [VRFC 10-3705] select index 12 into 'alu_control' is out of bounds [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/alu.v:30]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.fetch
+Compiling module xil_defaultlib.decode
+Compiling module xil_defaultlib.adder
+Compiling module xil_defaultlib.alu
+Compiling module xil_defaultlib.exe
+Compiling module xil_defaultlib.mem
+Compiling module xil_defaultlib.wb
+Compiling module xil_defaultlib.exception_controller
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_output_stage(...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_output_stage(...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_softecc_outpu...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_mem_module(C_...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9(C_FAMILY="kin...
+Compiling module xil_defaultlib.inst_rom
+Compiling module xil_defaultlib.regfile
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9_mem_module(C_...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_axi_regs_fwd_v8_4(C_DATA...
+Compiling module blk_mem_gen_v8_4_9.blk_mem_gen_v8_4_9(C_FAMILY="kin...
+Compiling module xil_defaultlib.data_ram
+Compiling module xil_defaultlib.multi_cycle_cpu
+Compiling module xil_defaultlib.tb
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '4' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "tb_behav -key {Behavioral:sim_1:Functional:tb} -tclbatch {tb.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Time resolution is 1 ps
+source tb.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 1000ns
+Block Memory Generator module tb.uut.inst_rom_module.inst.native_mem_module.blk_mem_gen_v8_4_9_inst is using a behavioral model for simulation which will not precisely model memory collision behavior.
+Block Memory Generator module tb.uut.data_ram_module.inst.native_mem_module.blk_mem_gen_v8_4_9_inst is using a behavioral model for simulation which will not precisely model memory collision behavior.
+开始测试：非法指令异常
+非法指令异常跳转失败，cp0_pc = 00000000
+开始测试：除零异常
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'tb_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+launch_simulation: Time (s): cpu = 00:00:00 ; elapsed = 00:00:08 . Memory (MB): peak = 2113.691 ; gain = 0.000
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+update_compile_order -fileset sources_1
+WARNING: [filemgmt 20-1445] Cannot import file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/cp0.v' on top of itself. Importing a file from the imported source directory can cause this problem.
+add_files -norecurse C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/cp0.v
+update_compile_order -fileset sources_1
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-12493] Simulation top is 'tb'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'D:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'D:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-20] The project contains locked or custom IPs. The pre-compiled version of these IPs will not be referenced and the sources from these IP libraries will be compiled locally.
+INFO: [SIM-utils-54] Inspecting design source files for 'tb' in fileset 'sim_1'...
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe": no such file or directory
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe": no such file or directory
+INFO: [SIM-utils-43] Exported 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/test.coe'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tb_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/cp0.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cp0
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb
+ERROR: [VRFC 10-9623] unexpected non-printable character with the hex value '0xcf' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:55]
+ERROR: [VRFC 10-4982] syntax error near '(' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:55]
+ERROR: [VRFC 10-9623] unexpected non-printable character with the hex value '0xcf' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:63]
+ERROR: [VRFC 10-4982] syntax error near '(' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:63]
+ERROR: [VRFC 10-9623] unexpected non-printable character with the hex value '0xcf' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:67]
+ERROR: [VRFC 10-4982] syntax error near '(' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:67]
+ERROR: [VRFC 10-9623] unexpected non-printable character with the hex value '0xcf' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:72]
+ERROR: [VRFC 10-4982] syntax error near '(' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:72]
+ERROR: [VRFC 10-9623] unexpected non-printable character with the hex value '0xcf' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:78]
+ERROR: [VRFC 10-4982] syntax error near '(' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:78]
+ERROR: [VRFC 10-9623] unexpected non-printable character with the hex value '0xcf' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:83]
+ERROR: [VRFC 10-4982] syntax error near '(' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:83]
+ERROR: [VRFC 10-9623] unexpected non-printable character with the hex value '0xcf' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:92]
+ERROR: [VRFC 10-4982] syntax error near '(' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:92]
+WARNING: [VRFC 10-2096] empty statement in sequential block [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:55]
+WARNING: [VRFC 10-2096] empty statement in sequential block [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:63]
+WARNING: [VRFC 10-2096] empty statement in sequential block [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:67]
+WARNING: [VRFC 10-2096] empty statement in sequential block [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:72]
+WARNING: [VRFC 10-2096] empty statement in sequential block [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:78]
+WARNING: [VRFC 10-2096] empty statement in sequential block [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:83]
+WARNING: [VRFC 10-2096] empty statement in sequential block [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:92]
+ERROR: [VRFC 10-9623] unexpected non-printable character with the hex value '0xcf' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:101]
+ERROR: [VRFC 10-4982] syntax error near ';' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:101]
+WARNING: [VRFC 10-8956] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:101]
+ERROR: [VRFC 10-4982] syntax error near '$display' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:103]
+ERROR: [VRFC 10-4982] syntax error near '$display' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:104]
+ERROR: [VRFC 10-4982] syntax error near '$display' [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v:106]
+INFO: [#UNDEF] Sorry, too many errors..
+INFO: [USF-XSim-69] 'compile' step finished in '3' seconds
+INFO: [USF-XSim-99] Step results log file:'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/xvlog.log'
+ERROR: [USF-XSim-62] 'compile' step failed with error(s). Please check the Tcl console output or 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/xvlog.log' file for more information.
+ERROR: [Vivado 12-4473] Detected error while running simulation. Please correct the issue and retry this operation.
+ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors.
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-12493] Simulation top is 'tb'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'D:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'D:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-20] The project contains locked or custom IPs. The pre-compiled version of these IPs will not be referenced and the sources from these IP libraries will be compiled locally.
+INFO: [SIM-utils-54] Inspecting design source files for 'tb' in fileset 'sim_1'...
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe": no such file or directory
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe": no such file or directory
+INFO: [SIM-utils-43] Exported 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/test.coe'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tb_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/cp0.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cp0
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xelab --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_behav xil_defaultlib.tb xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: D:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_behav xil_defaultlib.tb xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.cp0
+Compiling module xil_defaultlib.tb
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '2' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "tb_behav -key {Behavioral:sim_1:Functional:tb} -tclbatch {tb.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Time resolution is 1 ps
+source tb.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 1000ns
+
+Test 1: Normal operation (no exception)
+Time=30000: clk=1, resetn=1
+  exception_flag=0, sync1=0, sync2=0
+  exception_type=00, pc_current=00400000
+  eret_executed=0
+  Outputs: EPC=00000000, exception_triggered=0, status_exl=0
+----------------------------------------
+
+Test 2: Trigger exception
+Time=40000: clk=1, resetn=1
+  exception_flag=1, sync1=1, sync2=0
+  exception_type=01, pc_current=00400004
+  eret_executed=0
+  Outputs: EPC=00000000, exception_triggered=0, status_exl=0
+----------------------------------------
+Time=50000: clk=1, resetn=1
+  exception_flag=1, sync1=1, sync2=1
+  exception_type=01, pc_current=00400004
+  eret_executed=0
+  Outputs: EPC=00000000, exception_triggered=1, status_exl=0
+----------------------------------------
+Time=60000: clk=1, resetn=1
+  exception_flag=0, sync1=0, sync2=1
+  exception_type=01, pc_current=00400004
+  eret_executed=0
+  Outputs: EPC=00400004, exception_triggered=1, status_exl=1
+----------------------------------------
+
+Test 3: Execute ERET instruction
+Time=70000: clk=1, resetn=1
+  exception_flag=0, sync1=0, sync2=0
+  exception_type=01, pc_current=00400004
+  eret_executed=1
+  Outputs: EPC=00400004, exception_triggered=0, status_exl=1
+----------------------------------------
+Time=80000: clk=1, resetn=1
+  exception_flag=0, sync1=0, sync2=0
+  exception_type=01, pc_current=00400004
+  eret_executed=0
+  Outputs: EPC=00400004, exception_triggered=0, status_exl=1
+----------------------------------------
+
+Test 4: Trigger another exception
+Time=100000: clk=1, resetn=1
+  exception_flag=0, sync1=1, sync2=1
+  exception_type=10, pc_current=00400008
+  eret_executed=0
+  Outputs: EPC=00400004, exception_triggered=1, status_exl=1
+----------------------------------------
+
+All tests completed
+$finish called at time : 110 ns : File "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v" Line 97
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'tb_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+launch_simulation: Time (s): cpu = 00:00:00 ; elapsed = 00:00:05 . Memory (MB): peak = 2113.691 ; gain = 0.000
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-12493] Simulation top is 'tb'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'D:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'D:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-20] The project contains locked or custom IPs. The pre-compiled version of these IPs will not be referenced and the sources from these IP libraries will be compiled locally.
+INFO: [SIM-utils-54] Inspecting design source files for 'tb' in fileset 'sim_1'...
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe": no such file or directory
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe": no such file or directory
+INFO: [SIM-utils-43] Exported 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/test.coe'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tb_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/cp0.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cp0
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb
+INFO: [USF-XSim-69] 'compile' step finished in '2' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xelab --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_behav xil_defaultlib.tb xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: D:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_behav xil_defaultlib.tb xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.cp0
+Compiling module xil_defaultlib.tb
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '1' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "tb_behav -key {Behavioral:sim_1:Functional:tb} -tclbatch {tb.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Time resolution is 1 ps
+source tb.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 1000ns
+
+Test 1: Normal operation (no exception)
+Time=30000: clk=1, resetn=1
+  exception_flag=0, sync1=0, sync2=0
+  exception_type=00, pc_current=00400000
+  eret_executed=0
+  Outputs: EPC=00000000, exception_triggered=0, status_exl=0
+----------------------------------------
+
+Test 2: Trigger exception
+Time=40000: clk=1, resetn=1
+  exception_flag=1, sync1=1, sync2=0
+  exception_type=01, pc_current=00400004
+  eret_executed=0
+  Outputs: EPC=00000000, exception_triggered=0, status_exl=0
+----------------------------------------
+Time=50000: clk=1, resetn=1
+  exception_flag=1, sync1=1, sync2=1
+  exception_type=01, pc_current=00400004
+  eret_executed=0
+  Outputs: EPC=00000000, exception_triggered=1, status_exl=0
+----------------------------------------
+Time=60000: clk=1, resetn=1
+  exception_flag=0, sync1=0, sync2=1
+  exception_type=01, pc_current=00400004
+  eret_executed=0
+  Outputs: EPC=00400004, exception_triggered=1, status_exl=1
+----------------------------------------
+
+Test 3: Execute ERET instruction
+Time=70000: clk=1, resetn=1
+  exception_flag=0, sync1=0, sync2=0
+  exception_type=01, pc_current=00400004
+  eret_executed=1
+  Outputs: EPC=00400004, exception_triggered=0, status_exl=1
+----------------------------------------
+Time=80000: clk=1, resetn=1
+  exception_flag=0, sync1=0, sync2=0
+  exception_type=01, pc_current=00400004
+  eret_executed=0
+  Outputs: EPC=00400004, exception_triggered=0, status_exl=1
+----------------------------------------
+
+Test 4: Trigger another exception
+Time=100000: clk=1, resetn=1
+  exception_flag=0, sync1=1, sync2=1
+  exception_type=10, pc_current=00400008
+  eret_executed=0
+  Outputs: EPC=00400004, exception_triggered=1, status_exl=1
+----------------------------------------
+
+All tests completed
+$finish called at time : 110 ns : File "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v" Line 97
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'tb_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+launch_simulation: Time (s): cpu = 00:00:00 ; elapsed = 00:00:05 . Memory (MB): peak = 2358.547 ; gain = 0.000
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-12493] Simulation top is 'tb'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'D:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'D:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-20] The project contains locked or custom IPs. The pre-compiled version of these IPs will not be referenced and the sources from these IP libraries will be compiled locally.
+INFO: [SIM-utils-54] Inspecting design source files for 'tb' in fileset 'sim_1'...
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/inst_rom.coe": no such file or directory
+WARNING: [SIM-utils-42] Failed to copy file 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe' to 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim' : error copying "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/mem_init_files/data_ram.coe": no such file or directory
+INFO: [SIM-utils-43] Exported 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim/test.coe'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tb_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/cp0.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cp0
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb
+INFO: [USF-XSim-69] 'compile' step finished in '2' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+"xelab --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_behav xil_defaultlib.tb xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: D:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_behav xil_defaultlib.tb xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.cp0
+Compiling module xil_defaultlib.tb
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '2' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/Users/91629/Desktop/risc-v_cpu/cpu_third.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "tb_behav -key {Behavioral:sim_1:Functional:tb} -tclbatch {tb.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Time resolution is 1 ps
+source tb.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 1000ns
+
+Test 1: Normal operation (no exception)
+Time=30000: clk=1, resetn=1
+  exception_flag=0, sync1=0, sync2=0
+  exception_type=00, pc_current=00400000
+  eret_executed=0
+  Outputs: EPC=00000000, exception_triggered=0, status_exl=0
+----------------------------------------
+
+Test 2: Trigger exception
+Time=40000: clk=1, resetn=1
+  exception_flag=1, sync1=1, sync2=0
+  exception_type=01, pc_current=00400004
+  eret_executed=0
+  Outputs: EPC=00000000, exception_triggered=0, status_exl=0
+----------------------------------------
+Time=50000: clk=1, resetn=1
+  exception_flag=1, sync1=1, sync2=1
+  exception_type=01, pc_current=00400004
+  eret_executed=0
+  Outputs: EPC=00000000, exception_triggered=1, status_exl=0
+----------------------------------------
+Time=60000: clk=1, resetn=1
+  exception_flag=0, sync1=0, sync2=1
+  exception_type=01, pc_current=00400004
+  eret_executed=0
+  Outputs: EPC=00400004, exception_triggered=1, status_exl=1
+----------------------------------------
+
+Test 3: Execute ERET instruction
+Time=70000: clk=1, resetn=1
+  exception_flag=0, sync1=0, sync2=0
+  exception_type=01, pc_current=00400004
+  eret_executed=1
+  Outputs: EPC=00400004, exception_triggered=0, status_exl=0
+----------------------------------------
+Time=80000: clk=1, resetn=1
+  exception_flag=0, sync1=0, sync2=0
+  exception_type=01, pc_current=00400004
+  eret_executed=0
+  Outputs: EPC=00400004, exception_triggered=0, status_exl=0
+----------------------------------------
+
+Test 4: Trigger another exception
+Time=100000: clk=1, resetn=1
+  exception_flag=0, sync1=1, sync2=1
+  exception_type=10, pc_current=00400008
+  eret_executed=0
+  Outputs: EPC=00400004, exception_triggered=1, status_exl=0
+----------------------------------------
+
+All tests completed
+$finish called at time : 110 ns : File "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v" Line 97
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'tb_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+launch_simulation: Time (s): cpu = 00:00:01 ; elapsed = 00:00:06 . Memory (MB): peak = 2358.754 ; gain = 0.000
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+exit
+INFO: [Common 17-206] Exiting Vivado at Wed Apr 23 18:12:30 2025...

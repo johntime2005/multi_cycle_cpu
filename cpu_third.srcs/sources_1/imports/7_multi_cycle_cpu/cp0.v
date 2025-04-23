@@ -32,30 +32,36 @@ module cp0(
     // Status寄存器（这里只实现EXL位）
     reg status_EXL;
 
-    // 异常触发信号同步处理
-    reg exception_flag_sync;
+    // 异常触发信号同步处理（两级寄存器）
+    reg exception_flag_sync1, exception_flag_sync2;
     always @(posedge clk or negedge resetn) begin
         if (!resetn) begin
-            exception_flag_sync <= 1'b0;
+            exception_flag_sync1 <= 1'b0;
+            exception_flag_sync2 <= 1'b0;
         end else begin
-            exception_flag_sync <= exception_flag;
+            exception_flag_sync1 <= exception_flag;
+            exception_flag_sync2 <= exception_flag_sync1;
         end
     end
 
-    assign exception_triggered = exception_flag_sync;
+    assign exception_triggered = exception_flag_sync2;
     assign status_exl = status_EXL;
 
+    // EPC 和 EXL 位更新逻辑
     always @(posedge clk or negedge resetn) begin
         if (!resetn) begin
             EPC <= 32'b0;
             cause <= 2'b00;
             status_EXL <= 1'b0;
         end else begin
-            if (exception_flag) begin
+            if (exception_flag_sync2) begin
+                // 异常触发时立即更新 EPC 和 EXL 位
                 EPC <= pc_current;         // 保存异常时PC
                 cause <= exception_type;   // 保存异常类型
                 status_EXL <= 1'b1;        // 设置EXL，进入异常状态
-            end else if (eret_executed) begin
+            end 
+            if (eret_executed) begin
+                // ERET 指令立即清除 EXL 位
                 status_EXL <= 1'b0;        // 清除异常状态，返回用户态
             end
         end

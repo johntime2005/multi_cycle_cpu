@@ -4,167 +4,130 @@
 // 功能         : 实现多周期CPU中MEM阶段的数据存储操作，支持异常处理
 // 作者         : LOONGSON
 // 创建日期     : 2016-04-14
-// 修改日期     : 2023-10-20
-// 修改内容     : 添加对前面所有模块定义的异常的处理
+// 修改日期     : 2024-03-25
+// 修改内容     : 
+//   1. 统一异常信号输出为 exe_exception_type/flag
+//   2. 优化地址未对齐检测逻辑
+//   3. 明确数据存储器读写控制
 //*************************************************************************
 
 module mem(
     // 时钟与控制信号
-    input              clk,          // 时钟信号
-    input              MEM_valid,    // MEM阶段有效信号
+    input              clk,             // 时钟信号
+    input              MEM_valid,       // MEM阶段有效信号
 
-    // EXE->MEM阶段总线，包含以下字段：
-    // [107:106] - exception_type : 异常类型（从EXE阶段传递）
-    // [105]     - exception_flag : 异常标志（从EXE阶段传递）
-    // [104:101] - mem_control    : MEM控制信号
-    // [100:69]  - store_data     : 存储数据
-    // [68:37]   - alu_result     : ALU计算结果
-    // [36]      - rf_wen         : 寄存器写使能
-    // [35:31]   - rf_wdest       : 寄存器写目标地址
-    // [30:0]    - pc             : 当前PC值
-    input      [107:0] EXE_MEM_bus_r,
+    // EXE->MEM阶段总线
+    input      [107:0] EXE_MEM_bus_r,   // 总线输入
 
     // 数据存储器接口
-    input      [31:0] dm_rdata,      // 数据存储器读取数据
-    output     [31:0] dm_addr,       // 数据存储器地址
-    output reg [ 3:0] dm_wen,        // 数据存储器写使能
-    output reg [31:0] dm_wdata,      // 数据存储器写数据
+    input      [31:0]  dm_rdata,        // 数据存储器读取数据
+    output     [31:0]  dm_addr,         // 数据存储器地址
+    output reg [3:0]   dm_wen,          // 数据存储器写使能
+    output reg [31:0]  dm_wdata,        // 数据存储器写数据
 
-    // MEM阶段输出总线信息
-    output             MEM_over,     // MEM阶段结束信号
-    output    [ 69:0]  MEM_WB_bus,   // MEM->WB阶段总线
+    // 输出信号
+    output             MEM_over,        // MEM阶段结束信号
+    output    [69:0]   MEM_WB_bus,      // MEM->WB阶段总线
+    output    [31:0]   MEM_pc,          // 当前PC值
+    input              flush_pipeline,   // 冲刷流水线信号
 
-    // 输出当前PC
-    output     [31:0] MEM_pc,        // 当前PC值
-
-    // 冲刷流水线信号
-    input              flush_pipeline // 冲刷流水线信号
+    // 新增异常信号输出
+    output reg [1:0]   mem_exception_type, // MEM阶段异常类型
+    output reg         mem_exception_flag  // MEM阶段异常标志
 );
 
-//========================== 提取EXE->MEM阶段总线 ==========================
-wire exception_flag_from_exe;  // 异常标志
-wire [1:0] exception_type_from_exe;  // 异常类型
-wire [3:0] mem_control;              // MEM控制信号
-wire [31:0] store_data;              // 存储数据
-wire [31:0] alu_result;              // ALU计算结果
-wire rf_wen;                         // 寄存器写使能
-wire [4:0] rf_wdest;                 // 寄存器写目标地址
-wire [31:0] pc;                      // 当前PC值
+//========================== 总线信号解析 ==========================
+wire [1:0]  exe_exception_type;  // EXE阶段异常类型
+wire        exe_exception_flag;  // EXE阶段异常标志
+wire [3:0]  mem_control;         // MEM控制信号
+wire [31:0] store_data;          // 存储数据
+wire [31:0] alu_result;          // ALU计算结果
+wire        rf_wen;              // 寄存器写使能
+wire [4:0]  rf_wdest;            // 寄存器写目标地址
+wire [31:0] pc;                  // 当前PC值
 
 assign {
-    exception_type_from_exe,  // [107:106]
-    exception_flag_from_exe,  // [105]
-    mem_control,              // [104:101]
-    store_data,               // [100:69]
-    alu_result,               // [68:37]
-    rf_wen,                   // [36]
-    rf_wdest,                 // [35:31]
-    pc                        // [30:0]
+    exe_exception_type,  // [107:106]
+    exe_exception_flag,  // [105]
+    mem_control,         // [104:101]
+    store_data,          // [100:69]
+    alu_result,          // [68:37]
+    rf_wen,              // [36]
+    rf_wdest,            // [35:31]
+    pc                   // [30:0]
 } = EXE_MEM_bus_r;
 
 //========================== MEM控制信号解析 ==========================
-wire inst_load;   // load指令标志
-wire inst_store;  // store指令标志
-wire ls_word;     // 数据类型：1-字（word），0-非字
-wire ls_byte;     // 数据类型：1-字节（byte），0-非字节
-wire is_halfword; // 数据类型：1-半字（halfword），0-非半字
-
-assign {
-    inst_load,    // [3]
-    inst_store,   // [2]
-    ls_word,      // [1]
-    ls_byte       // [0]
-} = mem_control;
-
-// 半字标志：非字且非字节即为半字
-assign is_halfword = !ls_word && !ls_byte;
+wire inst_load   = mem_control[3];  // load指令标志
+wire inst_store  = mem_control[2];  // store指令标志
+wire ls_word     = mem_control[1];  // 字操作标志
+wire ls_byte     = mem_control[0];  // 字节操作标志
+wire is_halfword = !ls_word && !ls_byte; // 半字操作标志
 
 //========================== 地址未对齐异常检测 ==========================
-reg addr_error;
+wire addr_unaligned = 
+    (inst_load || inst_store) && 
+    ((ls_word && (alu_result[1:0] != 2'b00)) ||  // 字未对齐
+     (is_halfword && alu_result[0]));            // 半字未对齐
+
+//========================== 异常信号处理 ==========================
 always @(*) begin
-    addr_error = 1'b0;  // 初始化为无异常
-    if (MEM_valid) begin
-        if ((inst_load || inst_store) && ls_word && (alu_result[1:0] != 2'b00)) begin
-            // 如果是字（word）访问，但地址未对齐（低两位非0）
-            addr_error = 1'b1;
-        end
-        else if ((inst_load || inst_store) && is_halfword && alu_result[0] != 1'b0) begin
-            // 如果是半字（halfword）访问，但地址未对齐（最低位非0）
-            addr_error = 1'b1;
-        end
+    // 默认继承EXE阶段的异常
+    mem_exception_flag = exe_exception_flag;
+    mem_exception_type = exe_exception_type;
+    
+    // 检测MEM阶段异常（优先级高于EXE异常）
+    if (MEM_valid && addr_unaligned) begin
+        mem_exception_flag = 1'b1;
+        mem_exception_type = 2'b01;  // 地址未对齐异常
     end
 end
 
-//========================== 异常信号合并 ==========================
-reg exception_flag;
-reg [1:0] exception_type;
+//========================== 数据存储器操作 ==========================
+assign dm_addr = alu_result;  // 地址直接使用ALU结果
 
+// 写使能生成
 always @(*) begin
-    // 初始化异常标志和类型
-    exception_flag = exception_flag_from_exe;
-    exception_type = exception_type_from_exe;
-
-    // 检测地址未对齐异常
-    if (addr_error) begin
-        exception_flag = 1'b1;
-        exception_type = 2'b01;  // 地址未对齐异常
-    end
-end
-
-//========================== 数据存储器写操作 ==========================
-assign dm_addr = alu_result;  // 数据存储器地址直接由ALU结果提供
-
-always @(*) begin
-    if (MEM_valid && inst_store && !exception_flag) begin
+    if (MEM_valid && inst_store && !mem_exception_flag) begin
         if (ls_word) begin
-            dm_wen <= 4'b1111; // 写整个字（4字节）
+            dm_wen = 4'b1111;  // 字写入
+        end else if (is_halfword) begin
+            dm_wen = {2'b00, {2{alu_result[1]}}};  // 半字写入（对齐处理）
+        end else begin
+            dm_wen = (1 << alu_result[1:0]);  // 字节写入
         end
-        else begin
-            // 写单字节，根据地址低两位决定写哪个字节
-            case (dm_addr[1:0])
-                2'b00: dm_wen <= 4'b0001;
-                2'b01: dm_wen <= 4'b0010;
-                2'b10: dm_wen <= 4'b0100;
-                2'b11: dm_wen <= 4'b1000;
-                default: dm_wen <= 4'b0000;
-            endcase
-        end
-    end
-    else begin
-        dm_wen <= 4'b0000; // 非store操作或异常时，不写数据存储器
+    end else begin
+        dm_wen = 4'b0000;  // 默认不写入
     end
 end
 
+// 写数据生成
 always @(*) begin
     if (ls_word) begin
-        dm_wdata <= store_data; // 写整个字
-    end
-    else begin
-        // 写单字节，根据地址低两位调整数据位置
-        case (dm_addr[1:0])
-            2'b00: dm_wdata <= store_data;
-            2'b01: dm_wdata <= {16'd0, store_data[7:0], 8'd0};
-            2'b10: dm_wdata <= {8'd0, store_data[7:0], 16'd0};
-            2'b11: dm_wdata <= {store_data[7:0], 24'd0};
-            default: dm_wdata <= store_data;
-        endcase
+        dm_wdata = store_data;
+    end else if (is_halfword) begin
+        dm_wdata = alu_result[1] ? 
+                  {store_data[15:0], 16'b0} :  // 高半字
+                  {16'b0, store_data[15:0]};   // 低半字
+    end else begin
+        dm_wdata = store_data << (8 * alu_result[1:0]);  // 字节移位对齐
     end
 end
 
-//========================== 构造 MEM->WB 总线 ==========================
+//========================== MEM->WB总线构造 ==========================
+wire [31:0] wb_data = inst_load ? dm_rdata : alu_result;  // 选择写回数据
+
 assign MEM_WB_bus = flush_pipeline ? 70'b0 : {
-    exception_flag,    // [69] 异常标志
-    exception_type,    // [68:67] 异常类型
-    rf_wen,            // [66] 寄存器写使能
-    rf_wdest,          // [65:61] 寄存器写目标地址
-    alu_result,        // [60:29] ALU结果或数据存储器读取结果
-    pc                 // [28:0] 当前PC值
+    mem_exception_flag,  // [69]
+    mem_exception_type,  // [68:67]
+    rf_wen,              // [66]
+    rf_wdest,            // [65:61]
+    wb_data,             // [60:29] ALU结果或存储器数据
+    pc                   // [28:0] 当前PC
 };
 
-//========================== MEM阶段完成信号 ==========================
-assign MEM_over = flush_pipeline ? 1'b0 : (MEM_valid && !exception_flag); // 冲刷流水线时无效
-
-//========================== 输出当前PC ==========================
+//========================== 输出信号 ==========================
+assign MEM_over = flush_pipeline ? 1'b0 : MEM_valid;
 assign MEM_pc = pc;
 
 endmodule

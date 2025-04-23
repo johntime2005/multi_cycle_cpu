@@ -5,6 +5,7 @@
 //   > 作者  : LOONGSON
 //   > 日期  : 2016-04-14
 //   > 修改  : 添加对改进后的ALU的适配和异常处理机制（2023-10-20）
+//            优化异常信号输出（2024-03-25）
 //*************************************************************************
 module exe(
     // 基础信号
@@ -13,14 +14,11 @@ module exe(
     output             EXE_over,      // EXE模块执行完成
     output     [107:0] EXE_MEM_bus,   // EXE->MEM总线（扩展异常信号）
     output     [31:0]  EXE_pc,        // 当前PC值（用于显示）
+    input              flush_pipeline, // 冲刷流水线信号
 
-    // 新增异常信号
-    output reg         div_by_zero,   // 除零异常标志
-    output reg         overflow_flag, // 溢出异常标志
-    output reg [1:0]   exception_type, // 异常类型（10=除零，11=溢出）
-
-    // 新增控制信号
-    input              flush_pipeline // 冲刷流水线信号
+    // 异常信号输出
+    output reg [1:0]   exe_exception_type,  // EXE阶段异常类型（10=除零，11=溢出）
+    output reg         exe_exception_flag   // EXE阶段异常标志
 );
 
 //-----{ID->EXE总线解析}begin---------------------------------------
@@ -57,38 +55,37 @@ alu alu_module(
     .alu_control  (alu_control),    // ALU控制信号
     .alu_src1     (alu_operand1),   // 操作数1
     .alu_src2     (alu_operand2),   // 操作数2
-    .alu_result   (alu_result),     // 运算结果
-    .overflow_flag(alu_overflow)    // 溢出标志
+    .alu_result   (alu_result) // 运算结果
+   
 );
 //-----{ALU实例化}end-----------------------------------------------
 
-//-----{异常检测}begin---------------------------------------------
-always @(*) begin
-    // 初始化异常标志
-    div_by_zero = 1'b0;
-    overflow_flag = 1'b0;
-    exception_type = 2'b00;
+//-----{异常检测逻辑}begin------------------------------------------
+// 检测除零异常（假设alu_control[12]表示除法操作）
+wire div_by_zero = EXE_valid & alu_control[12] & (alu_operand2 == 32'd0);
 
-    // 检测除零异常（假设alu_control[8]表示除法）
-    if (EXE_valid && alu_control[12] && (alu_operand2 == 32'd0)) begin
-        div_by_zero = 1'b1;          // 触发除零异常
-        exception_type = 2'b10;      // 异常类型：除零
+// 合并异常信号（优先级：EXE异常 > ID异常）
+always @(*) begin
+    // 默认值
+    exe_exception_flag = 1'b0;
+    exe_exception_type = 2'b00;
+
+    // EXE阶段异常优先级最高
+    if (div_by_zero) begin
+        exe_exception_flag = 1'b1;
+        exe_exception_type = 2'b10;  // 除零异常
     end
-    // 检测溢出异常（加法或减法）
-    else if (EXE_valid && alu_overflow) begin
-        overflow_flag = 1'b1;        // 触发溢出异常
-        exception_type = 2'b11;      // 异常类型：溢出
+    else if (EXE_valid & alu_overflow) begin  // 直接使用alu_overflow信号
+        exe_exception_flag = 1'b1;
+        exe_exception_type = 2'b11;  // 溢出异常
+    end
+    // 传递ID阶段的异常（如果存在）
+    else if (exception_flag_from_id) begin
+        exe_exception_flag = exception_flag_from_id;
+        exe_exception_type = exception_type_from_id;
     end
 end
-//-----{异常检测}end------------------------------------------------
-
-//-----{异常信号合并}begin-------------------------------------------
-// 优先级：EXE阶段异常 > ID阶段异常
-wire        exception_flag = div_by_zero | overflow_flag | exception_flag_from_id;
-wire [1:0]  exception_type_final = div_by_zero ? 2'b10 :
-                                   overflow_flag ? 2'b11 :
-                                   exception_type_from_id;
-//-----{异常信号合并}end---------------------------------------------
+//-----{异常检测逻辑}end--------------------------------------------
 
 //-----{EXE执行完成标志}begin----------------------------------------
 assign EXE_over = flush_pipeline ? 1'b0 : EXE_valid; // 冲刷流水线时无效
@@ -96,14 +93,14 @@ assign EXE_over = flush_pipeline ? 1'b0 : EXE_valid; // 冲刷流水线时无效
 
 //-----{EXE->MEM总线生成}begin---------------------------------------
 assign EXE_MEM_bus = flush_pipeline ? 108'b0 : {
-    exception_type_final,  // [107:106] 异常类型
-    exception_flag,        // [105]     异常标志
-    mem_control,           // [104:101] MEM控制
-    store_data,            // [100:69]  存储数据
-    alu_result,            // [68:37]   ALU结果
-    rf_wen,                // [36]      寄存器写使能
-    rf_wdest,              // [35:31]   目标寄存器地址
-    pc                     // [30:0]    PC值
+    exe_exception_type,  // [107:106] 异常类型
+    exe_exception_flag,  // [105]     异常标志
+    mem_control,         // [104:101] MEM控制
+    store_data,          // [100:69]  存储数据
+    alu_result,          // [68:37]   ALU结果
+    rf_wen,              // [36]      寄存器写使能
+    rf_wdest,            // [35:31]   目标寄存器地址
+    pc                   // [30:0]    PC值
 };
 //-----{EXE->MEM总线生成}end-----------------------------------------
 

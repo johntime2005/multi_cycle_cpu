@@ -58,7 +58,7 @@
     <Option Name="IPUserFilesDir" Val="$PIPUSERFILESDIR"/>
     <Option Name="IPStaticSourceDir" Val="$PIPUSERFILESDIR/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
-    <Option Name="WTXSimLaunchSim" Val="7"/>
+    <Option Name="WTXSimLaunchSim" Val="36"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
@@ -89,27 +89,17 @@
   <FileSets Version="1" Minor="32">
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
       <Filter Type="Srcs"/>
-      <File Path="$PSRCDIR/sources_1/imports/multi_cpu/lcd_module.dcp">
+      <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/cp0.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/lcd_module.dcp"/>
-          <Attr Name="ImportTime" Val="1742022399"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/adder.v">
-        <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/adder.v"/>
-          <Attr Name="ImportTime" Val="1742022399"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/alu.v">
+      <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/tb.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/alu.v"/>
-          <Attr Name="ImportTime" Val="1742022399"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/tb.v"/>
+          <Attr Name="ImportTime" Val="1742022400"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -117,6 +107,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/decode.v">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/decode.v"/>
           <Attr Name="ImportTime" Val="1742022399"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -124,8 +115,17 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/exception_controller.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/exe.v">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/exe.v"/>
           <Attr Name="ImportTime" Val="1742022399"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -135,6 +135,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/fetch.v">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/fetch.v"/>
           <Attr Name="ImportTime" Val="1742022399"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -144,6 +145,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/mem.v">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/mem.v"/>
           <Attr Name="ImportTime" Val="1742022399"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -153,6 +155,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/multi_cycle_cpu.v"/>
           <Attr Name="ImportTime" Val="1742022399"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -162,6 +165,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/regfile.v">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/regfile.v"/>
           <Attr Name="ImportTime" Val="1742022400"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -171,6 +175,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/wb.v">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/wb.v"/>
           <Attr Name="ImportTime" Val="1742022400"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -178,20 +183,40 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PSRCDIR/sources_1/imports/multi_cpu/lcd_module.dcp">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/lcd_module.dcp"/>
+          <Attr Name="ImportTime" Val="1742022399"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+        </FileInfo>
+      </File>
       <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu_display.v">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/multi_cycle_cpu_display.v"/>
           <Attr Name="ImportTime" Val="1742022400"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/adder.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/adder.v"/>
+          <Attr Name="ImportTime" Val="1742022399"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/tb.v">
-        <FileInfo>
+      <File Path="$PSRCDIR/sources_1/imports/7_multi_cycle_cpu/alu.v">
+        <FileInfo RelPath="alu.v">
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/tb.v"/>
-          <Attr Name="ImportTime" Val="1742022400"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/alu.v"/>
+          <Attr Name="ImportTime" Val="1742022399"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -217,8 +242,7 @@
       </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="multi_cycle_cpu_display"/>
-        <Option Name="TopAutoSet" Val="TRUE"/>
+        <Option Name="TopModule" Val="tb"/>
       </Config>
     </FileSet>
     <FileSet Name="constrs_1" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1" RelGenDir="$PGENDIR/constrs_1">
@@ -280,6 +304,7 @@
     <FileSet Name="data_ram" Type="BlockSrcs" RelSrcDir="$PSRCDIR/data_ram" RelGenDir="$PGENDIR/data_ram">
       <File Path="$PSRCDIR/sources_1/ip/data_ram/data_ram.xci">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../cpu/multi_cpu/7_multi_cycle_cpu/data/data_ram.xci"/>
           <Attr Name="ImportTime" Val="1742625499"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -295,6 +320,7 @@
     <FileSet Name="inst_rom" Type="BlockSrcs" RelSrcDir="$PSRCDIR/inst_rom" RelGenDir="$PGENDIR/inst_rom">
       <File Path="$PSRCDIR/sources_1/ip/inst_rom/inst_rom.xci">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -341,10 +367,10 @@
         <Step Id="synth_design"/>
       </Strategy>
       <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2024" CtrlBit="true">
-        <ReportConfig DisplayName="synthesis_report" Name="synth_1_copy_1_synth_synthesis_report_0" Spec="" RunStep="synth_design" ReportFile="multi_cycle_cpu_display.vds">
+        <ReportConfig DisplayName="synthesis_report" Name="synth_1_copy_1_synth_synthesis_report_0" Spec="" RunStep="synth_design" ReportFile="tb.vds">
           <ReportConfigOption Name="dummy_option" Type="string"/>
         </ReportConfig>
-        <ReportConfig DisplayName="Utilization - Synth Design" Name="synth_1_copy_1_synth_report_utilization_0" Spec="report_utilization" RunStep="synth_design" ReportFile="multi_cycle_cpu_display_utilization_synth.rpt" Version="1" Minor="0">
+        <ReportConfig DisplayName="Utilization - Synth Design" Name="synth_1_copy_1_synth_report_utilization_0" Spec="report_utilization" RunStep="synth_design" ReportFile="tb_utilization_synth.rpt" Version="1" Minor="0">
           <ReportConfigOption Name="dummy_option" Type="string"/>
           <ReportConfigOutputOption Name="pb" Type="string" Value=""/>
         </ReportConfig>

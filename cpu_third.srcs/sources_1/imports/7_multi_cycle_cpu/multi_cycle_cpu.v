@@ -22,6 +22,18 @@ module multi_cycle_cpu(  // 多周期CPU
     output [31:0] WB_pc,
     output [31:0] display_state
     );
+    //----------------------- 新增异常信号声明 -----------------------//
+    wire [1:0]  id_exception_type;
+    wire        id_exception_flag;
+    wire [1:0]  exe_exception_type;
+    wire        exe_exception_flag;
+    wire [1:0]  mem_exception_type;
+    wire        mem_exception_flag;
+    wire        exception_triggered;
+    wire [1:0]  final_exception_type;
+    wire [31:0] cp0_pc;
+    wire [1:0]  cp0_exception_type;
+    wire        cp0_exception_flag;
 //----------------------{控制多周期的状态机}begin------------------------//
     reg [2:0] state;       // 当前状态
     reg [2:0] next_state;  // 下一状态
@@ -61,57 +73,42 @@ module multi_cycle_cpu(  // 多周期CPU
             end
             FETCH: 
             begin
-                if (IF_over)
-                begin
+                if (IF_over) begin
                     next_state = DECODE;   // 取指->译码
-                end
-                else
-                begin
+                end else begin
                     next_state = FETCH;    // 取指->取指
                 end
             end
             DECODE: 
             begin
-                if (ID_over)
-                begin                      // 译码->执行或取指   
-                    next_state = jbr_not_link ? FETCH : EXE;
-                end
-                else
-                begin
-                    next_state = DECODE;   // 取指->译码
+                if (ID_over) begin
+                    next_state = jbr_not_link ? FETCH : EXE;  // 分支指令跳转到 FETCH
+                end else begin
+                    next_state = DECODE;   // 译码->译码
                 end
             end
             EXE: 
             begin
-                if (EXE_over)
-                begin
+                if (EXE_over) begin
                     next_state = MEM;      // 执行->存储
-                end
-                else
-                begin
-                    next_state = EXE;   // 取指->译码
+                end else begin
+                    next_state = EXE;      // 执行->执行
                 end
             end
             MEM:
             begin
-                if (MEM_over)
-                begin
+                if (MEM_over) begin
                     next_state = WB;       // 存储->写回
-                end
-                else
-                begin
-                    next_state = MEM;   // 取指->译码
+                end else begin
+                    next_state = MEM;      // 存储->存储
                 end
             end
             WB:
             begin
-                if (WB_over)
-                begin
+                if (WB_over) begin
                     next_state = FETCH;    // 写回->取指
-                end
-                else
-                begin
-                    next_state = WB;   // 取指->译码
+                end else begin
+                    next_state = WB;       // 写回->写回
                 end
             end
             default : next_state = IDLE;

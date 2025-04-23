@@ -3,10 +3,10 @@
 # SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
 # IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
 # SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
-# Start of session at: Wed Apr 23 21:17:49 2025
-# Process ID         : 13056
+# Start of session at: Sat Apr 19 13:02:48 2025
+# Process ID         : 20268
 # Current directory  : C:/Users/91629/Desktop/risc-v_cpu
-# Command line       : vivado.exe -gui_launcher_event rodinguilauncherevent21632 C:\Users\91629\Desktop\risc-v_cpu\cpu_third.xpr
+# Command line       : vivado.exe -gui_launcher_event rodinguilauncherevent8280 C:\Users\91629\Desktop\risc-v_cpu\cpu_third.xpr
 # Log file           : C:/Users/91629/Desktop/risc-v_cpu/vivado.log
 # Journal file       : C:/Users/91629/Desktop/risc-v_cpu\vivado.jou
 # Running On         : wangzhangzhuo
@@ -17,12 +17,11 @@
 # CPU Physical cores : 8
 # CPU Logical cores  : 16
 # Host memory        : 16334 MB
-# Swap memory        : 11811 MB
-# Total Virtual      : 28146 MB
-# Available Virtual  : 13700 MB
+# Swap memory        : 10406 MB
+# Total Virtual      : 26741 MB
+# Available Virtual  : 17127 MB
 #-----------------------------------------------------------
 start_gui
 open_project C:/Users/91629/Desktop/risc-v_cpu/cpu_third.xpr
 update_compile_order -fileset sources_1
 launch_simulation
-source tb.tcl
