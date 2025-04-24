@@ -114,10 +114,15 @@ wire valid_instruction = inst_ADDU | inst_SUBU | inst_SLT | inst_SLTU |
 always @(*) begin
     exception_flag = 1'b0;
     exception_type = 2'b00;
-    if (ID_valid && !flush_pipeline && !valid_instruction) begin  // 添加冲刷信号判断
+    if (ID_valid && !flush_pipeline && !valid_instruction) begin
         exception_flag = 1'b1;
         exception_type = 2'b01; // 非法指令
     end
+    // debug输出
+    // synthesis translate_off
+    if (ID_valid && !flush_pipeline)
+        $display("decode: inst=%h, valid=%b, exception_flag=%b, exception_type=%b", inst, valid_instruction, exception_flag, exception_type);
+    // synthesis translate_on
 end
 
 always @(*) begin

@@ -1,4 +1,54 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.ip_user_files/ipstatic/simulation/blk_mem_gen_v8_4.v" into library blk_mem_gen_v8_4_9
+INFO: [VRFC 10-311] analyzing module STATE_LOGIC_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_muxf7_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_clr_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_pre_v8_4
+INFO: [VRFC 10-311] analyzing module beh_vlog_ff_ce_clr_v8_4
+INFO: [VRFC 10-311] analyzing module write_netlist_v8_4
+INFO: [VRFC 10-311] analyzing module read_netlist_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_write_wrapper_beh_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_read_wrapper_beh_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_axi_regs_fwd_v8_4
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_output_stage
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_softecc_output_reg_stage
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9_mem_module
+INFO: [VRFC 10-311] analyzing module blk_mem_gen_v8_4_9
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.gen/sources_1/ip/data_ram/sim/data_ram.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module data_ram
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.gen/sources_1/ip/inst_rom/sim/inst_rom.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module inst_rom
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module decode
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'rs' is not allowed [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v:43]
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'rt' is not allowed [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/decode.v:44]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exception_controller.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module exception_controller
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/exe.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module exe
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/fetch.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fetch
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/mem.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module mem
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module multi_cycle_cpu
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module regfile
+WARNING: [VRFC 10-8374] loop variable declaration is not allowed in this mode of Verilog [C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/regfile.v:32]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/wb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module wb
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/multi_cycle_cpu_display.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module multi_cycle_cpu_display
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/alu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module alu
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/adder.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module adder
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/cp0.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cp0
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/mem_tb.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module tb_mem
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/test_decode.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module test_decode
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/91629/Desktop/risc-v_cpu/cpu_third.srcs/sources_1/imports/7_multi_cycle_cpu/full_cpu_tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module full_cpu_tb
