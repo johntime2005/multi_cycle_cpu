@@ -1,0 +1,8 @@
+*
+!./
+!*.v
+!*.xci
+!*.coe
+!*.xdc
+!*.mif
+!*.gitignore
