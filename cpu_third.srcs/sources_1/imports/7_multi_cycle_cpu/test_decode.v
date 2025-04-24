@@ -2,14 +2,14 @@
 `timescale 1ns / 1ps
 module test_decode;
 
-    // ÊäÈëĞÅºÅ
+    // è¾“å…¥ä¿¡å·
     reg         ID_valid;
     reg [63:0]  IF_ID_bus_r;
     reg [31:0]  rs_value;
     reg [31:0]  rt_value;
     reg         flush_pipeline;
 
-    // Êä³öĞÅºÅ
+    // è¾“å‡ºä¿¡å·
     wire [4:0]  rs;
     wire [4:0]  rt;
     wire [32:0] jbr_bus;
@@ -23,7 +23,7 @@ module test_decode;
     wire [1:0]  id_exception_type;
     wire        id_exception_flag;
 
-    // ÊµÀı»¯±»²âÄ£¿é
+    // å®ä¾‹åŒ–è¢«æµ‹æ¨¡å—
     decode uut (
         .ID_valid(ID_valid),
         .IF_ID_bus_r(IF_ID_bus_r),
@@ -45,9 +45,9 @@ module test_decode;
     );
 
     initial begin
-        $display("==== decode.v Òì³£¼ì²â²âÊÔ ====");
+        $display("==== decode.v å¼‚å¸¸æ£€æµ‹æµ‹è¯• ====");
 
-        // ³õÊ¼»¯
+        // åˆå§‹åŒ–
         ID_valid = 0;
         IF_ID_bus_r = 0;
         rs_value = 0;
@@ -55,57 +55,57 @@ module test_decode;
         flush_pipeline = 0;
         #10;
 
-        // 1. ºÏ·¨Ö¸Áî£¨ADDU£©£¬²»Ó¦´¥·¢Òì³£
-        $display("[Test 1] ºÏ·¨Ö¸ÁîADDU");
+        // 1. åˆæ³•æŒ‡ä»¤ï¼ˆADDUï¼‰ï¼Œä¸åº”è§¦å‘å¼‚å¸¸
+        $display("[Test 1] åˆæ³•æŒ‡ä»¤ADDU");
         ID_valid = 1;
         IF_ID_bus_r = {32'h00400000, 32'b000000_00010_00011_00001_00000_100001}; // ADDU $1,$2,$3
         #10;
-        check_exception(0, 2'b00, "ºÏ·¨Ö¸ÁîADDU");
+        check_exception(0, 2'b00, "åˆæ³•æŒ‡ä»¤ADDU");
 
-        // 2. ·Ç·¨Ö¸Áî£¨Î´¶¨Òåop£©£¬Ó¦´¥·¢decode½×¶ÎÒì³£
-        $display("[Test 2] ·Ç·¨Ö¸Áî");
+        // 2. éæ³•æŒ‡ä»¤ï¼ˆæœªå®šä¹‰opï¼‰ï¼Œåº”è§¦å‘decodeé˜¶æ®µå¼‚å¸¸
+        $display("[Test 2] éæ³•æŒ‡ä»¤");
         IF_ID_bus_r = {32'h00400004, 32'b111111_00000_00000_00000_00000_000000};
         #10;
-        check_exception(1, 2'b01, "·Ç·¨Ö¸Áî");
+        check_exception(1, 2'b01, "éæ³•æŒ‡ä»¤");
 
-        // 3. ³åË¢Ê±£¬Òì³£Ó¦±»ÒÖÖÆ
-        $display("[Test 3] ³åË¢Ê±Òì³£ÒÖÖÆ");
+        // 3. å†²åˆ·æ—¶ï¼Œå¼‚å¸¸åº”è¢«æŠ‘åˆ¶
+        $display("[Test 3] å†²åˆ·æ—¶å¼‚å¸¸æŠ‘åˆ¶");
         flush_pipeline = 1;
         IF_ID_bus_r = {32'h00400008, 32'b111111_00000_00000_00000_00000_000000};
         #10;
-        check_exception(0, 2'b00, "³åË¢Ê±Òì³£ÒÖÖÆ");
+        check_exception(0, 2'b00, "å†²åˆ·æ—¶å¼‚å¸¸æŠ‘åˆ¶");
         flush_pipeline = 0;
 
-        // 4. ERETÖ¸ÁîÊ¶±ğ
-        $display("[Test 4] ERETÖ¸ÁîÊ¶±ğ");
+        // 4. ERETæŒ‡ä»¤è¯†åˆ«
+        $display("[Test 4] ERETæŒ‡ä»¤è¯†åˆ«");
         IF_ID_bus_r = {32'h0040000C, 32'b010000_00000_00000_00000_00000_011000};
         #10;
         if (eret_executed !== 1) begin
-            $display("[FAIL] ERETÖ¸ÁîÎ´±»Ê¶±ğ");
+            $display("[FAIL] ERETæŒ‡ä»¤æœªè¢«è¯†åˆ«");
         end else begin
-            $display("[PASS] ERETÖ¸ÁîÊ¶±ğÍ¨¹ı");
+            $display("[PASS] ERETæŒ‡ä»¤è¯†åˆ«é€šè¿‡");
         end
 
-        // 5. ÆäËûºÏ·¨Ö¸Áî£¨ÈçORI£©£¬²»Ó¦´¥·¢Òì³£
-        $display("[Test 5] ºÏ·¨Ö¸ÁîORI");
+        // 5. å…¶ä»–åˆæ³•æŒ‡ä»¤ï¼ˆå¦‚ORIï¼‰ï¼Œä¸åº”è§¦å‘å¼‚å¸¸
+        $display("[Test 5] åˆæ³•æŒ‡ä»¤ORI");
         IF_ID_bus_r = {32'h00400010, 32'b001101_00010_00001_0000000000001010}; // ORI $1,$2,0xA
         #10;
-        check_exception(0, 2'b00, "ºÏ·¨Ö¸ÁîORI");
+        check_exception(0, 2'b00, "åˆæ³•æŒ‡ä»¤ORI");
 
-        $display("==== decode.v Òì³£¼ì²â²âÊÔ½áÊø ====");
+        $display("==== decode.v å¼‚å¸¸æ£€æµ‹æµ‹è¯•ç»“æŸ ====");
         $finish;
     end
 
-    // ¼ì²éÒì³£Êä³ö
+    // æ£€æŸ¥å¼‚å¸¸è¾“å‡º
     task check_exception;
         input expected_flag;
         input [1:0] expected_type;
         input [127:0] testname;
         begin
             if (exception_flag !== expected_flag) begin
-                $display("[FAIL] %s: exception_flag=%b, ÆÚÍû=%b", testname, exception_flag, expected_flag);
+                $display("[FAIL] %s: exception_flag=%b, æœŸæœ›=%b", testname, exception_flag, expected_flag);
             end else if (exception_flag && (exception_type !== expected_type)) begin
-                $display("[FAIL] %s: exception_type=%b, ÆÚÍû=%b", testname, exception_type, expected_type);
+                $display("[FAIL] %s: exception_type=%b, æœŸæœ›=%b", testname, exception_type, expected_type);
             end else begin
                 $display("[PASS] %s", testname);
             end

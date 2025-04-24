@@ -1,92 +1,92 @@
 `timescale 1ns / 1ps
 //*************************************************************************
-//   > ÎÄ¼şÃû: fetch.v
-//   > ÃèÊö  : ¶àÖÜÆÚCPUµÄÈ¡Ö¸Ä£¿é£¨Ö§³ÖÒì³£´¦Àí£©
-//   > ×÷Õß  : LOONGSON
-//   > ÈÕÆÚ  : 2016-04-14
-//   > ĞŞ¸Ä  : Ìí¼ÓÒì³£´¦Àí»úÖÆ£¨2023-10-20£©
+//   > æ–‡ä»¶å: fetch.v
+//   > æè¿°  : å¤šå‘¨æœŸCPUçš„å–æŒ‡æ¨¡å—ï¼ˆæ”¯æŒå¼‚å¸¸å¤„ç†ï¼‰
+//   > ä½œè€…  : LOONGSON
+//   > æ—¥æœŸ  : 2016-04-14
+//   > ä¿®æ”¹  : æ·»åŠ å¼‚å¸¸å¤„ç†æœºåˆ¶ï¼ˆ2023-10-20ï¼‰
 //*************************************************************************
-`define STARTADDR     32'd0       // ³ÌĞòÆğÊ¼µØÖ·Îª0
-`define EXCEPTION_VEC 32'h80000080 // MIPS±ê×¼Òì³£Èë¿ÚµØÖ·
+`define STARTADDR     32'd0       // ç¨‹åºèµ·å§‹åœ°å€ä¸º0
+`define EXCEPTION_VEC 32'h80000080 // MIPSæ ‡å‡†å¼‚å¸¸å…¥å£åœ°å€
 
 module fetch(
-    // »ù´¡ĞÅºÅ
-    input             clk,        // Ê±ÖÓ
-    input             resetn,     // ¸´Î»ĞÅºÅ£¬µÍµçÆ½ÓĞĞ§
-    input             IF_valid,   // È¡Ö¸½×¶ÎÓĞĞ§ĞÅºÅ
-    input             next_fetch, // È¡ÏÂÒ»ÌõÖ¸Áî£¬ÓÃÓÚËø´æPCÖµ
+    // åŸºç¡€ä¿¡å·
+    input             clk,        // æ—¶é’Ÿ
+    input             resetn,     // å¤ä½ä¿¡å·ï¼Œä½ç”µå¹³æœ‰æ•ˆ
+    input             IF_valid,   // å–æŒ‡é˜¶æ®µæœ‰æ•ˆä¿¡å·
+    input             next_fetch, // å–ä¸‹ä¸€æ¡æŒ‡ä»¤ï¼Œç”¨äºé”å­˜PCå€¼
     
-    // Ö¸ÁîºÍÊı¾İ
-    input      [31:0] inst,       // ´Óinst_romÈ¡³öµÄÖ¸Áî
-    input      [32:0] jbr_bus,    // Ìø×ª×ÜÏß {jbr_taken, jbr_target}
+    // æŒ‡ä»¤å’Œæ•°æ®
+    input      [31:0] inst,       // ä»inst_romå–å‡ºçš„æŒ‡ä»¤
+    input      [32:0] jbr_bus,    // è·³è½¬æ€»çº¿ {jbr_taken, jbr_target}
     
-    // Òì³£´¦ÀíĞÂÔöĞÅºÅ
-    input             exception_triggered, // Òì³£´¥·¢ĞÅºÅ£¨À´×Ô¿ØÖÆÄ£¿é£©
-    input      [31:0] EPC,        // Òì³£³ÌĞò¼ÆÊıÆ÷£¨À´×Ôregfile.v£©
-    input             eret_executed, // ERETÖ¸ÁîÖ´ĞĞĞÅºÅ
+    // å¼‚å¸¸å¤„ç†æ–°å¢ä¿¡å·
+    input             exception_triggered, // å¼‚å¸¸è§¦å‘ä¿¡å·ï¼ˆæ¥è‡ªæ§åˆ¶æ¨¡å—ï¼‰
+    input      [31:0] EPC,        // å¼‚å¸¸ç¨‹åºè®¡æ•°å™¨ï¼ˆæ¥è‡ªregfile.vï¼‰
+    input             eret_executed, // ERETæŒ‡ä»¤æ‰§è¡Œä¿¡å·
     
-    // Êä³öĞÅºÅ
-    output     [31:0] inst_addr,  // ·¢Íùinst_romµÄÈ¡Ö¸µØÖ·
-    output reg        IF_over,    // IFÄ£¿éÖ´ĞĞÍê³É
-    output     [63:0] IF_ID_bus,  // IF->ID×ÜÏß {PC, inst}
-    output     [31:0] IF_pc,      // µ±Ç°PCÖµ£¨ÓÃÓÚÏÔÊ¾£©
-    output     [31:0] IF_inst     // µ±Ç°Ö¸Áî£¨ÓÃÓÚÏÔÊ¾£©
+    // è¾“å‡ºä¿¡å·
+    output     [31:0] inst_addr,  // å‘å¾€inst_romçš„å–æŒ‡åœ°å€
+    output reg        IF_over,    // IFæ¨¡å—æ‰§è¡Œå®Œæˆ
+    output     [63:0] IF_ID_bus,  // IF->IDæ€»çº¿ {PC, inst}
+    output     [31:0] IF_pc,      // å½“å‰PCå€¼ï¼ˆç”¨äºæ˜¾ç¤ºï¼‰
+    output     [31:0] IF_inst     // å½“å‰æŒ‡ä»¤ï¼ˆç”¨äºæ˜¾ç¤ºï¼‰
 );
 
-//-----{³ÌĞò¼ÆÊıÆ÷PC}begin---------------------------------------------
-    reg  [31:0] pc;               // PC¼Ä´æÆ÷
-    wire [31:0] next_pc;          // ÏÂÒ»ÖÜÆÚPCÖµ
-    wire [31:0] seq_pc;           // Ë³ĞòPCÖµ£¨PC+4£©
-    wire        jbr_taken;        // Ìø×ªÊ¹ÄÜ
-    wire [31:0] jbr_target;       // Ìø×ªÄ¿±êµØÖ·
-    reg         flush_pipeline;   // Á÷Ë®Ïß³åË¢±êÖ¾
+//-----{ç¨‹åºè®¡æ•°å™¨PC}begin---------------------------------------------
+    reg  [31:0] pc;               // PCå¯„å­˜å™¨
+    wire [31:0] next_pc;          // ä¸‹ä¸€å‘¨æœŸPCå€¼
+    wire [31:0] seq_pc;           // é¡ºåºPCå€¼ï¼ˆPC+4ï¼‰
+    wire        jbr_taken;        // è·³è½¬ä½¿èƒ½
+    wire [31:0] jbr_target;       // è·³è½¬ç›®æ ‡åœ°å€
+    reg         flush_pipeline;   // æµæ°´çº¿å†²åˆ·æ ‡å¿—
     
-    assign {jbr_taken, jbr_target} = jbr_bus; // ½âÎöÌø×ª×ÜÏß
+    assign {jbr_taken, jbr_target} = jbr_bus; // è§£æè·³è½¬æ€»çº¿
     
-    // ¼ÆËãË³ĞòPC£¨PC+4£©
+    // è®¡ç®—é¡ºåºPCï¼ˆPC+4ï¼‰
     assign seq_pc[31:2] = pc[31:2] + 1'b1;
     assign seq_pc[1:0]  = pc[1:0];
     
-    // ÏÂÒ»PCÖµÓÅÏÈ¼¶£ºÒì³£ > ERET > Ìø×ª > Ë³ĞòÖ´ĞĞ
-    assign next_pc = exception_triggered ? `EXCEPTION_VEC : // Òì³£Ìø×ª
-                     eret_executed       ? EPC :            // ERET·µ»Ø
-                     jbr_taken           ? jbr_target :     // ·ÖÖ§/Ìø×ª
-                                           seq_pc;          // Ë³ĞòÖ´ĞĞ
+    // ä¸‹ä¸€PCå€¼ä¼˜å…ˆçº§ï¼šå¼‚å¸¸ > ERET > è·³è½¬ > é¡ºåºæ‰§è¡Œ
+    assign next_pc = exception_triggered ? `EXCEPTION_VEC : // å¼‚å¸¸è·³è½¬
+                     eret_executed       ? EPC :            // ERETè¿”å›
+                     jbr_taken           ? jbr_target :     // åˆ†æ”¯/è·³è½¬
+                                           seq_pc;          // é¡ºåºæ‰§è¡Œ
     
-    // PC¼Ä´æÆ÷¸üĞÂ
+    // PCå¯„å­˜å™¨æ›´æ–°
     always @(posedge clk) begin
         if (!resetn) begin
-            pc <= `STARTADDR;     // ¸´Î»Ê±PC³õÊ¼»¯Îª0
-            flush_pipeline <= 1'b0; // Çå¿ÕÁ÷Ë®Ïß
+            pc <= `STARTADDR;     // å¤ä½æ—¶PCåˆå§‹åŒ–ä¸º0
+            flush_pipeline <= 1'b0; // æ¸…ç©ºæµæ°´çº¿
         end
         else if (next_fetch) begin
-            pc <= next_pc;        // Õı³£¸üĞÂPC
-            flush_pipeline <= eret_executed || exception_triggered; // ³åË¢Á÷Ë®Ïß
+            pc <= next_pc;        // æ­£å¸¸æ›´æ–°PC
+            flush_pipeline <= eret_executed || exception_triggered; // å†²åˆ·æµæ°´çº¿
         end
     end
     
-    // Êä³öµ±Ç°PCÖµ£¨ÓÃÓÚ±£´æµ½EPC£©
+    // è¾“å‡ºå½“å‰PCå€¼ï¼ˆç”¨äºä¿å­˜åˆ°EPCï¼‰
     assign IF_pc = pc;
-//-----{³ÌĞò¼ÆÊıÆ÷PC}end-----------------------------------------------
+//-----{ç¨‹åºè®¡æ•°å™¨PC}end-----------------------------------------------
 
-//-----{·¢Íùinst_romµÄÈ¡Ö¸µØÖ·}begin------------------------------------
-    assign inst_addr = pc;        // Ö±½ÓÊä³öPCÖµ
-//-----{·¢Íùinst_romµÄÈ¡Ö¸µØÖ·}end--------------------------------------
+//-----{å‘å¾€inst_romçš„å–æŒ‡åœ°å€}begin------------------------------------
+    assign inst_addr = pc;        // ç›´æ¥è¾“å‡ºPCå€¼
+//-----{å‘å¾€inst_romçš„å–æŒ‡åœ°å€}end--------------------------------------
 
-//-----{IFÖ´ĞĞÍê³É±êÖ¾}begin-------------------------------------------
+//-----{IFæ‰§è¡Œå®Œæˆæ ‡å¿—}begin-------------------------------------------
     always @(posedge clk) begin
         if (flush_pipeline) begin
-            IF_over <= 1'b0;      // ³åË¢Á÷Ë®ÏßÊ±£¬±êÖ¾ÎŞĞ§
+            IF_over <= 1'b0;      // å†²åˆ·æµæ°´çº¿æ—¶ï¼Œæ ‡å¿—æ— æ•ˆ
         end else begin
-            IF_over <= IF_valid;  // IF_validÑÓ³ÙÒ»ÅÄ×÷ÎªÍê³É±êÖ¾
+            IF_over <= IF_valid;  // IF_validå»¶è¿Ÿä¸€æ‹ä½œä¸ºå®Œæˆæ ‡å¿—
         end
     end
-//-----{IFÖ´ĞĞÍê³É±êÖ¾}end---------------------------------------------
+//-----{IFæ‰§è¡Œå®Œæˆæ ‡å¿—}end---------------------------------------------
 
-//-----{IF->ID×ÜÏß}begin-----------------------------------------------
-    assign IF_ID_bus = flush_pipeline ? 64'b0 : {pc, inst}; // ³åË¢Á÷Ë®ÏßÊ±Çå¿Õ×ÜÏß
-    assign IF_inst   = flush_pipeline ? 32'b0 : inst;      // ³åË¢Á÷Ë®ÏßÊ±Çå¿ÕÖ¸Áî
-    assign IF_pc     = flush_pipeline ? 32'b0 : pc;        // ³åË¢Á÷Ë®ÏßÊ±Çå¿ÕPC
-//-----{IF->ID×ÜÏß}end-------------------------------------------------
+//-----{IF->IDæ€»çº¿}begin-----------------------------------------------
+    assign IF_ID_bus = flush_pipeline ? 64'b0 : {pc, inst}; // å†²åˆ·æµæ°´çº¿æ—¶æ¸…ç©ºæ€»çº¿
+    assign IF_inst   = flush_pipeline ? 32'b0 : inst;      // å†²åˆ·æµæ°´çº¿æ—¶æ¸…ç©ºæŒ‡ä»¤
+    assign IF_pc     = flush_pipeline ? 32'b0 : pc;        // å†²åˆ·æµæ°´çº¿æ—¶æ¸…ç©ºPC
+//-----{IF->IDæ€»çº¿}end-------------------------------------------------
 
 endmodule

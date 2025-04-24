@@ -1,15 +1,15 @@
 `timescale 1ns / 1ps
-///decodeÄ£¿é²âÊÔ
+///decodeæ¨¡å—æµ‹è¯•
 module tb;
 
-    // ÊäÈëĞÅºÅ
+    // è¾“å…¥ä¿¡å·
     reg         ID_valid;
     reg [63:0]  IF_ID_bus_r;
     reg [31:0]  rs_value;
     reg [31:0]  rt_value;
     reg         flush_pipeline;
     
-    // Êä³öĞÅºÅ
+    // è¾“å‡ºä¿¡å·
     wire [4:0]  rs;
     wire [4:0]  rt;
     wire [32:0] jbr_bus;
@@ -23,7 +23,7 @@ module tb;
     wire [1:0]  id_exception_type;
     wire        id_exception_flag;
     
-    // ÊµÀı»¯±»²âÄ£¿é
+    // å®ä¾‹åŒ–è¢«æµ‹æ¨¡å—
     decode uut (
         .ID_valid(ID_valid),
         .IF_ID_bus_r(IF_ID_bus_r),
@@ -44,42 +44,42 @@ module tb;
         .id_exception_flag(id_exception_flag)
     );
     
-    // Ê±ÖÓÉú³É£¨ÖÜÆÚ10ns£©
+    // æ—¶é’Ÿç”Ÿæˆï¼ˆå‘¨æœŸ10nsï¼‰
     reg clk;
     initial begin
         clk = 0;
         forever #5 clk = ~clk;
     end
     
-    // ²âÊÔÁ÷³Ì
+    // æµ‹è¯•æµç¨‹
     initial begin
-        // ³õÊ¼»¯ĞÅºÅ
+        // åˆå§‹åŒ–ä¿¡å·
         ID_valid = 0;
         IF_ID_bus_r = 0;
         rs_value = 0;
         rt_value = 0;
         flush_pipeline = 0;
         
-        // µÈ´ıÈ«¾Ö¸´Î»£¨Èç¹ûÓĞ£©
+        // ç­‰å¾…å…¨å±€å¤ä½ï¼ˆå¦‚æœæœ‰ï¼‰
         #20;
         
-        //============= ²âÊÔÓÃÀı1£ººÏ·¨Ö¸Áî£¨ADDU£©²»´¥·¢Òì³£ =============
-        $display("\n[Test 1] ºÏ·¨Ö¸Áî²âÊÔ");
+        //============= æµ‹è¯•ç”¨ä¾‹1ï¼šåˆæ³•æŒ‡ä»¤ï¼ˆADDUï¼‰ä¸è§¦å‘å¼‚å¸¸ =============
+        $display("\n[Test 1] åˆæ³•æŒ‡ä»¤æµ‹è¯•");
         ID_valid = 1;
-        // ¹¹ÔìÖ¸Áî£ºADDU $1, $2, $3 (op=0, funct=0b100001)
+        // æ„é€ æŒ‡ä»¤ï¼šADDU $1, $2, $3 (op=0, funct=0b100001)
         IF_ID_bus_r = {32'h00400000, 32'b000000_00010_00011_00001_00000_100001};
         rs_value = 32'h1234;
         rt_value = 32'h5678;
         #10;
         check_results(
             .expected_exception(0),
-            .expected_type(2'b00),  // Ä¬ÈÏÀàĞÍ
+            .expected_type(2'b00),  // é»˜è®¤ç±»å‹
             .test_name("Test 1")
         );
         
-        //============= ²âÊÔÓÃÀı2£º·Ç·¨Ö¸Áî´¥·¢Òì³£ =============
-        $display("\n[Test 2] ·Ç·¨Ö¸Áî²âÊÔ");
-        // ¹¹ÔìÎŞĞ§Ö¸Áî£ºop=6'b111111£¨Î´¶¨Òå£©
+        //============= æµ‹è¯•ç”¨ä¾‹2ï¼šéæ³•æŒ‡ä»¤è§¦å‘å¼‚å¸¸ =============
+        $display("\n[Test 2] éæ³•æŒ‡ä»¤æµ‹è¯•");
+        // æ„é€ æ— æ•ˆæŒ‡ä»¤ï¼šop=6'b111111ï¼ˆæœªå®šä¹‰ï¼‰
         IF_ID_bus_r = {32'h00400004, 32'b111111_00000_00000_00000_00000_000000};
         #10;
         check_results(
@@ -88,65 +88,65 @@ module tb;
             .test_name("Test 2")
         );
         
-        //============= ²âÊÔÓÃÀı3£ºÒì³£ºó·¢ËÍºÏ·¨Ö¸Áî =============
-        $display("\n[Test 3] Òì³£ºó»Ö¸´²âÊÔ");
-        // »Ö¸´ºÏ·¨Ö¸Áî£ºADDIU $1, $2, 0x1234
+        //============= æµ‹è¯•ç”¨ä¾‹3ï¼šå¼‚å¸¸åå‘é€åˆæ³•æŒ‡ä»¤ =============
+        $display("\n[Test 3] å¼‚å¸¸åæ¢å¤æµ‹è¯•");
+        // æ¢å¤åˆæ³•æŒ‡ä»¤ï¼šADDIU $1, $2, 0x1234
         IF_ID_bus_r = {32'h00400008, 32'b001001_00010_00001_0001001000110100};
         #10;
         check_results(
             .expected_exception(0),
-            .expected_type(2'b00),  // Ä¬ÈÏÀàĞÍ
+            .expected_type(2'b00),  // é»˜è®¤ç±»å‹
             .test_name("Test 3")
         );
         
-        //============= ²âÊÔÓÃÀı4£ºÁ÷Ë®Ïß³åË¢Ê±ÒÖÖÆÒì³£ =============
-        $display("\n[Test 4] Á÷Ë®Ïß³åË¢²âÊÔ");
+        //============= æµ‹è¯•ç”¨ä¾‹4ï¼šæµæ°´çº¿å†²åˆ·æ—¶æŠ‘åˆ¶å¼‚å¸¸ =============
+        $display("\n[Test 4] æµæ°´çº¿å†²åˆ·æµ‹è¯•");
         flush_pipeline = 1;
         IF_ID_bus_r = {32'h0040000C, 32'b111111_00000_00000_00000_00000_000000};
         #10;
         check_results(
             .expected_exception(0),
-            .expected_type(2'b00),  // Ä¬ÈÏÀàĞÍ
+            .expected_type(2'b00),  // é»˜è®¤ç±»å‹
             .test_name("Test 4")
         );
         flush_pipeline = 0;
         
-        //============= ²âÊÔÓÃÀı5£ºERETÖ¸Áî¼ì²â =============
-        $display("\n[Test 5] ERETÖ¸Áî²âÊÔ");
-        // ¹¹ÔìERETÖ¸Áî£¨op=6'b010000, funct=6'b011000£©
+        //============= æµ‹è¯•ç”¨ä¾‹5ï¼šERETæŒ‡ä»¤æ£€æµ‹ =============
+        $display("\n[Test 5] ERETæŒ‡ä»¤æµ‹è¯•");
+        // æ„é€ ERETæŒ‡ä»¤ï¼ˆop=6'b010000, funct=6'b011000ï¼‰
         IF_ID_bus_r = {32'h00400010, 32'b010000_00000_00000_00000_00000_011000};
         #10;
         if (eret_executed !== 1) begin
-            $display("[ERROR] Test 5: ERETÎ´ÕıÈ·Ê¶±ğ");
-            $display("Êµ¼Êeret_executed=%b£¬ÆÚÍûÖµ=1", eret_executed);
+            $display("[ERROR] Test 5: ERETæœªæ­£ç¡®è¯†åˆ«");
+            $display("å®é™…eret_executed=%bï¼ŒæœŸæœ›å€¼=1", eret_executed);
         end else begin
-            $display("[PASS] Test 5: ERETÖ¸Áî¼ì²âÍ¨¹ı");
+            $display("[PASS] Test 5: ERETæŒ‡ä»¤æ£€æµ‹é€šè¿‡");
         end
         
-        // ½áÊø²âÊÔ
+        // ç»“æŸæµ‹è¯•
         #10;
-        $display("\nËùÓĞ²âÊÔÍê³É");
+        $display("\næ‰€æœ‰æµ‹è¯•å®Œæˆ");
         $finish;
     end
     
-    // ½á¹û¼ì²éÈÎÎñ
+    // ç»“æœæ£€æŸ¥ä»»åŠ¡
     task check_results;
         input expected_exception;
         input [1:0] expected_type;
         input [128:0] test_name;
         begin
             if (exception_flag !== expected_exception) begin
-                $display("[ERROR] %s: Òì³£±êÖ¾´íÎó", test_name);
-                $display("Êµ¼Êexception_flag=%b£¬ÆÚÍûÖµ=%b", 
+                $display("[ERROR] %s: å¼‚å¸¸æ ‡å¿—é”™è¯¯", test_name);
+                $display("å®é™…exception_flag=%bï¼ŒæœŸæœ›å€¼=%b", 
                         exception_flag, expected_exception);
             end
             else if ((expected_exception) && (exception_type !== expected_type)) begin
-                $display("[ERROR] %s: Òì³£ÀàĞÍ´íÎó", test_name);
-                $display("Êµ¼Êexception_type=%b£¬ÆÚÍûÖµ=%b",
+                $display("[ERROR] %s: å¼‚å¸¸ç±»å‹é”™è¯¯", test_name);
+                $display("å®é™…exception_type=%bï¼ŒæœŸæœ›å€¼=%b",
                         exception_type, expected_type);
             end
             else begin
-                $display("[PASS] %s Í¨¹ı", test_name);
+                $display("[PASS] %s é€šè¿‡", test_name);
             end
             $display("----------------------------------------");
         end

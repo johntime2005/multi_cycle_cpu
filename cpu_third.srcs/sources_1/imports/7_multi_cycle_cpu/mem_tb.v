@@ -2,14 +2,14 @@
 
 module tb_mem;
 
-    // ÊäÈëĞÅºÅ
+    // è¾“å…¥ä¿¡å·
     reg              clk;
     reg              MEM_valid;
     reg [107:0]      EXE_MEM_bus_r;
     reg [31:0]       dm_rdata;
     reg              flush_pipeline;
 
-    // Êä³öĞÅºÅ
+    // è¾“å‡ºä¿¡å·
     wire [31:0]      dm_addr;
     wire [3:0]       dm_wen;
     wire [31:0]      dm_wdata;
@@ -19,7 +19,7 @@ module tb_mem;
     wire [1:0]       mem_exception_type;
     wire             mem_exception_flag;
 
-    // ÊµÀı»¯±»²âÄ£¿é
+    // å®ä¾‹åŒ–è¢«æµ‹æ¨¡å—
     mem uut (
         .clk(clk),
         .MEM_valid(MEM_valid),
@@ -36,25 +36,25 @@ module tb_mem;
         .mem_exception_flag(mem_exception_flag)
     );
 
-    // Ê±ÖÓÉú³É£¨ÖÜÆÚ10ns£©
+    // æ—¶é’Ÿç”Ÿæˆï¼ˆå‘¨æœŸ10nsï¼‰
     initial begin
         clk = 0;
         forever #5 clk = ~clk;
     end
 
-    // ²âÊÔÁ÷³Ì
+    // æµ‹è¯•æµç¨‹
     initial begin
-        // ³õÊ¼»¯ĞÅºÅ
+        // åˆå§‹åŒ–ä¿¡å·
         MEM_valid = 0;
         EXE_MEM_bus_r = 0;
         dm_rdata = 0;
         flush_pipeline = 0;
 
-        // µÈ´ıÈ«¾Ö¸´Î»
+        // ç­‰å¾…å…¨å±€å¤ä½
         #20;
 
-        //============= ²âÊÔÓÃÀı1£ºÕı³£×Ö¶ÔÆë·ÃÎÊ =============
-        $display("\n[Test 1] Õı³£×Ö¶ÔÆë·ÃÎÊ");
+        //============= æµ‹è¯•ç”¨ä¾‹1ï¼šæ­£å¸¸å­—å¯¹é½è®¿é—® =============
+        $display("\n[Test 1] æ­£å¸¸å­—å¯¹é½è®¿é—®");
         MEM_valid = 1;
         EXE_MEM_bus_r = {2'b00, 1'b0, 4'b1000, 32'h12345678, 32'h00000004, 1'b1, 5'd1, 32'h00400000};
         #10;
@@ -64,8 +64,8 @@ module tb_mem;
             .test_name("Test 1")
         );
 
-        //============= ²âÊÔÓÃÀı2£ºµØÖ·Î´¶ÔÆëÒì³££¨×Ö²Ù×÷£© =============
-        $display("\n[Test 2] µØÖ·Î´¶ÔÆëÒì³££¨×Ö²Ù×÷£©");
+        //============= æµ‹è¯•ç”¨ä¾‹2ï¼šåœ°å€æœªå¯¹é½å¼‚å¸¸ï¼ˆå­—æ“ä½œï¼‰ =============
+        $display("\n[Test 2] åœ°å€æœªå¯¹é½å¼‚å¸¸ï¼ˆå­—æ“ä½œï¼‰");
         MEM_valid = 1;
         EXE_MEM_bus_r = {2'b00, 1'b0, 4'b1000, 32'h12345678, 32'h00000003, 1'b1, 5'd1, 32'h00400004};
         #10;
@@ -75,8 +75,8 @@ module tb_mem;
             .test_name("Test 2")
         );
 
-        //============= ²âÊÔÓÃÀı3£ºÁ÷Ë®Ïß³åË¢²âÊÔ =============
-        $display("\n[Test 3] Á÷Ë®Ïß³åË¢²âÊÔ");
+        //============= æµ‹è¯•ç”¨ä¾‹3ï¼šæµæ°´çº¿å†²åˆ·æµ‹è¯• =============
+        $display("\n[Test 3] æµæ°´çº¿å†²åˆ·æµ‹è¯•");
         flush_pipeline = 1;
         MEM_valid = 1;
         EXE_MEM_bus_r = {2'b00, 1'b0, 4'b1000, 32'h12345678, 32'h00000003, 1'b1, 5'd1, 32'h0040000C};
@@ -88,29 +88,29 @@ module tb_mem;
         );
         flush_pipeline = 0;
 
-        // ²âÊÔ½áÊø
-        $display("\nËùÓĞ²âÊÔÍê³É");
+        // æµ‹è¯•ç»“æŸ
+        $display("\næ‰€æœ‰æµ‹è¯•å®Œæˆ");
         $finish;
     end
 
-    // ½á¹û¼ì²éÈÎÎñ
+    // ç»“æœæ£€æŸ¥ä»»åŠ¡
     task check_results;
         input expected_exception;
         input [1:0] expected_type;
         input [128:0] test_name;
         begin
             if (mem_exception_flag !== expected_exception) begin
-                $display("[ERROR] %s: Òì³£±êÖ¾´íÎó", test_name);
-                $display("Êµ¼Êmem_exception_flag=%b£¬ÆÚÍûÖµ=%b", 
+                $display("[ERROR] %s: å¼‚å¸¸æ ‡å¿—é”™è¯¯", test_name);
+                $display("å®é™…mem_exception_flag=%bï¼ŒæœŸæœ›å€¼=%b", 
                         mem_exception_flag, expected_exception);
             end
             else if ((expected_exception) && (mem_exception_type !== expected_type)) begin
-                $display("[ERROR] %s: Òì³£ÀàĞÍ´íÎó", test_name);
-                $display("Êµ¼Êmem_exception_type=%b£¬ÆÚÍûÖµ=%b",
+                $display("[ERROR] %s: å¼‚å¸¸ç±»å‹é”™è¯¯", test_name);
+                $display("å®é™…mem_exception_type=%bï¼ŒæœŸæœ›å€¼=%b",
                         mem_exception_type, expected_type);
             end
             else begin
-                $display("[PASS] %s Í¨¹ı", test_name);
+                $display("[PASS] %s é€šè¿‡", test_name);
             end
             $display("----------------------------------------");
         end

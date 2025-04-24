@@ -1,44 +1,44 @@
 `timescale 1ns / 1ps
 //*************************************************************************
-//   > ÎÄ¼şÃû: decode.v
-//   > ÃèÊö  : ¶àÖÜÆÚCPUµÄÒëÂëÄ£¿é£¨Ö§³ÖÒì³£´¦Àí£©
-//   > ×÷Õß  : LOONGSON
-//   > ÈÕÆÚ  : 2016-04-14
-//   > ĞŞ¸Ä  : Ìí¼ÓÒì³£´¦Àí»úÖÆ£¨2023-10-20£©+ ÍêÕûĞŞÕı°æ£¨2024-03-25£©
+//   > æ–‡ä»¶å: decode.v
+//   > æè¿°  : å¤šå‘¨æœŸCPUçš„è¯‘ç æ¨¡å—ï¼ˆæ”¯æŒå¼‚å¸¸å¤„ç†ï¼‰
+//   > ä½œè€…  : LOONGSON
+//   > æ—¥æœŸ  : 2016-04-14
+//   > ä¿®æ”¹  : æ·»åŠ å¼‚å¸¸å¤„ç†æœºåˆ¶ï¼ˆ2023-10-20ï¼‰+ å®Œæ•´ä¿®æ­£ç‰ˆï¼ˆ2024-03-25ï¼‰
 //*************************************************************************
 module decode(
-    // »ù±¾ÊäÈë
-    input              ID_valid,      // ÒëÂë½×¶ÎÓĞĞ§ĞÅºÅ
-    input      [63:0]  IF_ID_bus_r,   // IF->ID×ÜÏß {PC, Ö¸Áî}
-    input      [31:0]  rs_value,      // µÚÒ»Ô´²Ù×÷ÊıÖµ
-    input      [31:0]  rt_value,      // µÚ¶şÔ´²Ù×÷ÊıÖµ
-    input              flush_pipeline,// Á÷Ë®Ïß³åË¢ĞÅºÅ
+    // åŸºæœ¬è¾“å…¥
+    input              ID_valid,      // è¯‘ç é˜¶æ®µæœ‰æ•ˆä¿¡å·
+    input      [63:0]  IF_ID_bus_r,   // IF->IDæ€»çº¿ {PC, æŒ‡ä»¤}
+    input      [31:0]  rs_value,      // ç¬¬ä¸€æºæ“ä½œæ•°å€¼
+    input      [31:0]  rt_value,      // ç¬¬äºŒæºæ“ä½œæ•°å€¼
+    input              flush_pipeline,// æµæ°´çº¿å†²åˆ·ä¿¡å·
     
-    // »ù±¾Êä³ö
-    output     [4:0]   rs,            // µÚÒ»Ô´²Ù×÷ÊıµØÖ· 
-    output     [4:0]   rt,            // µÚ¶şÔ´²Ù×÷ÊıµØÖ·
-    output     [32:0]  jbr_bus,       // Ìø×ª×ÜÏß {jbr_taken, jbr_target}
-    output             jbr_not_link,  // ·ÇlinkÀàÌø×ªÖ¸Áî
-    output             ID_over,       // IDÄ£¿éÖ´ĞĞÍê³É
-    output     [151:0] ID_EXE_bus,    // ID->EXE×ÜÏß£¨º¬Òì³£ĞÅºÅ£©
-    output     [31:0]  ID_pc,         // µ±Ç°PCÖµ
+    // åŸºæœ¬è¾“å‡º
+    output     [4:0]   rs,            // ç¬¬ä¸€æºæ“ä½œæ•°åœ°å€ 
+    output     [4:0]   rt,            // ç¬¬äºŒæºæ“ä½œæ•°åœ°å€
+    output     [32:0]  jbr_bus,       // è·³è½¬æ€»çº¿ {jbr_taken, jbr_target}
+    output             jbr_not_link,  // élinkç±»è·³è½¬æŒ‡ä»¤
+    output             ID_over,       // IDæ¨¡å—æ‰§è¡Œå®Œæˆ
+    output     [151:0] ID_EXE_bus,    // ID->EXEæ€»çº¿ï¼ˆå«å¼‚å¸¸ä¿¡å·ï¼‰
+    output     [31:0]  ID_pc,         // å½“å‰PCå€¼
     
-    // Òì³£ĞÅºÅ
-    output reg         exception_flag,// Òì³£´¥·¢±êÖ¾
-    output reg [1:0]   exception_type,// Òì³£ÀàĞÍ
-    output             eret_executed,  // ERETÖ´ĞĞĞÅºÅ
-     output reg [1:0]  id_exception_type, // ID½×¶ÎÒì³£ÀàĞÍ
-    output reg        id_exception_flag // ID½×¶ÎÒì³£±êÖ¾
+    // å¼‚å¸¸ä¿¡å·
+    output reg         exception_flag,// å¼‚å¸¸è§¦å‘æ ‡å¿—
+    output reg [1:0]   exception_type,// å¼‚å¸¸ç±»å‹
+    output             eret_executed,  // ERETæ‰§è¡Œä¿¡å·
+     output reg [1:0]  id_exception_type, // IDé˜¶æ®µå¼‚å¸¸ç±»å‹
+    output reg        id_exception_flag // IDé˜¶æ®µå¼‚å¸¸æ ‡å¿—
 );
 
-//======================== ĞÅºÅ½âÎö ========================
-// IF->ID×ÜÏß½âÎö
+//======================== ä¿¡å·è§£æ ========================
+// IF->IDæ€»çº¿è§£æ
 wire [31:0] pc;
 wire [31:0] inst;
 assign {pc, inst} = IF_ID_bus_r;
 assign ID_pc = pc;
 
-// Ö¸Áî×Ö¶Î½âÎö
+// æŒ‡ä»¤å­—æ®µè§£æ
 wire [5:0]  op     = inst[31:26];
 wire [4:0]  rs     = inst[25:21];
 wire [4:0]  rt     = inst[20:16];
@@ -48,8 +48,8 @@ wire [5:0]  funct  = inst[5:0];
 wire [15:0] imm    = inst[15:0];
 wire [25:0] target = inst[25:0];
 
-//======================== Ö¸ÁîÒëÂë ========================
-// RĞÍÖ¸ÁîÊ¶±ğ
+//======================== æŒ‡ä»¤è¯‘ç  ========================
+// Rå‹æŒ‡ä»¤è¯†åˆ«
 wire inst_ADDU  = (op == 6'b000000) & (funct == 6'b100001);
 wire inst_SUBU  = (op == 6'b000000) & (funct == 6'b100011);
 wire inst_SLT   = (op == 6'b000000) & (funct == 6'b101010);
@@ -68,7 +68,7 @@ wire inst_JR    = (op == 6'b000000) & (funct == 6'b001000);
 wire inst_JALR  = (op == 6'b000000) & (funct == 6'b001001);
 wire inst_div   = (op == 6'b000000) & (funct == 6'b011010);
 
-// IĞÍÖ¸ÁîÊ¶±ğ
+// Iå‹æŒ‡ä»¤è¯†åˆ«
 wire inst_ADDIU = (op == 6'b001001);
 wire inst_SLTI  = (op == 6'b001010);
 wire inst_SLTIU = (op == 6'b001011);
@@ -91,15 +91,15 @@ wire inst_BGTZ  = (op == 6'b000111) & (rt == 5'b00000);
 wire inst_BLEZ  = (op == 6'b000110) & (rt == 5'b00000);
 wire inst_BLTZ  = (op == 6'b000001) & (rt == 5'b00000);
 
-// JĞÍÖ¸ÁîÊ¶±ğ
+// Jå‹æŒ‡ä»¤è¯†åˆ«
 wire inst_J     = (op == 6'b000010);
 wire inst_JAL   = (op == 6'b000011);
 
-// ÌØÊâÖ¸Áî
+// ç‰¹æ®ŠæŒ‡ä»¤
 wire inst_ERET  = (op == 6'b010000) & (funct == 6'b011000);
 assign eret_executed = inst_ERET;
 
-//======================== Òì³£´¦Àí ========================
+//======================== å¼‚å¸¸å¤„ç† ========================
 wire valid_instruction = inst_ADDU | inst_SUBU | inst_SLT | inst_SLTU | 
                         inst_AND | inst_OR | inst_XOR | inst_NOR | 
                         inst_SLL | inst_SRL | inst_SRA | inst_SLLV | 
@@ -116,9 +116,9 @@ always @(*) begin
     exception_type = 2'b00;
     if (ID_valid && !flush_pipeline && !valid_instruction) begin
         exception_flag = 1'b1;
-        exception_type = 2'b01; // ·Ç·¨Ö¸Áî
+        exception_type = 2'b01; // éæ³•æŒ‡ä»¤
     end
-    // debugÊä³ö
+    // debugè¾“å‡º
     // synthesis translate_off
     if (ID_valid && !flush_pipeline)
         $display("decode: inst=%h, valid=%b, exception_flag=%b, exception_type=%b", inst, valid_instruction, exception_flag, exception_type);
@@ -126,12 +126,12 @@ always @(*) begin
 end
 
 always @(*) begin
-    id_exception_type = exception_type; // ÄÚ²¿ĞÅºÅ -> Êä³ö¶Ë¿Ú
+    id_exception_type = exception_type; // å†…éƒ¨ä¿¡å· -> è¾“å‡ºç«¯å£
     id_exception_flag = exception_flag;
 end
 
-//======================== ¿ØÖÆĞÅºÅÉú³É ========================
-// ALU¿ØÖÆĞÅºÅ
+//======================== æ§åˆ¶ä¿¡å·ç”Ÿæˆ ========================
+// ALUæ§åˆ¶ä¿¡å·
 reg [3:0] alu_control;
 always @(*) begin
     case(op)
@@ -159,9 +159,9 @@ always @(*) begin
     endcase
 end
 
-// ¼Ä´æÆ÷¿ØÖÆ
+// å¯„å­˜å™¨æ§åˆ¶
 wire [31:0] imm_ext = (op == 6'b001100 || op == 6'b001101 || op == 6'b001110) ? 
-                     {16'b0, imm} : {{16{imm[15]}}, imm}; // Á¢¼´ÊıÀ©Õ¹
+                     {16'b0, imm} : {{16{imm[15]}}, imm}; // ç«‹å³æ•°æ‰©å±•
 
 wire [31:0] alu_operand1 = (inst_SLL | inst_SRL | inst_SRA) ? {27'b0, sa} : rs_value;
 wire [31:0] alu_operand2 = (op == 6'b000000) ? rt_value : imm_ext;
@@ -174,18 +174,18 @@ wire [4:0] rf_wdest = inst_JAL  ? 5'd31 :
                      inst_JALR ? rd    : 
                      (op == 6'b000000) ? rd : rt;
 
-// ´æ´¢Æ÷¿ØÖÆ
+// å­˜å‚¨å™¨æ§åˆ¶
 wire        load_flag  = inst_LW | inst_LB | inst_LBU | inst_LH | inst_LHU;
 wire        store_flag = inst_SW | inst_SB | inst_SH;
 wire [1:0]  data_type;
-assign data_type = (inst_LW | inst_SW)  ? 2'b10 : // ×Ö
-                  (inst_LH | inst_LHU | inst_SH) ? 2'b01 : // °ë×Ö
-                  (inst_LB | inst_LBU | inst_SB) ? 2'b00 : // ×Ö½Ú
+assign data_type = (inst_LW | inst_SW)  ? 2'b10 : // å­—
+                  (inst_LH | inst_LHU | inst_SH) ? 2'b01 : // åŠå­—
+                  (inst_LB | inst_LBU | inst_SB) ? 2'b00 : // å­—èŠ‚
                   2'b00;
 wire [3:0] mem_control = {load_flag, store_flag, data_type};
 wire [31:0] store_data = rt_value;
 
-//======================== Ìø×ªÂß¼­ ========================
+//======================== è·³è½¬é€»è¾‘ ========================
 wire        jbr_taken;
 wire [31:0] jbr_target;
 wire        br_taken = (inst_BEQ  & (rs_value == rt_value)) |
@@ -201,16 +201,16 @@ wire [31:0] j_target  = {pc[31:28], target, 2'b00};
 assign jbr_taken  = br_taken | inst_J | inst_JAL | inst_JR | inst_JALR;
 assign jbr_target  = (inst_J | inst_JAL) ? j_target : 
                     (inst_JR | inst_JALR) ? rs_value : br_target;
-assign jbr_bus = flush_pipeline ? 33'b0 : {jbr_taken, jbr_target};  // ³åË¢Ê±ÇåÁãÌø×ª×ÜÏß
+assign jbr_bus = flush_pipeline ? 33'b0 : {jbr_taken, jbr_target};  // å†²åˆ·æ—¶æ¸…é›¶è·³è½¬æ€»çº¿
 assign jbr_not_link = jbr_taken & ~(inst_JAL | inst_JALR);
 
-//======================== ×ÜÏßÊä³ö ========================
-assign ID_over = ID_valid & ~flush_pipeline;  // ³åË¢Ê±ÎŞĞ§
-assign ID_EXE_bus = flush_pipeline ? 152'b0 : {  // ³åË¢Ê±ÇåÁã×ÜÏß
+//======================== æ€»çº¿è¾“å‡º ========================
+assign ID_over = ID_valid & ~flush_pipeline;  // å†²åˆ·æ—¶æ— æ•ˆ
+assign ID_EXE_bus = flush_pipeline ? 152'b0 : {  // å†²åˆ·æ—¶æ¸…é›¶æ€»çº¿
     exception_type,     // [151:150]
     exception_flag,     // [149]
     alu_control,        // [148:145]
-    4'b0,               // ²¹Æë4Î»
+    4'b0,               // è¡¥é½4ä½
     alu_operand1,       // [144:113]
     alu_operand2,       // [112:81]
     mem_control,        // [80:77]

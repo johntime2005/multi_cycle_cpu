@@ -1,40 +1,40 @@
 `timescale 1ns / 1ps
 
 //**************************************************************
-//  > ÎÄ¼şÃû: exception_controller.v
-//  > ÃèÊö  : Òì³£ÓÅÏÈ¼¶¿ØÖÆÆ÷
-//  > ¹¦ÄÜ  : ´Ó¸÷½×¶Î½ÓÊÕÒì³£ĞÅÏ¢£¬Í³Ò»²Ã¾ö£¬Êä³ö¸ø CP0
+//  > æ–‡ä»¶å: exception_controller.v
+//  > æè¿°  : å¼‚å¸¸ä¼˜å…ˆçº§æ§åˆ¶å™¨
+//  > åŠŸèƒ½  : ä»å„é˜¶æ®µæ¥æ”¶å¼‚å¸¸ä¿¡æ¯ï¼Œç»Ÿä¸€è£å†³ï¼Œè¾“å‡ºç»™ CP0
 //**************************************************************
 
 module exception_controller(
-    input [1:0]  id_exception_type,     // ID½×¶ÎÒì³£ÀàĞÍ
-    input        id_exception_flag,     // ID½×¶ÎÒì³£±êÖ¾
-    input [31:0] id_pc,                 // ID½×¶ÎPCÖµ
-    input [1:0]  exe_exception_type,    // EXE½×¶ÎÒì³£ÀàĞÍ
-    input        exe_exception_flag,    // EXE½×¶ÎÒì³£±êÖ¾
-    input [31:0] exe_pc,                // EXE½×¶ÎPCÖµ
-    input [1:0]  mem_exception_type,    // MEM½×¶ÎÒì³£ÀàĞÍ
-    input        mem_exception_flag,    // MEM½×¶ÎÒì³£±êÖ¾
-    input [31:0] mem_pc,                // MEM½×¶ÎPCÖµ
+    input [1:0]  id_exception_type,     // IDé˜¶æ®µå¼‚å¸¸ç±»å‹
+    input        id_exception_flag,     // IDé˜¶æ®µå¼‚å¸¸æ ‡å¿—
+    input [31:0] id_pc,                 // IDé˜¶æ®µPCå€¼
+    input [1:0]  exe_exception_type,    // EXEé˜¶æ®µå¼‚å¸¸ç±»å‹
+    input        exe_exception_flag,    // EXEé˜¶æ®µå¼‚å¸¸æ ‡å¿—
+    input [31:0] exe_pc,                // EXEé˜¶æ®µPCå€¼
+    input [1:0]  mem_exception_type,    // MEMé˜¶æ®µå¼‚å¸¸ç±»å‹
+    input        mem_exception_flag,    // MEMé˜¶æ®µå¼‚å¸¸æ ‡å¿—
+    input [31:0] mem_pc,                // MEMé˜¶æ®µPCå€¼
 
-    output reg        exception_triggered,    // È«¾ÖÒì³£±êÖ¾
-    output reg [1:0]  final_exception_type,   // ×îÖÕÒì³£ÀàĞÍ
+    output reg        exception_triggered,    // å…¨å±€å¼‚å¸¸æ ‡å¿—
+    output reg [1:0]  final_exception_type,   // æœ€ç»ˆå¼‚å¸¸ç±»å‹
 
-    // ËÍ¸ø CP0 Ä£¿éµÄ½Ó¿Ú
-    output reg [31:0] cp0_pc,                 // Òì³£·¢ÉúÊ±µÄPC
-    output reg [1:0]  cp0_exception_type,     // Òì³£ÀàĞÍ
-    output reg        cp0_exception_flag      // Òì³£±êÖ¾
+    // é€ç»™ CP0 æ¨¡å—çš„æ¥å£
+    output reg [31:0] cp0_pc,                 // å¼‚å¸¸å‘ç”Ÿæ—¶çš„PC
+    output reg [1:0]  cp0_exception_type,     // å¼‚å¸¸ç±»å‹
+    output reg        cp0_exception_flag      // å¼‚å¸¸æ ‡å¿—
 );
 
-    // Òì³£ÀàĞÍ²ÎÊı¶¨Òå
-    localparam EXCEPTION_NONE      = 2'b00;  // ÎŞÒì³£
-    localparam EXCEPTION_ILLEGAL   = 2'b01;  // ·Ç·¨Ö¸ÁîÒì³£
-    localparam EXCEPTION_DIVZERO   = 2'b10;  // ³ıÁãÒì³£
-    localparam EXCEPTION_UNALIGNED = 2'b11;  // µØÖ·Î´¶ÔÆëÒì³£
+    // å¼‚å¸¸ç±»å‹å‚æ•°å®šä¹‰
+    localparam EXCEPTION_NONE      = 2'b00;  // æ— å¼‚å¸¸
+    localparam EXCEPTION_ILLEGAL   = 2'b01;  // éæ³•æŒ‡ä»¤å¼‚å¸¸
+    localparam EXCEPTION_DIVZERO   = 2'b10;  // é™¤é›¶å¼‚å¸¸
+    localparam EXCEPTION_UNALIGNED = 2'b11;  // åœ°å€æœªå¯¹é½å¼‚å¸¸
 
-    // Òì³£ÓÅÏÈ¼¶²Ã¾öÂß¼­
+    // å¼‚å¸¸ä¼˜å…ˆçº§è£å†³é€»è¾‘
     always @(*) begin
-        // Ä¬ÈÏÖµ
+        // é»˜è®¤å€¼
         exception_triggered = 1'b0;
         final_exception_type = EXCEPTION_NONE;
 
@@ -42,31 +42,31 @@ module exception_controller(
         cp0_exception_type  = EXCEPTION_NONE;
         cp0_pc              = 32'd0;
 
-        // ÓÅÏÈ¼¶£ºEXE > MEM > ID
+        // ä¼˜å…ˆçº§ï¼šEXE > MEM > ID
         if (exe_exception_flag) begin
-            // EXE½×¶ÎÒì³£
+            // EXEé˜¶æ®µå¼‚å¸¸
             exception_triggered = 1'b1;
             final_exception_type = exe_exception_type;
 
             cp0_exception_flag  = 1'b1;
             cp0_exception_type  = exe_exception_type;
-            cp0_pc              = exe_pc;  // Ê¹ÓÃEXE½×¶ÎµÄPC±£´æÒì³£µØÖ·
+            cp0_pc              = exe_pc;  // ä½¿ç”¨EXEé˜¶æ®µçš„PCä¿å­˜å¼‚å¸¸åœ°å€
         end else if (mem_exception_flag) begin
-            // MEM½×¶ÎÒì³£
+            // MEMé˜¶æ®µå¼‚å¸¸
             exception_triggered = 1'b1;
             final_exception_type = mem_exception_type;
 
             cp0_exception_flag  = 1'b1;
             cp0_exception_type  = mem_exception_type;
-            cp0_pc              = mem_pc;  // Ê¹ÓÃMEM½×¶ÎµÄPC±£´æÒì³£µØÖ·
+            cp0_pc              = mem_pc;  // ä½¿ç”¨MEMé˜¶æ®µçš„PCä¿å­˜å¼‚å¸¸åœ°å€
         end else if (id_exception_flag) begin
-            // ID½×¶ÎÒì³£
+            // IDé˜¶æ®µå¼‚å¸¸
             exception_triggered = 1'b1;
             final_exception_type = id_exception_type;
 
             cp0_exception_flag  = 1'b1;
             cp0_exception_type  = id_exception_type;
-            cp0_pc              = id_pc;  // Ê¹ÓÃID½×¶ÎµÄPC±£´æÒì³£µØÖ·
+            cp0_pc              = id_pc;  // ä½¿ç”¨IDé˜¶æ®µçš„PCä¿å­˜å¼‚å¸¸åœ°å€
         end
     end
 

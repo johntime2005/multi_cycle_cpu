@@ -12,14 +12,14 @@ module cp0(
     output             status_exl
 );
 
-    // Í¬²½¼Ä´æÆ÷
+    // åŒæ­¥å¯„å­˜å™¨
     reg exception_flag_sync1, exception_flag_sync2;
-    // Cause¼Ä´æÆ÷
+    // Causeå¯„å­˜å™¨
     reg [1:0] cause;
-    // Status¼Ä´æÆ÷£¨½öÊµÏÖEXLÎ»£©
+    // Statuså¯„å­˜å™¨ï¼ˆä»…å®ç°EXLä½ï¼‰
     reg status_EXL;
 
-    // Í¬²½Òì³£ĞÅºÅ
+    // åŒæ­¥å¼‚å¸¸ä¿¡å·
     always @(posedge clk or negedge resetn) begin
         if (!resetn) begin
             exception_flag_sync1 <= 1'b0;
@@ -30,7 +30,7 @@ module cp0(
         end
     end
 
-    // Ö÷¿ØÖÆÂß¼­
+    // ä¸»æ§åˆ¶é€»è¾‘
     always @(posedge clk or negedge resetn) begin
         if (!resetn) begin
             EPC <= 32'b0;
