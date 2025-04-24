@@ -1,8 +1,4 @@
 *
-!./
-!*.v
-!*.xci
-!*.coe
-!*.xdc
-!*.mif
+!cpu_third.srcs/
+!cpu_third.srcs/**
 !*.gitignore
