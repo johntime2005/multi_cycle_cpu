@@ -1,101 +1,39 @@
+// 反汇编代码，假设基地址为 0xBFC00000
+// 中断服务程序 (ISR) 位于 0xBFC00080。
+// 请确保您的CPU的 exception_controller 在中断发生时将PC导向此地址。
 
-test.o:     file format elf32-tradbigmips
-
-
-Disassembly of section .text:
-
-00000000 <main>:
-   0:	27bdffd8 	addiu	sp,sp,-40
-   4:	afbe0024 	sw	s8,36(sp)
-   8:	03a0f025 	move	s8,sp
-   c:	24020005 	li	v0,5
-  10:	afc20004 	sw	v0,4(s8)
-  14:	24020003 	li	v0,3
-  18:	afc20008 	sw	v0,8(s8)
-  1c:	8fc30004 	lw	v1,4(s8)
-  20:	8fc20008 	lw	v0,8(s8)
-  24:	00621021 	addu	v0,v1,v0
-  28:	afc2000c 	sw	v0,12(s8)
-  2c:	8fc2000c 	lw	v0,12(s8)
-  30:	00021080 	sll	v0,v0,0x2
-  34:	afc20010 	sw	v0,16(s8)
-  38:	8fc30004 	lw	v1,4(s8)
-  3c:	8fc20008 	lw	v0,8(s8)
-  40:	00621024 	and	v0,v1,v0
-  44:	afc20014 	sw	v0,20(s8)
-  48:	3c020000 	lui	v0,0x0
-  4c:	8fc30014 	lw	v1,20(s8)
-  50:	ac430000 	sw	v1,0(v0)
-  54:	3c020000 	lui	v0,0x0
-  58:	8c420000 	lw	v0,0(v0)
-  5c:	afc20018 	sw	v0,24(s8)
-  60:	8fc20018 	lw	v0,24(s8)
-  64:	18400006 	blez	v0,80 <main+0x80>
-  68:	00000000 	nop
-  6c:	8fc20018 	lw	v0,24(s8)
-  70:	2442ffff 	addiu	v0,v0,-1
-  74:	afc20004 	sw	v0,4(s8)
-  78:	10000004 	b	8c <main+0x8c>
-  7c:	00000000 	nop
-  80:	8fc20018 	lw	v0,24(s8)
-  84:	24420001 	addiu	v0,v0,1
-  88:	afc20004 	sw	v0,4(s8)
-  8c:	8fc20004 	lw	v0,4(s8)
-  90:	04410002 	bgez	v0,9c <main+0x9c>
-  94:	00000000 	nop
-  98:	00021023 	negu	v0,v0
-  9c:	afc2001c 	sw	v0,28(s8)
-  a0:	00001025 	move	v0,zero
-  a4:	03c0e825 	move	sp,s8
-  a8:	8fbe0024 	lw	s8,36(sp)
-  ac:	27bd0028 	addiu	sp,sp,40
-  b0:	03e00008 	jr	ra
-  b4:	00000000 	nop
-	...
-
-Disassembly of section .reginfo:
-
-00000000 <.reginfo>:
-   0:	e000000c 	sc	zero,12(zero)
-	...
-
-Disassembly of section .MIPS.abiflags:
-
-00000000 <.MIPS.abiflags>:
-   0:	00002002 	srl	a0,zero,0x0
-   4:	01010005 	lsa	zero,t0,at,0x1
-	...
-
-Disassembly of section .pdr:
-
-00000000 <.pdr>:
-   0:	00000000 	nop
-   4:	40000000 	mfc0	zero,c0_index
-   8:	fffffffc 	.word	0xfffffffc
-	...
-  14:	00000028 	.word	0x28
-  18:	0000001e 	.word	0x1e
-  1c:	0000001f 	.word	0x1f
-
-Disassembly of section .comment:
-
-00000000 <.comment>:
-   0:	00474343 	.word	0x474343
-   4:	3a202855 	xori	zero,s1,0x2855
-   8:	62756e74 	.word	0x62756e74
-   c:	75203132 	jalx	480c4c8 <main+0x480c4c8>
-  10:	2e332e30 	sltiu	s3,s1,11824
-  14:	2d313775 	sltiu	s1,t1,14197
-  18:	62756e74 	.word	0x62756e74
-  1c:	75312920 	jalx	4c4a480 <main+0x4c4a480>
-  20:	31322e33 	andi	s2,t1,0x2e33
-  24:	Address 0x24 is out of bounds.
-
-
-Disassembly of section .gnu.attributes:
-
-00000000 <.gnu.attributes>:
-   0:	41000000 	mftc0	zero,c0_index
-   4:	0f676e75 	jal	d9db9d4 <main+0xd9db9d4>
-   8:	00010000 	sll	zero,at,0x0
-   c:	00070405 	.word	0x70405
+0xBFC00000: 40086000   mfc0    $t0, $12 (CP0_STATUS)
+0xBFC00004: 35080001   ori     $t0, $t0, 0x1
+0xBFC00008: 3108FFFD   andi    $t0, $t0, 0xfffd
+0xBFC0000C: 40886000   mtc0    $t0, $12 (CP0_STATUS)
+0xBFC00010: 24100000   addiu   $s0, $zero, 0
+0xBFC00014: 24110000   addiu   $s1, $zero, 0
+0xBFC00018: 26100001   main_loop: addiu $s0, $s0, 1
+0xBFC0001C: 00000000   nop
+0xBFC00020: 00000000   nop
+0xBFC00024: 00000000   nop
+0xBFC00028: 1000FFFA   beq     $zero, $zero, 0xBFC00018 (main_loop)
+0xBFC0002C: 00000000   nop
+0xBFC00030: 00000000   nop
+0xBFC00034: 00000000   nop
+0xBFC00038: 00000000   nop
+0xBFC0003C: 00000000   nop
+0xBFC00040: 00000000   nop
+0xBFC00044: 00000000   nop
+0xBFC00048: 00000000   nop
+0xBFC0004C: 00000000   nop
+0xBFC00050: 00000000   nop
+0xBFC00054: 00000000   nop
+0xBFC00058: 00000000   nop
+0xBFC0005C: 00000000   nop
+0xBFC00060: 00000000   nop
+0xBFC00064: 00000000   nop
+0xBFC00068: 00000000   nop
+0xBFC0006C: 00000000   nop
+0xBFC00070: 00000000   nop
+0xBFC00074: 00000000   nop
+0xBFC00078: 00000000   nop
+0xBFC0007C: 00000000   nop
+0xBFC00080: 26310001   isr_handler_asm: addiu $s1, $s1, 1
+0xBFC00084: 42000018   eret
+0xBFC00088: 00000000   nop
