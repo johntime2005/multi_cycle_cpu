@@ -5,7 +5,7 @@ set_property PACKAGE_PIN AC19 [get_ports clk]
 set_property PACKAGE_PIN Y3 [get_ports resetn]
 
 #脉冲开关，用于输入作为单步执行的clk
-set_property PACKAGE_PIN Y5 [get_ports btn_clk]
+set_property PACKAGE_PIN Y6 [get_ports btn_clk]
 
 set_property IOSTANDARD LVCMOS33 [get_ports clk]
 set_property IOSTANDARD LVCMOS33 [get_ports resetn]
