@@ -403,6 +403,7 @@ module full_cpu_tb ();
 
 
       };
+      $display("TB: ID_EXE_bus_r set to: %h", ID_EXE_bus_r); // 打印总线值
       #10;
 
       if (exe_exception_flag && exe_exception_type == 2'b11) begin  // Ovf = 2'b11
