@@ -1,6 +1,6 @@
-`timescale 1ns/1ps
+`timescale 1ns / 1ps
 
-module full_cpu_tb();
+module full_cpu_tb ();
 
 // Global signals
 reg          clk;
@@ -151,6 +151,7 @@ initial begin
     // Initialize signals
     clk = 0;
     reset_n = 0;
+    reset_n = 0;
     irq = 6'b0;
     testcase = 0;
     success_count = 0;
@@ -189,7 +190,7 @@ initial begin
     $display("\n[TEST RESULTS] Total test cases: %0d", testcase);
     $display("[TEST RESULTS] Passed: %0d, Failed: %0d", success_count, fail_count);
     #100 $finish;
-end
+  end
 
 //------------------------ Decode Test Tasks --------------------------
 task test_decode_illegal_instruction;
@@ -198,10 +199,17 @@ begin
     testcase = testcase + 1;
     $display("\nTest Case %0d: Illegal Instruction Test", testcase);
 
-    IF_ID_bus_r = {inst, 32'h00400000}; // PC = 0x400000
-    #10;
+      IF_ID_bus_r = {inst, 32'h00400000};  // PC = 0x400000
 
-    if (decode_id_exception_flag && decode_id_exception_type == 2'b10) begin // RI = 2'b10
+
+      irq = 6'b0;  // 确保无中断干扰
+
+
+      #10;
+
+      if (decode_id_exception_flag && decode_id_exception_type == 2'b10) begin  // RI = 2'b10
+
+
         success_count = success_count + 1;
         $display("[PASS] Illegal Instruction Test Passed");
     end else begin
@@ -218,10 +226,15 @@ begin
     testcase = testcase + 1;
     $display("\nTest Case %0d: ERET Instruction Test", testcase);
 
-    IF_ID_bus_r = {inst, 32'h00400004}; // PC = 0x400004
-    #10;
+      IF_ID_bus_r = {inst, 32'h00400004};  // PC = 0x400004
 
-    if (decode_eret_executed && !decode_id_exception_flag) begin
+
+      irq = 6'b0;  // 确保无中断干扰
+
+
+      #10;
+
+      if (decode_eret_executed && !decode_id_exception_flag) begin
         success_count = success_count + 1;
         $display("[PASS] ERET Instruction Recognition Passed");
     end else begin
@@ -240,7 +253,9 @@ begin
     IF_ID_bus_r = {32'h00000000, pc_addr}; // NOP at unaligned address
     #10;
 
-    if (decode_id_exception_flag && decode_id_exception_type == 2'b00) begin // AdEL = 2'b00
+      if (decode_id_exception_flag && decode_id_exception_type == 2'b00) begin  // AdEL = 2'b00
+
+
         success_count = success_count + 1;
         $display("[PASS] Instruction Fetch Address Error Test Passed");
     end else begin
@@ -251,6 +266,60 @@ begin
 end
 endtask
 
+  task test_decode_interrupt;
+    begin
+      testcase = testcase + 1;
+      $display("\n测试用例 %0d: 中断请求测试 (Decode)", testcase);
+
+      IF_ID_bus_r = {32'h00000000, 32'h00400008};  // 合法指令 NOP @ 0x00400008
+
+
+      irq = 6'b000010;  // 触发 IRQ1
+
+
+      #10;
+
+      if (decode_id_interrupt_flag && decode_id_interrupt_type == 2'b01 && !decode_id_exception_flag) begin // Int = 2'b01
+
+
+        success_count = success_count + 1;
+        $display("[通过] 中断请求测试成功 (Decode)");
+      end else begin
+        fail_count = fail_count + 1;
+        $display("[失败] 中断请求测试 (Decode): 中断标志:%b 类型:%b, 异常标志:%b",
+                 decode_id_interrupt_flag, decode_id_interrupt_type, decode_id_exception_flag);
+      end
+      irq = 6'b0;  // 清除中断请求
+
+
+    end
+  endtask
+
+  task test_decode_adel_over_ri;
+    begin
+      testcase = testcase + 1;
+      $display("\n测试用例 %0d: Decode优先级 AdEL > RI 测试", testcase);
+
+      // 非法指令 (op=0x3F) 在未对齐地址 (0x...1)
+
+      IF_ID_bus_r = {32'hFC000000, 32'h00400001};
+      irq = 6'b0;  // 确保无中断
+
+      #10;
+
+      // 期望 AdEL (type 00) 优先于 RI (type 10)
+
+      if (decode_id_exception_flag && decode_id_exception_type == 2'b00 && !decode_id_interrupt_flag) begin
+        success_count = success_count + 1;
+        $display("[通过] Decode优先级 AdEL > RI 测试成功");
+      end else begin
+        fail_count = fail_count + 1;
+        $display(
+            "[失败] Decode优先级 AdEL > RI: exc_flag=%b, exc_type=%b, int_flag=%b. 期望 exc_flag=1, exc_type=00, int_flag=0",
+            decode_id_exception_flag, decode_id_exception_type, decode_id_interrupt_flag);
+      end
+    end
+  endtask
 
 //------------------------ EXE Test Task ----------------------------
 task test_exe_overflow;
@@ -273,7 +342,9 @@ begin
     };
     #10;
 
-    if (exe_exception_flag && exe_exception_type == 2'b11) begin // Ovf = 2'b11
+      if (exe_exception_flag && exe_exception_type == 2'b11) begin  // Ovf = 2'b11
+
+
         success_count = success_count + 1;
         $display("[PASS] Overflow Exception Test Passed");
     end else begin
@@ -302,7 +373,9 @@ begin
     };
     #10;
 
-    if (mem_exception_flag && mem_exception_type == 2'b00) begin // AdEL = 2'b00
+      if (mem_exception_flag && mem_exception_type == 2'b00) begin  // AdEL = 2'b00
+
+
         success_count = success_count + 1;
         $display("[PASS] Load Address Misaligned Test Passed");
     end else begin
@@ -330,7 +403,9 @@ begin
     };
     #10;
 
-    if (mem_exception_flag && mem_exception_type == 2'b01) begin // AdES = 2'b01
+      if (mem_exception_flag && mem_exception_type == 2'b01) begin  // AdES = 2'b01
+
+
         success_count = success_count + 1;
         $display("[PASS] Store Address Misaligned Test Passed");
     end else begin
@@ -654,11 +729,60 @@ begin
 end
 endtask
 
+  task test_mem_adel_over_exe_ovf;
+    begin
+      testcase = testcase + 1;
+      $display("\n测试用例 %0d: MEM优先级 AdEL > EXE_Ovf 测试", testcase);
+
+      // 构建 EXE_MEM_bus_r:
+
+      // EXE阶段有Ovf异常 (type 11, flag 1)
+
+      // MEM阶段操作是LW，但地址未对齐 (e.g., 0x...1)
+
+      EXE_MEM_bus_r = {
+        2'b11,
+        1'b1,  // EXE 异常: Ovf
+
+        4'b1010,  // LW 的 mem_control
+
+        32'h00000001,  // alu_result (地址, 未对齐的字加载)
+
+        32'h0,  // store_data
+
+        1'b1,  // rf_wen (示例)
+
+        5'd2,  // rf_wdest (示例)
+
+        32'h00400024  // pc
+
+      };
+      #10;
+
+      // 期望MEM本级产生AdEL (type 00), 该AdEL优先于EXE的Ovf
+
+      // mem_exception_flag 应该是1, mem_exception_type 应该是 2'b00 (AdEL)
+
+      // 传递到MEM_WB_bus的也应该是AdEL
+
+      if (mem_exception_flag && mem_exception_type == 2'b00 &&
+
+          mem_MEM_WB_bus[72] && mem_MEM_WB_bus[71:70] == 2'b00) begin
+        success_count = success_count + 1;
+        $display("[通过] MEM优先级 AdEL > EXE_Ovf 测试成功");
+      end else begin
+        fail_count = fail_count + 1;
+        $display(
+            "[失败] MEM优先级 AdEL > EXE_Ovf: MEM本级 flag=%b type=%b. WB总线 flag=%b type=%b. 期望均为AdEL(1,00)",
+            mem_exception_flag, mem_exception_type, mem_MEM_WB_bus[72], mem_MEM_WB_bus[71:70]);
+      end
+    end
+  endtask
 
 // Waveform dump
 initial begin
     $dumpfile("full_cpu_waves.vcd");
     $dumpvars(0, full_cpu_tb);
-end
+  end
 
 endmodule
